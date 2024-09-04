@@ -1,7 +1,7 @@
-function Logo({ src, alt }) {
+function Logo({ src, alt, width }) {
     return (
       <div className="logoContainer">
-        <img src={src} alt={alt} />
+        <img src={src} alt={alt} width={width} />
       </div>
     );
   }
