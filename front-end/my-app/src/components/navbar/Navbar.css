@@ -21,7 +21,6 @@
 
 .navBar .menu li:hover {
   color: rgb(216, 154, 37);
-  transition: color 0.5s ease;
   cursor: pointer;
 }
 
@@ -31,11 +30,6 @@
   margin-top: 10px;
 }
 
-.small-text {
-  font-size: 12px;
-  font-weight: normal;
-  color: #555555;
-}
 
 .btnContainer {
   display: flex;
