@@ -15,6 +15,10 @@ function Body() {
           <p className='title'>Welcome to SE.</p>
           <br/>
           <p className='description'>King Mongkut's Institute of Technology Ladkrabang</p>
+          <br/>
+          <div className='bulletPointerContainer'>
+            <p className='bulletPoint2'>Software engineering (SE) is an engineering discipline concerning all aspects of software production, including software analysis, design, development, testing, and deployment. SE requires profound abstract and logical thinking and the application of mathematics, logic, and computer science in order to produce efficient and reliable software with the available resources.</p>
+          </div>
         </div>
       </div>
     );
