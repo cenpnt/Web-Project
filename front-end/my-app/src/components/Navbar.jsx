@@ -1,19 +1,13 @@
-
-
 function Navbar() {
     return (
-        <div className="navContainer">
-            <nav>
-                <div className="imageContainer">
-                </div>
-                <ul>
-                    <li><img className="logo" src="https://www.se.kmitl.ac.th/assets/se.png" width={100}></img></li>
-                    <li>Home</li>
-                    <li>Reservation</li>
-                    <li>Career Recommedation</li>
-                </ul>
-            </nav>
-        </div>
+        <nav className="navBar">
+            <ul>
+                <li>About</li>
+                <li>Program</li>
+                <li>Coworking space</li>
+                <li>Career recommendation</li>
+            </ul>
+        </nav>
     );
 }
 
