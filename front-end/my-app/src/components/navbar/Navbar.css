@@ -1,0 +1,12 @@
+.navBar ul li {
+    display: inline-block;
+    margin-right: 30px;
+    font-size: 20px;
+    color: white;
+}
+
+.navBar ul li:hover {
+    opacity: 0.7;
+    transition: opacity 0.3s ease;
+    cursor: pointer;
+}
