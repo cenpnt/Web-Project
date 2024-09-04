@@ -1,6 +1,6 @@
 .App {
   text-align: center;
-  background-color: black;
+  background-color: #0d1017;
 }
 .navContainer {
   display: flex;
@@ -10,5 +10,25 @@
 .navContainer ul li{
   display: inline;
   margin-right: 30px;
+  color: white;
+}
+
+h1 {
+  color: white;
+  font-size: 5rem;
+}
+
+.charContainer {
+  font-size: 44px; 
+}
+
+.char {
+  /* position: relative;
+  z-index: calc(1 + var(--add)*2);
+  display: inline-block;
+  font-weight: calc(200 + 700*var(--add));
+  font-stretch: calc(100% + 25%*var(--add));
+  color: hsl(240deg, 100%, calc(85% + 15% * var(--add))); */
+  transition: transform .2s,color .2s,font-stretch .2s,font-weight .2s;
   color: white;
 }
