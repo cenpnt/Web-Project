@@ -1,0 +1,21 @@
+.submenu {
+    position: absolute;
+    width: 230px;
+    opacity: 0;
+    padding: 10px;
+    transition: 0.1s ease-in-out;
+    z-index: -1;
+    background-color: #ffffff;
+    margin-top: -10px;
+    text-align: left;
+    border-radius: 5px;
+    right: 130px;
+  }
+  
+  .submenu li {
+    list-style: none;
+    padding: 5px;
+    color: #000000;
+    font-size: 14px;
+    font-weight: bold;
+  }
