@@ -1,0 +1,15 @@
+button {
+    padding: 8px 17px;;
+    border-radius: 8px;
+    border: 1px solid white;
+    background: transparent;
+    color: white;
+    margin-right: 20px;
+    font-size: 14px;
+}
+
+button:hover {
+    opacity: 0.9;
+    transition: opacity 0.3s ease;
+    cursor: pointer;
+}
