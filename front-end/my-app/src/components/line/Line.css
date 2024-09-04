@@ -1,0 +1,21 @@
+.lineContainer {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 10px;
+  }
+  
+.line {
+    width: 4px;
+    height: 250px;
+    background-color: white;
+    border-radius: 2px;;
+  }
+
+.line.odd {
+    background-image: linear-gradient(#0d1017, #F28C28);
+}
+
+.line.even {
+    background-image: linear-gradient(#F28C28, #0d1017);
+}
