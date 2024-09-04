@@ -1,18 +1,37 @@
-import './Navbar.css'
-import Button from '../button/Button'
+import "./Navbar.css";
+import Button from "../button/Button";
+import SubMenu from "../submenu/SubMenu";
 
 function Navbar() {
     return (
-        <nav className="navBar">
-            <ul>
-                <li>About</li>
-                <li>Program</li>
-                <li>Facility</li>
-                <li>Career recommendation</li>
-                <li><Button text="Sign in"/></li>
-            </ul>
-        </nav>
+      <nav className="navBar">
+        <ul className="menu">
+          <li>About</li>
+          <li>Admission</li>
+          <li>
+            Program
+            <SubMenu items={[
+              'Software-Engineering 2024',
+              'KMITL-Glasgow',
+              'KMITL-Queensland',
+              'Exchange-Study-Abroad',
+              'Internships'
+            ]} />
+          </li>
+          <li>
+            Student
+            <SubMenu items={[
+              'Alumni',
+              'Career Recommendation'
+            ]} />
+          </li>
+          <li>Facility</li>
+        </ul>
+        <div className="btnContainer">
+          <Button text="Sign in" />
+        </div>
+      </nav>
     );
-}
+  }
 
-export default Navbar
+export default Navbar;

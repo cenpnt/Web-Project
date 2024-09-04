@@ -1,12 +1,43 @@
-.navBar ul li {
-    display: inline-block;
-    margin-right: 30px;
-    font-size: 20px;
-    color: white;
+.navBar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 20px;
 }
 
-.navBar ul li:hover {
-    opacity: 0.7;
-    transition: opacity 0.3s ease;
-    cursor: pointer;
+.menu {
+  display: flex;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.menu li {
+  display: inline-block;
+  margin-right: 30px;
+  font-size: 20px;
+  color: white;
+}
+
+.navBar .menu li:hover {
+  color: rgb(216, 154, 37);
+  transition: color 0.5s ease;
+  cursor: pointer;
+}
+
+.navBar ul li:hover .submenu {
+  z-index: 99;
+  opacity: 1;
+  margin-top: 10px;
+}
+
+.small-text {
+  font-size: 12px;
+  font-weight: normal;
+  color: #555555;
+}
+
+.btnContainer {
+  display: flex;
+  margin-left: 80px;
 }
