@@ -14,6 +14,7 @@
 }
 
 .App-header {
+  margin-top: -20px;
   background-color: #282c34;
   min-height: 100vh;
   display: flex;
@@ -35,4 +36,17 @@
   to {
     transform: rotate(360deg);
   }
+}
+
+.navContainer {
+  background-color: #282c34;
+  display: flex;
+  justify-content: flex-start;
+  flex-direction: ;
+}
+
+.navContainer ul li{
+  display: inline;
+  margin-right: 30px;
+  color: white;
 }
