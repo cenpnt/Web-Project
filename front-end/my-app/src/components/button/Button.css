@@ -1,5 +1,5 @@
-button {
-    padding: 8px 17px;;
+.btn {
+    padding: 8px 17px; 
     border-radius: 8px;
     border: 1px solid white;
     background: transparent;
@@ -8,13 +8,13 @@ button {
     font-size: 14px;
 }
 
-button:hover {
+.btn:hover {
     color: rgb(216, 154, 37);
     border-color: rgb(216, 154, 37);
     transition: opacity 0.3s ease;
     cursor: pointer;
 }
 
-button:active {
+.btn:active {
     opacity: 0.5;
 }
