@@ -17,10 +17,13 @@
   color: #000000;
   font-size: 14px;
   font-weight: bold;
+  margin: 0;
 }
 
 hr {
   width: 200px;
+  margin-top: 5px;
+  margin-bottom: 0px;
 }
 
 .small-text {
