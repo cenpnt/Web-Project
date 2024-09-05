@@ -1,6 +1,6 @@
 .App {
   background-color: #0d1017;
-  font-family: "Mona Sans";
+  font-family: "Mona Sans" !important;
 }
 
 .navContainer {
@@ -17,4 +17,8 @@
 @font-face {
   font-family: 'Mona Sans'; 
   src: url('../../font/Mona-Sans.ttf') format('truetype'); /* Correct format */
+}
+
+.carousel {
+    margin-top: 50px;
 }
