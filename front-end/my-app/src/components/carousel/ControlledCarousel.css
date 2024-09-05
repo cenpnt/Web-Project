@@ -1,0 +1,37 @@
+.carousel-content {
+    display: flex;
+    justify-content: center;
+}
+
+.carousel-image-container {
+    margin-right: 100px;
+}
+
+.carousel-image-container img {
+    border-radius: 50px;
+    width: 1000px;
+    height: 600px;
+}
+
+.carousel-description {
+    margin-top: 50px;
+    max-width: 400px;
+}
+
+.carousel-description p {
+    color: white;
+    opacity: 0.7;
+}
+
+.carousel-description h3 {
+    color: white;
+}
+
+.carousel-indicators {
+    position: absolute;
+    bottom: -60px;
+}
+
+.carousel-container {
+    text-align: center;
+}
