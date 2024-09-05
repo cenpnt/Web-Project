@@ -17,9 +17,10 @@ function HomeBody1() {
           <p className='description'>King Mongkut's Institute of Technology Ladkrabang</p>
           <br/>
           <div className='bulletPointerContainer'>
-            <p className='bulletPoint2'>Software engineering (SE) is an engineering discipline concerning all aspects of software production, including software analysis, design, development, testing, and deployment. SE requires profound abstract and logical thinking and the application of mathematics, logic, and computer science in order to produce efficient and reliable software with the available resources.</p>
+            <p className='bulletPoint2'>Software Engineering is an engineering discipline concerning all aspects of software production, including software analysis, design, development, testing, and deployment. SE requires profound abstract and logical thinking and the application of mathematics, logic, and computer science in order to produce efficient and reliable software with the available resources.</p>
           </div>
         </div>
+        <img src="https://github.githubassets.com/assets/shape-0-df97fa6b0c27.svg" alt="img" className='spinImg'/>
       </div>
     );
 }

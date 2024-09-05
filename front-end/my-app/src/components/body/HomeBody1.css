@@ -32,11 +32,19 @@
   justify-content: flex-start;
   margin-left: 5%;
   margin-top: 5%;
-  background-image: url("https://cdn.discordapp.com/attachments/1280538997944225846/1280933945164431473/terminal.gif?ex=66d9e233&is=66d890b3&hm=471e0186803488f8adeee77645dcbfcc4318b94e79992d3f8dbb08c6e0ce65ec&");
-  background-repeat: no-repeat;
-  background-position-x: 970px;
-  background-position-y: 50px;
-  background-size: 800px;
+}
+
+.spinImg {
+  animation: spin 90s linear infinite;
+}
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
 }
 
 .left-section1 {
@@ -48,8 +56,7 @@
 }
 
 .right-section1 {
-  margin-top: 25px;
-  margin-left: 50px;
+  margin: 25px 100px 0 50px;
 }
 
 .bulletPoint2 {
