@@ -1,0 +1,52 @@
+.content {
+    display: flex;
+    justify-content: center;
+    margin: 40px;
+ 
+}
+
+.Box {
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    padding: 50px;
+    margin-top: 30px;
+    border-radius: 20px;
+}
+
+.header {
+    text-align: center;
+}
+
+.imgContainer {
+    margin-right: 20px;
+}
+
+.uni-img {
+    width: 650px;
+    height: auto;
+    border-radius: 10px;
+}
+
+.text {
+    width: 70%;
+    color: white;
+    margin: 20px;
+}
+
+
+.text Button {
+    margin-top: 30px;
+    color: white;
+    margin-left: 50px;
+}
+
+.logoContainer {
+    margin-bottom: 20px;
+    padding-bottom: 0px;
+    margin-top: -30px;
+}
+
+.paraContainer {
+    margin-left: 50px;
+}
