@@ -7,7 +7,9 @@ function Header() {
         <header className="header">
             <div className="top-bar">
                 <div className="top-bar-left">
-                    <Logo src="https://www.se.kmitl.ac.th/assets/se.png" alt="SE-logo" width="150"/>
+                    <div className='logoContainer'>
+                        <Logo src="https://www.se.kmitl.ac.th/assets/se.png" alt="SE-logo" width="150"/>
+                    </div>
                 </div>
                 <div className="top-bar-right">
                     <Navbar/>

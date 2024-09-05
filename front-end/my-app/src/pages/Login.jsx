@@ -39,7 +39,7 @@ function Login() {
         <h1>Sign in</h1>
       </div>
       <div className="form-container">
-        <div className="logo-container">
+        <div className="login-logo-container">
           <Logo
             src="https://www.se.kmitl.ac.th/assets/se.png"
             alt="SE-logo"
