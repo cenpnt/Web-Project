@@ -1,5 +1,5 @@
-import Circle from '../circle/Circle';
-import Line from '../line/Line';
+import Circle from './circle/Circle';
+import Line from './line/Line';
 import './HomeBody1.css'
 
 function HomeBody1() {

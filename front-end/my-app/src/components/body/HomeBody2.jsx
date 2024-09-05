@@ -1,4 +1,4 @@
-import ControlledCarousel from '../carousel/ControlledCarousel'
+import ControlledCarousel from './carousel/ControlledCarousel'
 
 function HomeBody2() {
     return (
