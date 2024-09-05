@@ -1,0 +1,37 @@
+.navBar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 20px;
+}
+
+.menu {
+  display: flex;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.menu li {
+  display: inline-block;
+  margin-right: 30px;
+  font-size: 20px;
+  color: white;
+}
+
+.navBar .menu li:hover {
+  color: rgb(216, 154, 37);
+  cursor: pointer;
+}
+
+.navBar ul li:hover .submenu {
+  z-index: 99;
+  opacity: 1;
+  margin-top: 10px;
+}
+
+
+.btnContainer {
+  display: flex;
+  margin-left: 80px;
+}
