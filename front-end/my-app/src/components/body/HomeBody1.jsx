@@ -1,8 +1,8 @@
-import './Body.css'
 import Circle from '../circle/Circle';
 import Line from '../line/Line';
+import './HomeBody1.css'
 
-function Body() {
+function HomeBody1() {
     return (
         <div className='section1'>
         <div className='left-section1'>
@@ -24,4 +24,4 @@ function Body() {
     );
 }
 
-export default Body
+export default HomeBody1

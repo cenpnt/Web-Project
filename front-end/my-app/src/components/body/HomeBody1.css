@@ -1,0 +1,68 @@
+.description {
+    color: white;
+    opacity: 0.7;
+    font-size: 1.5rem;
+    text-align: left;
+    margin-left: 10px;
+}
+
+.title {
+  font-weight: bold;
+  color: white;
+  font-size: 7rem !important;
+  color: white;
+  transition: transform 0.2s, color 0.2s, font-stretch 0.2s, font-weight 0.3s;
+  margin: 0;
+  line-height: normal;
+}
+
+.title:hover {
+  --add: 0;
+  position: relative;
+  z-index: calc(1 + var(--add)* 2);
+  display: inline-block;
+  font-weight: calc(200 + 700* var(--add));
+  font-stretch: calc(100% + 25%* var(--add));
+  color: #F28C28;
+  transition: transform .2s, color .2s, font-stretch .2s, font-weight .2s;
+}
+
+.section1 {
+  display: flex;
+  justify-content: flex-start;
+  margin-left: 5%;
+  margin-top: 5%;
+  background-image: url("https://cdn.discordapp.com/attachments/1280538997944225846/1280933945164431473/terminal.gif?ex=66d9e233&is=66d890b3&hm=471e0186803488f8adeee77645dcbfcc4318b94e79992d3f8dbb08c6e0ce65ec&");
+  background-repeat: no-repeat;
+  background-position-x: 970px;
+  background-position-y: 50px;
+  background-size: 800px;
+}
+
+.left-section1 {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 5px;
+  height: 700px;
+}
+
+.right-section1 {
+  margin-top: 25px;
+  margin-left: 50px;
+}
+
+.bulletPoint2 {
+  color: white;
+  opacity: 0.7;
+  font-size: 1.7rem;
+  text-align: left;
+  padding-top: 10px;
+  line-height: 35px;
+}
+
+.bulletPointerContainer {
+  margin-top: 120px;
+  max-width: 850px;
+  text-align: left;
+}
