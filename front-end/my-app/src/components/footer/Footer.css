@@ -32,6 +32,7 @@
 
 .footer-social li {
     display: inline-block;
+    margin-right: 24px;
 }
 
 .footer-social ul {
@@ -40,5 +41,5 @@
 }
 
 .footer-social li img{
-    width: 50px;
+    width: 75px;
 }

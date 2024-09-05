@@ -15,8 +15,18 @@ function Footer() {
             <div className='footer-social'>
                 <ul>
                     <li>
+                        <a href="https://www.instagram.com/kmitlofficial/" target='_blank' rel='noreferrer'>
+                            <img src="https://www.harvard.edu/wp-content/uploads/2023/11/Instagram-1.png" alt="instagramLogo" />
+                        </a>
+                    </li>
+                    <li>
                         <a href="https://www.facebook.com/kmitlofficial/?locale=th_TH" target='_blank' rel='noreferrer'>
                             <img src="https://www.harvard.edu/wp-content/uploads/2023/11/FB3.png" alt="facebookIcon" />
+                        </a>
+                    </li>
+                    <li>
+                        <a href="https://www.youtube.com/@SchoolofEngineeringKMITL" target='_blank' rel='noreferrer'>
+                            <img src="https://www.harvard.edu/wp-content/uploads/2023/11/youtube-1.png" alt="youtubeIcon" />
                         </a>
                     </li>
                 </ul>
