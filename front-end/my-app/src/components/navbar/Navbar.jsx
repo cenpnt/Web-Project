@@ -12,11 +12,11 @@ function Navbar() {
           Program
           <SubMenu
             items={[
-              ["Software-Engineering 2024", , ""],
+              ["Software-Engineering 2024", ""],
               ["KMITL-Glasgow", ""],
               ["KMITL-Queensland", ""],
               ["Exchange-Study-Abroad", ""],
-              ["Internships", ""],
+              ["Internships", ""]
             ]}
           />
         </li>
@@ -25,7 +25,7 @@ function Navbar() {
           <SubMenu
             items={[
               ["Alumni", "SE student alumni"],
-              ["Career Recommendation", "SE students' advisor"],
+              ["Career Recommendation", "SE students' advisor"]
             ]}
           />
         </li>
@@ -35,7 +35,7 @@ function Navbar() {
             items={[
               ["Laboratory", ""], 
               ["Lecture Room", ""], 
-             ["Co-working Space", ""],
+             ["Co-working Space", ""]
             ]}
           />
         </li>
