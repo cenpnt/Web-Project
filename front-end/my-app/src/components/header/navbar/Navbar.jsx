@@ -1,8 +1,9 @@
 import "./Navbar.css";
-import Button from "../button/Button";
-import SubMenu from "../submenu/SubMenu";
+import Button from "../../button/Button";
+import SubMenu from "./submenu/SubMenu";
 
 function Navbar() {
+
   return (
     <nav className="navBar">
       <ul className="menu">
@@ -41,7 +42,7 @@ function Navbar() {
         </li>
       </ul>
       <div className="btnContainer">
-        <Button text="Sign in" />
+        <Button text="Sign in" path="/login"/>
       </div>
     </nav>
   );
