@@ -1,3 +1,4 @@
+import React from 'react';
 import './Box.css'
 import Button from '../../button/Button'
 import Logo from '../../Logo'

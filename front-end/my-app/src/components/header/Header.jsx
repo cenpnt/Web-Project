@@ -1,3 +1,4 @@
+import React from 'react';
 import Logo from '../Logo'
 import Navbar from './navbar/Navbar';
 import './Header.css'

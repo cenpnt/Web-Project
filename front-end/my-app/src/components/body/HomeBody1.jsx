@@ -1,3 +1,4 @@
+import React from 'react';
 import Circle from './circle/Circle';
 import Line from './line/Line';
 import './HomeBody1.css'

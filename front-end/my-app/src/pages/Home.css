@@ -16,7 +16,7 @@
   
   @font-face {
     font-family: 'Mona Sans'; 
-    src: url('../../../font/Mona-Sans.ttf') format('truetype'); /* Correct format */
+    src: url('../font/Mona-Sans.ttf') format('truetype'); /* Correct format */
   }
   
   .carousel {
