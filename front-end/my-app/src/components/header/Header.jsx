@@ -3,9 +3,9 @@ import Logo from '../Logo'
 import Navbar from './navbar/Navbar';
 import './Header.css'
 
-function Header() {
+function Header({ buttonText, buttonPath, theme }) {
     return (
-        <header className="header">
+        <header className={`header ${theme}`}>
             <div className="top-bar">
                 <div className="top-bar-left">
                     <div className='logoContainer'>
@@ -13,7 +13,7 @@ function Header() {
                     </div>
                 </div>
                 <div className="top-bar-right">
-                    <Navbar/>
+                    <Navbar buttonText={buttonText} buttonPath={buttonPath} theme={theme}/>
                 </div>
             </div>
         </header>

@@ -1,12 +1,12 @@
 import React from 'react';
-import "./Navbar.css";
-import Button from "../../button/Button";
-import SubMenu from "./submenu/SubMenu";
+import './Navbar.css';
+import Button from '../../button/Button';
+import SubMenu from './submenu/SubMenu';
 
-function Navbar() {
+function Navbar({ buttonText, buttonPath, theme = 'dark' }) {
 
   return (
-    <nav className="navBar">
+    <nav className={`navBar ${theme}`}>
       <ul className="menu">
         <li>About</li>
         <li>Admission</li>
@@ -37,13 +37,13 @@ function Navbar() {
             items={[
               ["Laboratory", ""], 
               ["Lecture Room", ""], 
-             ["Co-working Space", ""]
+              ["Co-working Space", ""]
             ]}
           />
         </li>
       </ul>
       <div className="btnContainer">
-        <Button text="Sign in" path="/login"/>
+        <Button text={buttonText} path={buttonPath} theme={theme}/>
       </div>
     </nav>
   );

@@ -16,7 +16,7 @@
   display: inline-block;
   margin-right: 30px;
   font-size: 20px;
-  color: white;
+  color: var(--nav-text);
 }
 
 .navBar .menu li:hover {
@@ -28,10 +28,20 @@
   z-index: 99;
   opacity: 1;
   margin-top: 10px;
+  background-color: var(--submenu-backgroundColor);
 }
-
 
 .btnContainer {
   display: flex;
   margin-left: 80px;
+} 
+
+.navBar.dark {
+  --nav-text: white;
+  --submenu-backgroundColor: white;
+}
+
+.navBar.light {
+  --nav-text: black;
+  --submenu-backgroundColor: #f7f7f7;
 }
