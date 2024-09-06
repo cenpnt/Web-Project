@@ -2,7 +2,7 @@ import React from 'react';
 import './Button.css';
 import { useNavigate } from "react-router-dom";
 
-function Button({ text, path }) {
+function Button({ text, path, theme }) {
     const navigate = useNavigate();
 
     const handleLoginClick = () => {
@@ -10,7 +10,7 @@ function Button({ text, path }) {
     }
 
     return (
-        <button onClick={handleLoginClick} className='btn'>
+        <button onClick={handleLoginClick} className={`btn ${theme}`}>
         {text}
         </button>
     );
