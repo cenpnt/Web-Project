@@ -2,16 +2,20 @@ import React from 'react';
 import './Button.css';
 import { useNavigate } from "react-router-dom";
 
-function Button({ text, path, theme }) {
+function Button({ text, path, theme, onClick }) {
     const navigate = useNavigate();
 
-    const handleLoginClick = () => {
-        navigate(`${path}`);
+    const handleClick = () => {
+        if(onClick) {
+            onClick();
+        } else {
+            navigate(path);
+        }
     }
 
     return (
-        <button onClick={handleLoginClick} className={`btn ${theme}`}>
-        {text}
+        <button onClick={handleClick} className={`btn ${theme}`}>
+            {text}
         </button>
     );
 }
