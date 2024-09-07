@@ -40,3 +40,8 @@
   --nav-text: black;
   --submenu-backgroundColor: #f7f7f7;
 }
+
+.navBar.glasgow {
+    --nav-text: white;
+    --submenu-backgroundColor: aliceblue;
+}
