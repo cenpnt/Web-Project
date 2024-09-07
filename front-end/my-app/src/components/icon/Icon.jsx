@@ -1,10 +1,13 @@
 import React from 'react';
-import { useState } from "react";
 
-function Icon(theme) {
-    const [link, Setlink] = useState("")
+function Icon({ theme, dark, light ,anchor, alt, width }) {
+    const link = theme === 'dark' ? dark : light;
     return(
-        <img />
+        <li>
+            <a href={anchor} target='_blank' rel='noreferrer'>
+                <img src={link} alt={alt} width={width} />
+            </a>
+        </li>
     ); 
 }
 
