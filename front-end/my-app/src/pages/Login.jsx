@@ -2,11 +2,14 @@ import React from 'react';
 import "./Login.css";
 import Logo from "../components/Logo";
 import { useState } from "react";
+import { useNavigate } from 'react-router-dom'
 
 function Login() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
+  const [inputError, setInputError] = useState(false);
+  const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -24,10 +27,13 @@ function Login() {
         // successful login
         const data = await response.json();
         console.log('Login successful:', data);
+        navigate('/u_student');
       } else {
         // Error
         const errorData = await response.json();
         setError(errorData.detail);
+        setInputError(true);
+        setPassword("");
       }
     } catch (error) {
       setError("An unexpected error occurred.");
@@ -56,7 +62,11 @@ function Login() {
               placeholder="Username"
               className="username"
               value={username}
-              onChange={(e) => setUsername(e.target.value)}
+              onChange={(e) => {
+                setUsername(e.target.value);
+                setError("");  // Clear error when user types
+                setInputError(false);  // Remove error highlight
+              }}
             />
           </label>
           <label>
@@ -65,14 +75,18 @@ function Login() {
               type="password"
               name="password"
               placeholder="Password"
-              className="password"
+              className={`password ${inputError ? "input-error" : ""}`}
               value={password}
-              onChange={(e) => setPassword(e.target.value)}
+              onChange={(e) =>{
+                setPassword(e.target.value);
+                setError("");  // Clear error when user types
+                setInputError(false);  // Remove error highlight
+              }}
             />
           </label>
+          {error && <p className="error">{typeof error === 'string' ? error : 'An error occurred'}</p>}
           <button type="submit">Sign in </button>
         </form>
-        {error && <p className="error">{typeof error === 'string' ? error : 'An error occurred'}</p>}
       </div>
     </div>
   );
