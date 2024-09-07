@@ -3,7 +3,7 @@ import './Box.css'
 import Button from '../../button/Button'
 import Logo from '../../Logo'
 
-function Box({ box }) {
+function Box({ box, path }) {
     return (
         <div className='Box'>
             <div className="box-header">
@@ -21,7 +21,9 @@ function Box({ box }) {
                     <div className='box-paragraph-container'>
                         <p>{box.des}</p><br/>
                     </div>
-                    <Button text="See More" path='/home'/>
+                    <div className='box-button-container'>
+                        <Button text="See More" path={path}/>
+                    </div>
                 </div>
             </div>
         </div>   

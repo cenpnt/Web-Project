@@ -7,7 +7,6 @@
     border-radius: 20px;
 }
 
-
 .box-header {
     text-align: center;
     color: white;
@@ -17,7 +16,6 @@
     display: flex;
     justify-content: center;
     margin: 40px;
- 
 }
 
 .box-img-container {
@@ -46,9 +44,18 @@
 }
 
 .box-text Button {
-    margin-top: 30px;
+    color: rgb(216, 154, 37);
+    text-decoration: underline;
+    text-underline-offset: 5px;
+}
+
+.box-text Button:hover {
     color: white;
-    margin-left: 50px;
+}
+
+.box-button-container {
+    margin-top: 70px;
+    margin-left: 13px;
 }
 
 .box-logo-container {
