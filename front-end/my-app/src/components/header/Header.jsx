@@ -2,8 +2,10 @@ import React from 'react';
 import Logo from '../Logo'
 import Navbar from './navbar/Navbar';
 import './Header.css'
+import { useAuth } from '../../context/AuthContext';
 
-function Header({ buttonText, buttonPath, theme, onClick }) {
+function Header({ theme }) {
+    const { buttonText, buttonPath, buttonClick } = useAuth();
     return (
         <header className={`header ${theme}`}>
             <div className="top-bar">
@@ -13,7 +15,7 @@ function Header({ buttonText, buttonPath, theme, onClick }) {
                     </div>
                 </div>
                 <div className="top-bar-right">
-                    <Navbar buttonText={buttonText} buttonPath={buttonPath} theme={theme} onClick={onClick}/>
+                    <Navbar buttonText={buttonText} buttonPath={buttonPath} theme={theme} onClick={buttonClick}/>
                 </div>
             </div>
         </header>

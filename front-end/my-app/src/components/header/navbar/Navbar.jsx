@@ -2,8 +2,10 @@ import React from 'react';
 import './Navbar.css';
 import Button from '../../button/Button';
 import SubMenu from './submenu/SubMenu';
+import { useAuth } from '../../../context/AuthContext';
 
-function Navbar({ buttonText, buttonPath, theme = 'dark', onClick }) {
+function Navbar({ theme = 'dark' }) {
+  const { buttonText, buttonPath, buttonClick } = useAuth();
 
   return (
     <nav className={`navBar ${theme}`}>
@@ -43,7 +45,7 @@ function Navbar({ buttonText, buttonPath, theme = 'dark', onClick }) {
         </li>
       </ul>
       <div className="btnContainer">
-        <Button text={buttonText} path={buttonPath} theme={theme} onClick={onClick}/>
+        <Button text={buttonText} path={buttonPath} theme={theme} onClick={buttonClick}/>
       </div>
     </nav>
   );
