@@ -3,7 +3,7 @@ import Logo from '../Logo'
 import Navbar from './navbar/Navbar';
 import './Header.css'
 
-function Header({ buttonText, buttonPath, theme }) {
+function Header({ buttonText, buttonPath, theme, onClick }) {
     return (
         <header className={`header ${theme}`}>
             <div className="top-bar">
@@ -13,7 +13,7 @@ function Header({ buttonText, buttonPath, theme }) {
                     </div>
                 </div>
                 <div className="top-bar-right">
-                    <Navbar buttonText={buttonText} buttonPath={buttonPath} theme={theme}/>
+                    <Navbar buttonText={buttonText} buttonPath={buttonPath} theme={theme} onClick={onClick}/>
                 </div>
             </div>
         </header>
