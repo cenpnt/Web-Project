@@ -13,8 +13,8 @@ import Queensland from './pages/queensland/Queensland';
 
 function App() {
   return (
-    <AuthProvider>
-      <Router>
+    <Router>
+        <AuthProvider>
         <Routes>
           <Route path="/" element={<AuthHeader theme='dark'><Home /></AuthHeader>} />
           <Route path="/login" element={<Login />} />
@@ -22,8 +22,8 @@ function App() {
           <Route path="/glasgow-doubledegree" element={<AuthHeader><Glasgow /></AuthHeader>} />
           <Route path="/queensland-doubledegree" element={<AuthHeader><Queensland /></AuthHeader>} />
         </Routes>
-      </Router>
-    </AuthProvider>
+      </AuthProvider>
+    </Router>
   );
 }
 
