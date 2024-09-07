@@ -19,11 +19,6 @@
   color: var(--nav-text);
 }
 
-.navBar .menu li:hover {
-  color: rgb(216, 154, 37);
-  cursor: pointer;
-}
-
 .navBar ul li:hover .submenu {
   z-index: 99;
   opacity: 1;
