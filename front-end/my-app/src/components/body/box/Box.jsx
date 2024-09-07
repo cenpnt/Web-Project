@@ -5,7 +5,7 @@ import Logo from '../../Logo'
 
 function Box({ box, path }) {
     return (
-        <div className='Box'>
+        <div className={`Box`}>
             <div className="box-header">
                 <h1>{box.head}</h1>
             </div>
