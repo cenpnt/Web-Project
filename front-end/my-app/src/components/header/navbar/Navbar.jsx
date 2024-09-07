@@ -3,7 +3,7 @@ import './Navbar.css';
 import Button from '../../button/Button';
 import SubMenu from './submenu/SubMenu';
 
-function Navbar({ buttonText, buttonPath, theme = 'dark' }) {
+function Navbar({ buttonText, buttonPath, theme = 'dark', onClick }) {
 
   return (
     <nav className={`navBar ${theme}`}>
@@ -14,11 +14,11 @@ function Navbar({ buttonText, buttonPath, theme = 'dark' }) {
           Program
           <SubMenu
             items={[
-              ["Software-Engineering 2024", ""],
-              ["KMITL-Glasgow", ""],
-              ["KMITL-Queensland", ""],
-              ["Exchange-Study-Abroad", ""],
-              ["Internships", ""]
+              { text: "Software-Engineering 2024", path: "/", smalltext: "" },
+              { text: "KMITL-Glasgow", path: "/glasgow-doubledegree", smalltext: "" },
+              { text: "KMITL-Queensland", path: "/queensland-doubledegree", smalltext: "" },
+              { text: "Exchange-Study-Abroad", path: "/", smalltext: "" },
+              { text: "Internships", path: "/", smalltext: "" }
             ]}
           />
         </li>
@@ -26,8 +26,8 @@ function Navbar({ buttonText, buttonPath, theme = 'dark' }) {
           Student
           <SubMenu
             items={[
-              ["Alumni", "SE student alumni"],
-              ["Career Recommendation", "SE students' advisor"]
+              { text:"Alumni", path: "/", smalltext:"SE student alumni" },
+              { text:"Career Recommendation", path: "/" ,smalltext:"SE students' advisor" }
             ]}
           />
         </li>
@@ -35,15 +35,15 @@ function Navbar({ buttonText, buttonPath, theme = 'dark' }) {
           Facility
           <SubMenu
             items={[
-              ["Laboratory", ""], 
-              ["Lecture Room", ""], 
-              ["Co-working Space", ""]
+              { text: "Laboratory", path: "/", smalltext: "" }, 
+              { text: "Lecture Room", path: "/", smalltext: "" }, 
+              { text:"Co-working Space", path:"/" , smalltext:"" }
             ]}
           />
         </li>
       </ul>
       <div className="btnContainer">
-        <Button text={buttonText} path={buttonPath} theme={theme}/>
+        <Button text={buttonText} path={buttonPath} theme={theme} onClick={onClick}/>
       </div>
     </nav>
   );
