@@ -20,6 +20,11 @@
   margin: 0;
 }
 
+.submenu li:hover .submenu-text {
+  color: rgb(216, 154, 37);
+  cursor: pointer;
+}
+
 hr {
   width: 200px;
   margin-top: 5px;

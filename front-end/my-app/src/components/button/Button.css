@@ -1,9 +1,9 @@
 .btn {
     padding: 8px 17px; 
     border-radius: 8px;
-    border: 1px solid white;
+    border: var(--btn-border);
     background: transparent;
-    color: white;
+    color: var(--btn-color);
     margin-right: 20px;
     font-size: 14px;
 }
@@ -17,4 +17,13 @@
 
 .btn:active {
     opacity: 0.5;
+}
+
+.btn.dark {
+    --btn-border: 1px solid white;
+}
+
+.btn.light {
+    --btn-border: 1px solid black;
+    --btn-color: black;
 }

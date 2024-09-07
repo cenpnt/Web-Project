@@ -1,0 +1,62 @@
+.Box {
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    padding: 50px;
+    margin-top: 30px;
+    border-radius: 20px;
+}
+
+
+.box-header {
+    text-align: center;
+    color: white;
+}
+
+.box-content {
+    display: flex;
+    justify-content: center;
+    margin: 40px;
+ 
+}
+
+.box-img-container {
+    margin-right: 20px;
+}
+
+.box-img-container img {
+    box-shadow: 4px 4px 50px hsla(0, 0%, 100%, 0.4);
+}
+
+.box-img-container img:hover {
+    transform: scale(1.05);
+    transition: 0.5s ease-in-out;
+}
+
+.uni-img {
+    width: 650px;
+    height: auto;
+    border-radius: 10px;
+}
+
+.box-text {
+    width: 70%;
+    color: white;
+    margin: 20px;
+}
+
+.box-text Button {
+    margin-top: 30px;
+    color: white;
+    margin-left: 50px;
+}
+
+.box-logo-container {
+    margin-bottom: 20px;
+    padding-bottom: 0px;
+    margin-top: -30px;
+}
+
+.box-paragraph-container {
+    margin-left: 30px;
+}

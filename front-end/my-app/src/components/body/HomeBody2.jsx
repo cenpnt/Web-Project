@@ -1,4 +1,5 @@
-import ControlledCarousel from '../carousel/ControlledCarousel'
+import React from 'react';
+import ControlledCarousel from './carousel/ControlledCarousel'
 
 function HomeBody2() {
     return (

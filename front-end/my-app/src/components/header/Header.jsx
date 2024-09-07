@@ -1,16 +1,19 @@
+import React from 'react';
 import Logo from '../Logo'
-import Navbar from '../navbar/Navbar';
+import Navbar from './navbar/Navbar';
 import './Header.css'
 
-function Header() {
+function Header({ buttonText, buttonPath, theme }) {
     return (
-        <header className="header">
+        <header className={`header ${theme}`}>
             <div className="top-bar">
                 <div className="top-bar-left">
-                    <Logo src="https://www.se.kmitl.ac.th/assets/se.png" alt="SE-logo" width="150"/>
+                    <div className='logoContainer'>
+                        <Logo src="https://www.se.kmitl.ac.th/assets/se.png" alt="SE-logo" width="150"/>
+                    </div>
                 </div>
                 <div className="top-bar-right">
-                    <Navbar/>
+                    <Navbar buttonText={buttonText} buttonPath={buttonPath} theme={theme}/>
                 </div>
             </div>
         </header>

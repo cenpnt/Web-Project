@@ -1,9 +1,11 @@
+import React from 'react';
 import './Footer.css'
 import Logo from '../Logo';
+import Icon from '../icon/Icon';
 
-function Footer() {
+function Footer({ theme }) {
     return (
-        <div className='footer-main-container'>
+        <div className={`footer-main-container ${theme}`}>
             <div className='footer-copyright'>
                 <p>Copyright © 2024 Software Engineering<br/>King Mongkut's Institute of Technology Ladkrabang</p>
             </div>
@@ -14,21 +16,9 @@ function Footer() {
             </div>
             <div className='footer-social'>
                 <ul>
-                    <li>
-                        <a href="https://www.instagram.com/kmitlofficial/" target='_blank' rel='noreferrer'>
-                            <img src="https://www.harvard.edu/wp-content/uploads/2023/11/Instagram-1.png" alt="instagramLogo" />
-                        </a>
-                    </li>
-                    <li>
-                        <a href="https://www.facebook.com/kmitlofficial/?locale=th_TH" target='_blank' rel='noreferrer'>
-                            <img src="https://www.harvard.edu/wp-content/uploads/2023/11/FB3.png" alt="facebookIcon" />
-                        </a>
-                    </li>
-                    <li>
-                        <a href="https://www.youtube.com/@SchoolofEngineeringKMITL" target='_blank' rel='noreferrer'>
-                            <img src="https://www.harvard.edu/wp-content/uploads/2023/11/youtube-1.png" alt="youtubeIcon" />
-                        </a>
-                    </li>
+                    <Icon theme={theme} dark={"https://www.harvard.edu/wp-content/uploads/2023/11/Instagram-1.png"} light={"https://cdn-icons-png.flaticon.com/128/1384/1384031.png"} anchor={"https://www.instagram.com/kmitlofficial/"} alt={"instagram logo"} width={"80"}/>
+                    <Icon theme={theme} dark={"https://www.harvard.edu/wp-content/uploads/2023/11/FB3.png"} light={"https://cdn-icons-png.flaticon.com/128/20/20837.png"} anchor={"https://www.facebook.com/kmitlofficial/?locale=th_TH"} alt={"facebookIcon"} width={"50"}/>
+                    <Icon theme={theme} dark={"https://www.harvard.edu/wp-content/uploads/2023/11/youtube-1.png"} light={"https://cdn-icons-png.flaticon.com/128/1384/1384028.png"} anchor={"https://www.youtube.com/@SchoolofEngineeringKMITL"} alt={"youtubeIcon"} width={"50"}/>
                 </ul>
             </div>
         </div>
