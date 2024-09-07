@@ -27,3 +27,7 @@
     --btn-border: 1px solid black;
     --btn-color: black;
 }
+
+.btn.glasgow {
+    --btn-border: 1px solid white;
+}
