@@ -1,17 +1,13 @@
 .logoContainer {
-    margin-right: 10px;
+    margin: 0 10px;
     padding: 20px;
-    margin-left: 10px;
 }
 
 .top-bar {
     display: flex;
     justify-content: space-between;
     align-items: center;
-}
-
-.top-bar-right {
-    /* border: 1px solid white; */
+    background-color: var(--header-backgroundColor);
 }
 
 .header {
@@ -22,3 +18,11 @@
   p {
     display: inline;
   }
+
+.header.light {
+  --header-backgroundColor: #f7f7f7;
+}
+
+.header.dark {
+  --header-backgroundColor: #0d1017;;
+}

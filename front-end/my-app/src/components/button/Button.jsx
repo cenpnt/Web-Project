@@ -1,12 +1,19 @@
-import './Button.css'
+import React from 'react';
+import './Button.css';
+import { useNavigate } from "react-router-dom";
 
-function Button({text, onclick}) {
+function Button({ text, path, theme }) {
+    const navigate = useNavigate();
+
+    const handleLoginClick = () => {
+        navigate(`${path}`);
+    }
 
     return (
-        <button onclick={onclick} className='btn'>
-            {text} 
+        <button onClick={handleLoginClick} className={`btn ${theme}`}>
+        {text}
         </button>
     );
 }
 
-export default Button
+export default Button;
