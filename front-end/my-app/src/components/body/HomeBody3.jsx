@@ -3,7 +3,7 @@ import Box from './box/Box';
 
 function HomeBody3(){
 
-    const box1={
+    const box1 = {
         head: "KMTIL - GLASGOW",
         img: "https://dynamic-media-cdn.tripadvisor.com/media/photo-o/0a/45/1c/9d/university-of-glasgow.jpg?w=1200&h=1200&s=1",
         alt: "picture of glassgow university",
@@ -15,7 +15,7 @@ function HomeBody3(){
         }
     }
 
-    const box2={
+    const box2 = {
         head: "KMTIL - QUEENSLAND",
         img: "https://www.uq.edu.au/sites/default/files/styles/uqds_card/public/2023-12/st-lucia-campus.jpg?itok=39nkzdMY",
         alt: "picture of glassgow university",
