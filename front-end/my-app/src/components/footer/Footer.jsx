@@ -2,9 +2,9 @@ import React from 'react';
 import './Footer.css'
 import Logo from '../Logo';
 
-function Footer() {
+function Footer(theme) {
     return (
-        <div className='footer-main-container'>
+        <div className={`footer-main-container ${theme}`}>
             <div className='footer-copyright'>
                 <p>Copyright © 2024 Software Engineering<br/>King Mongkut's Institute of Technology Ladkrabang</p>
             </div>

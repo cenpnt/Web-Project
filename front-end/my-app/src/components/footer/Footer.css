@@ -2,7 +2,7 @@
     display: flex;
     justify-content: space-around;
     align-items: center;
-    background-color: hsl(222, 28%, 4%);
+    background-color: var(--footer-backgroundColor);
     height: 200px;
     margin-top: 150px;
 }
@@ -15,7 +15,7 @@
 
 .footer-copyright p {
     text-align: center;
-    color: white;
+    color: var(--footer-copyright-p-color);
 }
 
 .footer-logo {
@@ -43,3 +43,14 @@
 .footer-social li img{
     width: 75px;
 }
+
+
+.footer-main-container.light {
+    --footer-backgroundColor: white;
+    --footer-copyright-p-color: black;
+}
+
+.footer-main-container.dark {
+    --footer-backgroundColor: hsl(222, 28%, 4%);
+    --footer-copyright-p-color: white;
+}  
