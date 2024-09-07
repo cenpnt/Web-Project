@@ -19,7 +19,7 @@ function App() {
           <Route path="/" element={<AuthHeader theme='dark'><Home /></AuthHeader>} />
           <Route path="/login" element={<Login />} />
           <Route path="/u_student" element={<AuthHeader><UStudent /></AuthHeader>} />
-          <Route path="/glasgow-doubledegree" element={<AuthHeader><Glasgow /></AuthHeader>} />
+          <Route path="/glasgow-doubledegree" element={<AuthHeader theme='glasgow'><Glasgow /></AuthHeader>} />
           <Route path="/queensland-doubledegree" element={<AuthHeader><Queensland /></AuthHeader>} />
         </Routes>
       </AuthProvider>
