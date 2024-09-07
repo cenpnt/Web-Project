@@ -1,0 +1,20 @@
+
+
+
+    
+
+.glasgow-background {
+    background-image: url("https://www.commonapp.org/static/35864e25df4faadc796b43ecf64da716/university-glasgow_638.jpg");
+    background-position: center;
+    background-size: cover;
+    background-repeat: no-repeat;
+    height: 500px;
+}
+
+
+.glasgow-info {
+    border: 1px soild black;
+    max-width: 500px;
+    
+    
+}
