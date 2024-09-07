@@ -10,13 +10,13 @@ import Footer from '../components/footer/Footer';
 function Home() {
     return (
         <div className="Home">
-          <Header />
+          <Header buttonText={'Sign in'} buttonPath={'./login'} theme={'dark'}/>
           <HomeBody1 />
           <div className='carousel'>
             <HomeBody2 />
           </div>
           <HomeBody3 />
-          <Footer />
+          <Footer theme={'dark'}/>
         </div>
     );
 }
