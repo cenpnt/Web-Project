@@ -31,7 +31,7 @@ def add_user():
             print("Admin user already exists.")
             return
 
-        hashed_password = pwd_context.hash("1234")
+        hashed_password = pwd_context.hash("forAdminOnly1234")
         new_user = User(username="admin", password=hashed_password)
         db.add(new_user)
         db.commit()
