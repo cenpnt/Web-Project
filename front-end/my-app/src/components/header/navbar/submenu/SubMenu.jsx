@@ -6,8 +6,9 @@ function SubMenu({ items }) {
     <ul className={`submenu`}>
       {items.map((item, index) => (
         <li key={index}>
-            <span className='submenu-text'>{item[0]}</span><br/>
-            <span className="small-text">{item[1]}</span>
+            <span className='submenu-text'><a href={item.path}>{item.text}</a></span>
+            <br/>
+            <span className="small-text">{item.smalltext}</span>
             <hr/>
         </li>
       ))}</ul>
