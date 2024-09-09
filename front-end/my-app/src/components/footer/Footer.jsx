@@ -11,7 +11,7 @@ function Footer({ theme }) {
             </div>
             <div className='footer-logo'>
                 <a href="#top">
-                    <Logo src="https://www.se.kmitl.ac.th/assets/se.png" alt="SE-logo" width="150"/>
+                    <Logo src={"https://media.discordapp.net/attachments/1280538997944225846/1282338015175249931/se_white.png?ex=66dfa697&is=66de5517&hm=213b2aac9e70897c93f2f7fdbc9b90839b3476b718d7cafbf3d61ba06242f3de&=&format=webp&quality=lossless&width=450&height=250"} alt="SE-logo" width="150"/>
                 </a>
             </div>
             <div className='footer-social'>
