@@ -21,6 +21,7 @@ export const AuthProvider = ({ children }) => {
                 localStorage.removeItem('user');
             }
         }
+        
     }, []);
 
     const login = (userData) => {
