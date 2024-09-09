@@ -22,7 +22,7 @@ function Box({ box, path }) {
                         <p>{box.des}</p><br/>
                     </div>
                     <div className='box-button-container'>
-                        <Button text="See More" path={path}/>
+                        <Button text="See More" path={path} override />
                     </div>
                 </div>
             </div>
