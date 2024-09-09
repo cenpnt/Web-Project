@@ -29,8 +29,8 @@ function HomeBody3(){
 
     return (
         <div>
-            <Box box={box1} path={"/glasgow-doubledegree"}/>
-            <Box box={box2} path={"/queensland-doubledegree"}/>
+            <Box box={box1} path={"/glasgow-doubledegree"} />
+            <Box box={box2} path={"/queensland-doubledegree"} />
         </div>
     );
 }
