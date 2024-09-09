@@ -5,13 +5,13 @@ import HomeBody1 from '../../components/body/HomeBody1'
 import HomeBody2 from '../../components/body/HomeBody2';
 import HomeBody3 from '../../components/body/HomeBody3';
 import Footer from '../../components/footer/Footer';
-import HomeBody1Section2 from '../../components/body/HomeBody1Section2';
+import Search from '../../components/body/Search';
 
 function Home() {
     return (
         <div className="Home">
           <HomeBody1 />
-          <HomeBody1Section2/>
+          <Search/>
           <div className='carousel'>
             <HomeBody2 />
           </div>

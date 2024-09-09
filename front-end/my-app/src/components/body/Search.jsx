@@ -1,6 +1,6 @@
-import "./HomeBody1Section2.css";
+import "./Search.css";
 
-function HomeBody1Section2() {
+function Search() {
   return (
     <div className="TopSearch-Container">
       <h1>Top Search</h1>
@@ -15,4 +15,4 @@ function HomeBody1Section2() {
   );
 }
 
-export default HomeBody1Section2;
+export default Search
