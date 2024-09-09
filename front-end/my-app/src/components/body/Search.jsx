@@ -5,6 +5,7 @@ function Search() {
     <div className="TopSearch-Container">
       <h1>Top Search</h1>
       <ul className="TopSearch">
+        <li>Contact</li>
         <li>Admission</li>
         <li>Software-Engineer 2024</li>
         <li>KMITL-Glasgow</li>
