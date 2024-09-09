@@ -1,0 +1,16 @@
+.detail-container {
+  margin-top: 30px;
+}
+
+
+.course-button {
+  width: 100%;
+  text-align: left;
+  font-size: 20px;
+  background-color: hsl(207, 100%, 20%);
+  color: white;
+}
+
+.course-button:hover {
+  background-color: hsl(207, 100%, 30%);
+}
