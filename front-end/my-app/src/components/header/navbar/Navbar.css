@@ -10,6 +10,7 @@
   margin: 0;
   padding: 0;
   list-style: none;
+  cursor: pointer;
 }
 
 .menu li {
@@ -29,7 +30,7 @@
 .btnContainer {
   display: flex;
   margin-left: 80px;
-} 
+}
 
 .navBar.dark {
   --nav-text: white;
@@ -42,6 +43,6 @@
 }
 
 .navBar.glasgow {
-    --nav-text: white;
-    --submenu-backgroundColor: aliceblue;
+  --nav-text: white;
+  --submenu-backgroundColor: aliceblue;
 }
