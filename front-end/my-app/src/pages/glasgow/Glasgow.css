@@ -1,26 +1,52 @@
 .glasgow-Container1 {
-    display: flex;
-    justify-content: center;
-    flex-direction: column;
-    background-color: white;
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+  background-color: white;
 }
 
 .glasgow-Container1 hr {
-    width: 1000px;
-    margin-top: 25px;
+  width: 1000px;
+  margin-top: 25px;
 }
 
 .glasgow-imgContainer {
-    margin-top: 100px;
-    display: flex;
-    flex-direction: row;
-    justify-content: center;
-    align-items: center;
+  margin-top: 100px;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
 }
 
-.glasgow-article {
-    padding: 20px;
-    text-align: left;
-    width: 1000px;
-    margin-left: 200px;
+.glasgow-article1,
+.glasgow-article2,
+.glasgow-article3 {
+  padding: 50px ;
+  text-align: left;
+  width: 1000px;
+  margin-left: auto;
+  margin-right: auto;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  background-color: #f7f7f7;
 }
+
+.glasgow-article1 h2,
+.glasgow-article2 h2,
+.glasgow-article3 h2 {
+    margin-top: 16px;
+    color: #951b6f;
+    font-weight: bold;
+  }
+
+  .glasgow-article1 h1,
+  .glasgow-article2 h1,
+  .glasgow-article3 h1 {
+    margin-bottom: 20px;
+    font-weight: bold;
+    color: #003865;
+  }
+
+  .glasgow-article2,
+  .glasgow-article3 {
+    margin-top: 80px;
+  }
