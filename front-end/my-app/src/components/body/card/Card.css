@@ -1,9 +1,87 @@
 .cardContainer {
-    padding: 30px;
-    display: flex;
-    border-radius: 10px;
-    border: 1px solid black;
+  padding: 20px;
+  display: flex;
+  border-radius: 10px;
+  border: 1px solid black;
+  flex-direction: column;
+  background-color: white;
+  margin: 20px;
+  transition: 0.2s ease-in-out;
+  width: 100%; /* Adjust width to 100% for small devices */
+  max-width: 300px; /* Ensure it doesn't exceed the max width */
+}
+
+.topIconContainer {
+  margin-bottom: 10px;
+}
+
+.cardTextContainer h2 {
+  position: relative;
+  display: inline-block;
+}
+
+.cardTextContainer h2::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: -2px;
+  width: 0;
+  height: 2px;
+  background-color: black;
+  transition: width 0.3s ease-in-out;
+}
+
+.cardContainer:hover .cardTextContainer h2::after {
+  width: 100%;
+}
+
+.cardTextContainer p {
+  display: block;
+  margin-top: 5px;
+}
+
+.cardContainer:hover {
+  background-color: hsl(0, 0%, 80%);
+  cursor: pointer;
+}
+
+.buttomIconContainer {
+  margin-top: 20px;
+  transition: 0.3s ease;
+}
+
+.cardContainer:hover .buttomIconContainer {
+  transform: translateX(15px);
+}
+
+/* Media Query for small devices */
+@media screen and (max-width: 768px) {
+  .cardContainer {
+    padding: 15px;
+    margin: 10px;
+    width: 90%; /* Reduce width for smaller devices */
+    max-width: 100%; /* Ensure it doesn't exceed screen width */
+  }
+
+  .cardTextContainer h2 {
+    font-size: 1.2rem; /* Reduce heading size */
+  }
+
+  .cardTextContainer p {
+    font-size: 0.9rem; /* Adjust text size for readability */
+  }
+
+  .topIconContainer img,
+  .buttomIconContainer img {
+    width: 40px; /* Reduce icon size */
+  }
+
+  .buttomIconContainer {
+    margin-top: 10px; /* Adjust margins for better spacing */
+  }
+
+  /* Optional: Stack elements vertically in case flex doesn't fit */
+  .cardContainer {
     flex-direction: column;
-    background-color: white;
-    margin: 30px;
+  }
 }

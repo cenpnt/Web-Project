@@ -8,7 +8,7 @@ function Card({card}) {
             <div className='topIconContainer'>
                 <Icon dark={card.topIcon.src} light={card.topIcon.src} alt={card.topIcon.alt} theme={card.topIcon.theme} anchor={card.topIcon.anchor} width={card.topIcon.width}/>
             </div>
-            <div className='cardTextConatainer'>
+            <div className='cardTextContainer'>
                 <h2>{card.title}</h2>
                 <p>{card.content}</p>
             </div>
