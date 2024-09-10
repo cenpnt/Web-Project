@@ -93,7 +93,7 @@ function Queensland() {
       </div>
       <div className="queensland-article2">
         <h1>
-          <strong>Degree</strong>
+          <strong>DEGREES</strong>
         </h1>
         <h4>
           BEng (Hons) degree in Software Engineering from the University of
