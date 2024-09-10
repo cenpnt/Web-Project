@@ -9,6 +9,7 @@ function ControlledCarousel({ slides, theme }) {
     setIndex(selectedIndex);
   };
 
+  
   return (
     <div className={`carousel-container ${theme}`}>
       <Carousel activeIndex={index} onSelect={handleSelect} className="custom-carousel">
