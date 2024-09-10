@@ -13,7 +13,7 @@ function Header({ theme }) {
             <div className="top-bar">
                 <div className="top-bar-left">
                     <div className='logoContainer'>
-                        <a href="/"><Logo src={"https://media.discordapp.net/attachments/1280538997944225846/1282338015175249931/se_white.png?ex=66dfa697&is=66de5517&hm=213b2aac9e70897c93f2f7fdbc9b90839b3476b718d7cafbf3d61ba06242f3de&=&format=webp&quality=lossless&width=450&height=250"} alt="SE-logo" width="150"/></a>
+                        <a href="/"><Logo src={"https://scontent.xx.fbcdn.net/v/t1.15752-9/457887191_1549139246009506_4859828069241605811_n.png?_nc_cat=109&ccb=1-7&_nc_sid=0024fc&_nc_ohc=LVQAGvYcGnIQ7kNvgHiuM0f&_nc_ad=z-m&_nc_cid=0&_nc_ht=scontent.xx&_nc_gid=AKdkkkBWSsJDZtbtgQC7R9i&oh=03_Q7cD1QG3DtkLxfgifi3gHt6_kfuxOwinwnmuvekxX4dPrkSSnw&oe=670763B0"} alt="SE-logo" width="150"/></a>
                     </div>
                 </div>
                 <div className="top-bar-right">
