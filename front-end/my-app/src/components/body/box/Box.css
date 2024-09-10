@@ -24,6 +24,7 @@
 
 .box-img-container img {
     box-shadow: 4px 4px 50px hsla(0, 0%, 100%, 0.4);
+    transition: 0.5s ease-in-out;
 }
 
 .box-img-container img:hover {
