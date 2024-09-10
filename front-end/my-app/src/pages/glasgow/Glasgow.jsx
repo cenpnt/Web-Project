@@ -66,7 +66,7 @@ function Glasgow() {
   const slides = [
     {
       image:
-        "https://dynamic-media-cdn.tripadvisor.com/media/photo-o/0a/45/1c/9d/university-of-glasgow.jpg?w=1200&h=1200&s=1",
+        "https://www.gla.ac.uk/media/Media_772657_smxx.jpg",
       alt: "Glasgow University picture",
       title: "KMITL-Glasgow<br/> Double-Degree Program",
       description:
@@ -74,7 +74,7 @@ function Glasgow() {
     },
     {
       image:
-        "https://dynamic-media-cdn.tripadvisor.com/media/photo-o/0a/45/1c/9d/university-of-glasgow.jpg?w=1200&h=1200&s=1",
+        "https://images.pexels.com/photos/11142526/pexels-photo-11142526.jpeg?cs=srgb&dl=pexels-lewis-ashton-117694088-11142526.jpg&fm=jpg",
       alt: "Glasgow University picture",
       title: "KMITL-Glasgow<br/> Double-Degree Program",
       description:
@@ -121,6 +121,13 @@ function Glasgow() {
           </p>
           <Detail arr={arr1} hideText={'- Course Details'} showText={'+ Course Details'}/>
       </div>
+      <div className="glasgow-article4">
+        <h1>
+          <strong>DEGREES</strong>
+        </h1>
+        <h4>BSc Honours degree in Software Engineering from the University of Glasgow</h4>
+        <h4>B.Eng. degree in Software Engineering from KMITL</h4>
+      </div>
       <div className="glasgow-article2">
         <h1>
           <strong>ENTRY REQUIREMENTS</strong>
@@ -140,7 +147,7 @@ function Glasgow() {
         <h2>TUITION FEES</h2>
         <Detail arr={arr3} hideText={"- King Mongkut's Institute of Technology Ladkrabang (KMTIL) Glasgow Undergraduate Scholarship"} showText={"+ King Mongkut's Institute of Technology Ladkrabang (KMTIL) Glasgow Undergraduate Scholarship"}/>
       </div>
-      <Footer theme={'glasgow'}/>
+      <Footer theme={'dark'}/>
     </div>
   );
 }
