@@ -10,6 +10,7 @@ import UStudent from './pages/uStudent/UStudent';
 import Glasgow from './pages/glasgow/Glasgow';
 import Queensland from './pages/queensland/Queensland';
 import ScrollToTop from './components/ScrollToTop';
+import Contact from './pages/contact/Contact';
 
 function App() {
   return (
@@ -22,6 +23,7 @@ function App() {
             <Route path="/u_student" element={<AuthHeader><UStudent /></AuthHeader>} />
             <Route path="/glasgow-doubledegree" element={<AuthHeader theme='dark'><Glasgow /></AuthHeader>} />
             <Route path="/queensland-doubledegree" element={<AuthHeader theme='dark'><Queensland /></AuthHeader>} />
+            <Route path="/contact" element={<AuthHeader theme='dark'><Contact /></AuthHeader>}/>
           </Routes>
         </ScrollToTop>
       </AuthProvider>
