@@ -1,6 +1,7 @@
 import React from 'react';
 import ControlledCarousel from './carousel/ControlledCarousel'
 import './HomeBody2.css'
+import { Fade } from "react-awesome-reveal";
 
 function HomeBody2() {
 
@@ -26,11 +27,15 @@ function HomeBody2() {
       ];
       
     return (
+        
         <div className='carousel'>
-          <div className='carousel-header'>
-            <h1>EVENTS</h1>
-          </div>
+          <Fade cascade damping={0.3}>
+            <div className='carousel-header'>
+              <h1>EVENTS</h1>
+            </div>
             <ControlledCarousel slides={slides} theme={'dark'}/>
+          </Fade>
+          
         </div>
     );
 }

@@ -1,5 +1,8 @@
 import Card from "./card/Card";
 import "./Cards.css"
+import React from 'react';
+import { Fade } from "react-awesome-reveal";
+
 
 function Cards() {
   
@@ -34,10 +37,12 @@ function Cards() {
 
   return (
     <div className="cards-container">
-      <a href="/contact"><Card card={card1}/></a>
-      <a href="/contact"><Card card={card2}/></a>
-      <a href="/contact"><Card card={card3}/></a>
-      <a href="/contact"><Card card={card4}/></a>
+      <Fade cascade damping={0.1}>
+        <a href="/contact"><Card card={card1}/></a>
+        <a href="/contact"><Card card={card2}/></a>
+        <a href="/contact"><Card card={card3}/></a>
+        <a href="/contact"><Card card={card4}/></a>
+      </Fade>
     </div>
   );
 }
