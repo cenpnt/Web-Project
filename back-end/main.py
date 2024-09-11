@@ -1,15 +1,11 @@
 from fastapi import FastAPI, Depends, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy.orm import Session
-import database
-from database import User, pwd_context
-from pydantic import BaseModel
+from .models import User
+from .database import pwd_context, Base, engine, get_db, SessionLocal
+from .schema import UserBase, UserResponse
 
 app = FastAPI()
-
-class LoginRequest(BaseModel):
-    username: str
-    password: str
 
 app.add_middleware(
     CORSMiddleware,
@@ -19,17 +15,32 @@ app.add_middleware(
     allow_headers=["*"], 
 )
 
-database.init_db()
+Base.metadata.create_all(bind=engine)
 
-def get_db():
-    db = database.SessionLocal()
+def add_user():
+    db = SessionLocal()
     try:
-        yield db
+        # Check if admin user already exists
+        existing_user = db.query(User).filter(User.username == "admin").first()
+        if existing_user:
+            print("Admin user already exists.")
+            return
+
+        hashed_password = pwd_context.hash("forAdminOnly1234")
+        new_user = User(username="admin", password=hashed_password)
+        db.add(new_user)
+        db.commit()
+        print("User 'admin' added successfully.")
+    except Exception as e:
+        print(f"An error occurred: {e}")
+        db.rollback()
     finally:
         db.close()
 
+add_user()
+
 @app.post("/login")
-def login(request: LoginRequest, db: Session = Depends(get_db)):
+def create_login(request: UserBase, db: Session = Depends(get_db)):
     user = db.query(User).filter(User.username == request.username).first()
     if not user:
         raise HTTPException(status_code=404, detail="User not found")
