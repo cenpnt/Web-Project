@@ -16,16 +16,17 @@ function ControlledCarousel({ slides, theme }) {
         {slides.map((slide, idx) => (
           <Carousel.Item key={idx}>
             <div className="carousel-content">
-              <div className="carousel-image-container">
+                <div className="carousel-image-container">
                 <img 
                   src={slide.image} 
                   alt={slide.alt} 
                 />
-              </div>
-              <div className="carousel-description">
-                <h3 dangerouslySetInnerHTML={{ __html: slide.title }} />
-                <p>{slide.description}</p>
-              </div>
+                </div>
+                <div className="carousel-description">
+                  <h3 dangerouslySetInnerHTML={{ __html: slide.title }} />
+                  <p>{slide.description}</p>
+                </div>
+              
             </div>
           </Carousel.Item>
         ))}

@@ -1,5 +1,6 @@
 import './Card.css'
 import Icon from '../../icon/Icon';
+import React from 'react';
 
 function Card({card}) {
 
