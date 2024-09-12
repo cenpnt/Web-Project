@@ -1,1 +1,1 @@
-pip install sqlalchemy passlib[bcrypt] fastapi pydantic
+pip install -r requirements.txt
