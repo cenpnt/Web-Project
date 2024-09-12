@@ -2,8 +2,9 @@ from fastapi import FastAPI, Depends, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy.orm import Session
 from .models import User
-from .database import pwd_context, Base, engine, get_db, SessionLocal
+from .database import Base, engine, get_db
 from .schema import UserBase, UserResponse, UserCreated
+from passlib.context import CryptContext
 
 app = FastAPI()
 
@@ -16,43 +17,22 @@ app.add_middleware(
 )
 
 Base.metadata.create_all(bind=engine)
+pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
-def add_user():
-    db = SessionLocal()
-    try:
-        # Check if admin user already exists
-        existing_user = db.query(User).filter(User.username == "admin").first()
-        if existing_user:
-            print("Admin user already exists.")
-            return
-
-        hashed_password = pwd_context.hash("forAdminOnly1234")
-        new_user = User(username="admin", password=hashed_password)
-        db.add(new_user)
-        db.commit()
-        print("User 'admin' added successfully.")
-    except Exception as e:
-        print(f"An error occurred: {e}")
-        db.rollback()
-    finally:
-        db.close()
-
-add_user()
-
-# @app.post("/create_user", response_model=UserResponse)
-# def create_user(user: UserCreated, db: Session = Depends(get_db)):
-#     existing_user = db.query(User).filter(User.username == user.username).first()
-#     if existing_user:
-#         raise HTTPException(status_code=400, detail="Username already taken")
+@app.post("/create_user", response_model = UserResponse)
+def create_user(user: UserCreated, db: Session = Depends(get_db)):
+    existing_user = db.query(User).filter(User.username == user.username).first()
+    if existing_user:
+        raise HTTPException(status_code=400, detail="Username already taken")
     
-#     hashed_password = pwd_context.hash(user.password)
-#     new_user = User(username=user.username, password=hashed_password)
-#     db.add(new_user)
-#     db.commit()
-#     db.refresh(new_user)
-#     return { "id": new_user.id, "username": new_user.username }
+    hashed_password = pwd_context.hash(user.password)
+    new_user = User(username=user.username, password=hashed_password)
+    db.add(new_user)
+    db.commit()
+    db.refresh(new_user)
+    return new_user
 
-@app.post("/login")
+@app.post("/login", response_model = UserResponse)
 def create_login(user: UserCreated, db: Session = Depends(get_db)):
     userData = db.query(User).filter(User.username == user.username).first()
     if not userData:
@@ -62,11 +42,10 @@ def create_login(user: UserCreated, db: Session = Depends(get_db)):
     return userData
 
 @app.delete("/users/{user_id}")
-def delete_user(user: UserCreated, db: Session = Depends(get_db)):
-    user_to_delete = db.query(User).filter(User.username == user.username).first()
-    if not user_to_delete:
+async def delete_user(user_id: int, db: Session = Depends(get_db)):
+    db_userID = db.query(User).filter(User.id == user_id).first()
+    if db_userID is None:
         raise HTTPException(status_code=404, detail="User not found")
-    
-    db.delete(user_to_delete)
+    db.delete(db_userID)
     db.commit()
     return { "message" : "User deleted" }
