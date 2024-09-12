@@ -7,7 +7,6 @@
     border-radius: 20px;
 }
 
-
 .box-header {
     text-align: center;
     color: white;
@@ -17,7 +16,7 @@
     display: flex;
     justify-content: center;
     margin: 40px;
- 
+    align-items: center;
 }
 
 .box-img-container {
@@ -26,6 +25,7 @@
 
 .box-img-container img {
     box-shadow: 4px 4px 50px hsla(0, 0%, 100%, 0.4);
+    transition: 0.5s ease-in-out;
 }
 
 .box-img-container img:hover {
@@ -46,9 +46,18 @@
 }
 
 .box-text Button {
-    margin-top: 30px;
+    color: rgb(216, 154, 37);
+    text-decoration: underline;
+    text-underline-offset: 5px;
+}
+
+.box-text Button:hover {
     color: white;
-    margin-left: 50px;
+}
+
+.box-button-container {
+    margin-top: 20px;
+    margin-left: 13px;
 }
 
 .box-logo-container {
@@ -59,4 +68,19 @@
 
 .box-paragraph-container {
     margin-left: 30px;
+}
+
+
+@media (max-width: 1300px){
+    .box-content {
+        flex-direction: column;
+    }
+
+    .box-text {
+        margin-top: 40px;
+        padding: 0 20px;
+        width: 100%;
+        text-align: center;
+    }
+
 }

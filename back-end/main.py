@@ -1,15 +1,12 @@
 from fastapi import FastAPI, Depends, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy.orm import Session
-import database
-from database import User, pwd_context
-from pydantic import BaseModel
+from .models import User
+from .database import Base, engine, get_db
+from .schema import UserBase, UserResponse, UserCreated
+from passlib.context import CryptContext
 
 app = FastAPI()
-
-class LoginRequest(BaseModel):
-    username: str
-    password: str
 
 app.add_middleware(
     CORSMiddleware,
@@ -19,24 +16,36 @@ app.add_middleware(
     allow_headers=["*"], 
 )
 
-database.init_db()
+Base.metadata.create_all(bind=engine)
+pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
-def get_db():
-    db = database.SessionLocal()
-    try:
-        yield db
-    finally:
-        db.close()
+@app.post("/create_user", response_model = UserResponse)
+def create_user(user: UserCreated, db: Session = Depends(get_db)):
+    existing_user = db.query(User).filter(User.username == user.username).first()
+    if existing_user:
+        raise HTTPException(status_code=400, detail="Username already taken")
+    
+    hashed_password = pwd_context.hash(user.password)
+    new_user = User(username=user.username, password=hashed_password)
+    db.add(new_user)
+    db.commit()
+    db.refresh(new_user)
+    return new_user
 
-@app.get("/")
-def read_root():
-    return {"message": "Welcome to the API"}
-
-@app.post("/login")
-def login(request: LoginRequest, db: Session = Depends(get_db)):
-    user = db.query(User).filter(User.username == request.username).first()
-    if not user:
+@app.post("/login", response_model = UserResponse)
+def create_login(user: UserCreated, db: Session = Depends(get_db)):
+    userData = db.query(User).filter(User.username == user.username).first()
+    if not userData:
         raise HTTPException(status_code=404, detail="User not found")
-    if not pwd_context.verify(request.password, user.password):
+    if not pwd_context.verify(user.password, userData.password):
         raise HTTPException(status_code=400, detail="Incorrect password")
-    return {"username": user.username}
+    return userData
+
+@app.delete("/users/{user_id}")
+async def delete_user(user_id: int, db: Session = Depends(get_db)):
+    db_userID = db.query(User).filter(User.id == user_id).first()
+    if db_userID is None:
+        raise HTTPException(status_code=404, detail="User not found")
+    db.delete(db_userID)
+    db.commit()
+    return { "message" : "User deleted" }

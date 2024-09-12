@@ -1,13 +1,14 @@
 import React from 'react';
 
-function Icon({ theme, dark, light ,anchor, alt, width }) {
+function Icon({ theme, dark, light, anchor, alt, width }) {
     const link = theme === 'dark' ? dark : light;
+    
     return(
-        <li>
+        <div>
             <a href={anchor} target='_blank' rel='noreferrer'>
                 <img src={link} alt={alt} width={width} />
             </a>
-        </li>
+        </div>
     ); 
 }
 

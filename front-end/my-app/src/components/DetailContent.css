@@ -1,0 +1,22 @@
+.course-details {
+    background-color: white;
+    padding: 20px 50px;
+    overflow: hidden;
+    max-height: 0;
+    opacity: 0;
+    transition: max-height 0.5s ease-in-out, opacity 0.5s ease-in-out;
+  }
+  
+  .course-details.show {
+    max-height: 1000px;
+    opacity: 1;
+  }
+  
+  .course-details li {
+    line-height: 35px;
+  }
+  
+  .course-details h2 {
+    color: #2B2A4C;
+    font-weight: bold;
+  }

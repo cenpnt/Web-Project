@@ -1,0 +1,40 @@
+.TopSearch-Container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  color: white;
+  text-align: center;
+  margin: 50px;
+  padding: 20px;
+  background-color: rgb(14, 13, 13);
+  border-radius: 20px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.8);
+  transition: transform 0.3s ease-in-out;
+  font-weight: bold;
+}
+
+.TopSearch-Container:hover {
+  transform: scale(1.03);
+}
+
+.TopSearch {
+  list-style: none;
+  padding: 0;
+  margin-top: 20px;
+  display: flex;
+  justify-content: center;
+  gap: 40px;
+}
+
+.TopSearch li {
+  display: inline-block;
+  padding: 10px 20px;
+  background-color: #333;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.TopSearch li:hover {
+  background-color: #555;
+}

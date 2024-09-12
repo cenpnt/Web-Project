@@ -1,17 +1,31 @@
 import React from 'react';
 import './Button.css';
 import { useNavigate } from "react-router-dom";
+import { useAuth } from '../../context/AuthContext';
 
-function Button({ text, path, theme }) {
+function Button({ text, path, onClick, theme, override = false }) {
+    const { buttonText, buttonPath, buttonClick } = useAuth();
     const navigate = useNavigate();
 
-    const handleLoginClick = () => {
-        navigate(`${path}`);
-    }
+    const buttonTextToShow = text || buttonText;
+    const buttonPathToUse = path || buttonPath;
+    const buttonClickHandler = onClick || buttonClick;
+
+    const handleOnClick = () => {
+        if(override) {
+            if(path) navigate(path);
+        } else {
+            if (buttonClickHandler) {
+                buttonClickHandler();
+            } else if (buttonPathToUse) {
+                navigate(buttonPathToUse);
+            }
+        }
+    };
 
     return (
-        <button onClick={handleLoginClick} className={`btn ${theme}`}>
-        {text}
+        <button onClick={handleOnClick} className={`btn ${theme}`}>
+            {buttonTextToShow}
         </button>
     );
 }

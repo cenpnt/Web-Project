@@ -1,0 +1,37 @@
+.contactContainer a {
+    color: black;
+    text-decoration: none;
+}
+
+.mapContainer {
+    display: flex;
+    justify-content: center;
+    border-radius: 10px;
+    margin-top: 100px;
+}
+
+.contact-details {
+    margin-left: 100px;
+}
+
+.contact-details h1 {
+    font-weight: bold;
+}
+
+.contact-details h5 {
+    font-size: 1.5em;
+}
+
+.contact-details h5:first-child {
+    text-decoration: underline;
+    text-underline-offset: 5px;
+}
+
+.contact-tel{
+    display: flex;
+    margin-top: 20px;
+}
+
+.contact-tel p {
+    margin-left: 20px;
+}
