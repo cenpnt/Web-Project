@@ -1,7 +1,7 @@
 import React from 'react';
 import "./Login.css";
 import Logo from "../../components/Logo";
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { useNavigate } from 'react-router-dom'
 import { useAuth } from '../../context/AuthContext';
 
@@ -12,6 +12,13 @@ function Login() {
   const [inputError, setInputError] = useState(false);
   const navigate = useNavigate();
   const { login } = useAuth();
+  const inputRef = useRef(null);
+
+  const focusInput = () => {
+    if(inputRef.current) {
+      inputRef.current.focus();
+    }
+  }
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -38,6 +45,7 @@ function Login() {
         setError(errorData.detail);
         setInputError(true);
         setPassword("");
+        focusInput();
       }
     } catch (error) {
       setError("An unexpected error occurred.");
@@ -86,10 +94,11 @@ function Login() {
                 setError("");  // Clear error when user types
                 setInputError(false);  // Remove error highlight
               }}
+              ref={inputRef}
             />
           </label>
           {error && <p className="error">{typeof error === 'string' ? error : 'An error occurred'}</p>}
-          <button type="submit">Sign in </button>
+          <button type="submit" className='loginButton'>Sign in </button>
         </form>
       </div>
     </div>

@@ -72,7 +72,7 @@ input:hover:focus {
   outline: none;
 }
 
-button {
+.loginButton {
   padding: 10px;
   border: none;
   background-color: hsl(35, 100%, 50%);
@@ -83,7 +83,7 @@ button {
   transition: background-color 0.2s;
 }
 
-button:hover {
+.loginButton:hover {
   background-color: hsl(35, 100%, 45%);
 }
 
