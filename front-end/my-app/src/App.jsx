@@ -23,7 +23,7 @@ function App() {
             <Routes>
               <Route path="/" element={<AuthHeader theme='dark'><Home /></AuthHeader>} />
               <Route path="/login" element={<Login />} />
-              <Route path="/u_student" element={<AuthHeader><UStudent /></AuthHeader>} />
+              <Route path="/u_student" element={<AuthHeader theme='dark'><UStudent /></AuthHeader>} />
               <Route path="/glasgow-doubledegree" element={<AuthHeader theme='dark'><Glasgow /></AuthHeader>} />
               <Route path="/queensland-doubledegree" element={<AuthHeader theme='dark'><Queensland /></AuthHeader>} />
               <Route path="/contact" element={<AuthHeader theme='dark'><Contact /></AuthHeader>}/>
