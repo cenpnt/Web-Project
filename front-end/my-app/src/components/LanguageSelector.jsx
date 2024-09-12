@@ -15,10 +15,9 @@ const ACTIVE_COLOR = "blue.400";
 const LanguageSelector = ({ language, onSelect }) => {
   return (
     <Box ml={2} mb={4}>
-      <Text mb={2} fontSize="large">
+      <Box mb={2} fontSize="large">
         Language
-      </Text>
-      <br />
+      </Box>
       <Menu isLazy>
         <MenuButton as={Button}>{language}</MenuButton>
         <MenuList bg="#110c1b">
