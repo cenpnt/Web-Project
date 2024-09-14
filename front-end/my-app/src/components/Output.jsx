@@ -23,7 +23,7 @@ const Output = ({ editorRef, language }) => {
   };
 
   return (
-    <Box w="50%">
+    <Box w="100%" h="100%" display="flex" flexDirection="column" bg="#1e1e1e" color={"hsl(0, 0%, 66%)"} p={4}>
       <Box mb={2} fontSize="lg">
         Output
       </Box>
@@ -33,16 +33,18 @@ const Output = ({ editorRef, language }) => {
         mb={4}
         onClick={runCode}
         isLoading={isLoading}
+        width={100}
       >
         Run Code
       </Button>
       <Box
-        height="75vh"
+        flexGrow={1}
         p={2}
         border="1px solid"
         borderRadius={4}
         borderColor={isError ? "red.500" : "#333"}
         color={isError ? "red.400" : ""}
+        overflowY="auto"
       >
         {output
           ? output
