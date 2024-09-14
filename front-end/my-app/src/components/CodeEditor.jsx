@@ -34,7 +34,7 @@ const CodeEditor = () => {
           <Box w="100%" h="70%" backgroundColor={'#1e1e1e'} overflow="auto" borderRadius={10}>
             <LanguageSelector language={language} onSelect={onSelect} />
             <Editor
-              height="100%"
+              height="80%"
               theme="vs-dark"
               language={language}
               defaultValue={CODE_SNIPPETS[language]}
