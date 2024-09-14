@@ -256,3 +256,9 @@ export const card4 = {
     
   ]; 
 
+  export const profileMenu = [
+      {text: "Your Profile", path: "", smalltext: ""},
+      {text: "Edit Profile", path: "", smalltext: ""},
+      {text: "Sign Out", path: "", smalltext: ""}
+    
+  ];

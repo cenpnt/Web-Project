@@ -1,5 +1,8 @@
 import React, { useState } from "react";
 import Button from "../button/Button";
+import ProfileMenu from "../profileMenu/ProfileMenu";
+import { profileMenu } from "../../constants";
+import SubMenu from "../header/navbar/submenu/SubMenu";
 import "./ProfileIcon.css";
 
 function ProfileIcon({ onSignOut }) {
@@ -23,9 +26,7 @@ function ProfileIcon({ onSignOut }) {
       </button>
 
       {/* Conditionally render Sign Out button */}
-      <div className={`signOutContainer ${showSignOut ? "show" : "hide"}`}>
-        <Button text={"Sign Out"} path={"/"} onClick={onSignOut}/>
-      </div>
+        <ProfileMenu showSignOut={showSignOut}/>
     </div>
   );
 }

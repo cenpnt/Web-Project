@@ -16,7 +16,7 @@
   width: 150px;
   position: absolute;
   top: 60px; /* Adjust based on your layout */
-  background-color: rgba(237, 225, 225, 0.9); /* Red with slight transparency */
+  background-color: rgba(35, 35, 35, 0.9); /* Red with slight transparency */
   padding-left: 30px;
   padding-bottom: 10px;
   border-radius: 5px;
@@ -25,6 +25,7 @@
   transition: opacity 0.3s ease, transform 0.3s ease; /* Smooth fade and slide */
   pointer-events: none; /* Initially not clickable */
   z-index: 1000;
+  height: 200px;
 }
 
 .signOutContainer.show {
@@ -39,14 +40,14 @@
   pointer-events: none; /* Not clickable when hidden */
 }
 
-.signOutContainer .signOutBtn {
+/* .signOutContainer .signOutBtn {
   background-color: red;
   color: white;
   padding: 8px 12px;
   border: none;
   cursor: pointer;
-}
+} */
 
-.signOutContainer .signOutBtn:hover {
-  background-color: darkred;
-}
+/* .signOutContainer .signOutBtn:hover {
+  background-color: darkred; */
+
