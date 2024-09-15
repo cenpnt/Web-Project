@@ -250,7 +250,7 @@ export const card4 = {
       subItems: [
         { text: "Laboratory", path: "/" },
         { text: "Lecture Room", path: "/" },
-        { text: 'Co-Working Space Booking System', path: '/admission' }
+        { text: 'Co-Working Space Booking System', path: '/coworkingspace' }
       ]
     }
     

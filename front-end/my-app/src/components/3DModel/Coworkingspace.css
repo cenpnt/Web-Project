@@ -1,0 +1,29 @@
+.modelcontainer {
+    width: 100%;
+    background-color: black;
+    padding: 10px;
+    display: flex;
+    flex-direction: column;
+}
+
+.button-container {
+    display: flex;
+    justify-content: center;
+    margin-top: 10px;
+}
+
+.button-container button {
+    background-color: rgb(133, 133, 133);
+    padding: 10px;
+    margin: 10px;
+    border-radius: 10px;
+    border: none;
+    color: white;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.button-container button:hover {
+    background-color: rgb(223, 223, 223);
+    color: black;
+}
