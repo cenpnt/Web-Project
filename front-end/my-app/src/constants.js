@@ -193,3 +193,66 @@ export const card4 = {
     buttomIcon: {src: 'https://cdn-icons-png.flaticon.com/128/545/545682.png', alt: 'contact', theme: 'dark', width: '20'},
   }
   
+
+ export const menuItems = [
+    { text: 'About', path: '/' },
+    { text: 'Admission', path: '/admission' },
+    { 
+      text: 'Program',
+      subItems: [
+        { text: "Software-Engineering 2024", path: "/" },
+        { text: "KMITL-Glasgow", path: "/glasgow-doubledegree" },
+        { text: "KMITL-Queensland", path: "/queensland-doubledegree" },
+        { text: "Exchange-Study-Abroad", path: "/" },
+        { text: "Internships", path: "/" }
+      ]
+    },
+    { 
+      text: 'Student',
+      subItems: [
+        { text: "Alumni", path: "/", smalltext: "SE student alumni" },
+        { text: "Career Recommendation", path: "/", smalltext: "SE students' advisor" }
+      ]
+    },
+    { 
+      text: 'Facility',
+      subItems: [
+        { text: "Laboratory", path: "/" },
+        { text: "Lecture Room", path: "/" },
+        { text: "Co-working Space", path: "/" }
+      ]
+    }
+  ]; 
+
+  export const loggedInMenuItems = [
+    { text: 'About', path: '/' },
+    { text: 'Admission', path: '/admission' },
+    { 
+      text: 'Program',
+      subItems: [
+        { text: "Software-Engineering 2024", path: "/" },
+        { text: "KMITL-Glasgow", path: "/glasgow-doubledegree" },
+        { text: "KMITL-Queensland", path: "/queensland-doubledegree" },
+        { text: "Exchange-Study-Abroad", path: "/" },
+        { text: "Internships", path: "/" }
+      ]
+    },
+    { 
+      text: 'Student',
+      subItems: [
+        { text: "Alumni", path: "/", smalltext: "SE student alumni" },
+        { text: "Career Recommendation", path: "/", smalltext: "SE students' advisor" },
+        { text: 'Code Editor', path: '/se_academy' }
+      ]
+    },
+    { 
+      text: 'Facility',
+      subItems: [
+        { text: "Laboratory", path: "/" },
+        { text: "Lecture Room", path: "/" },
+        { text: 'Co-Working Space Booking System', path: '/admission' }
+      ]
+    }
+    
+  ]; 
+

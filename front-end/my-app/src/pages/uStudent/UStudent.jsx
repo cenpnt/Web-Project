@@ -6,7 +6,7 @@ import React from 'react';
 function UStudent() {
     return (
         <div className='ustudent-container'>
-            <Footer theme={'light'}/>
+            <Footer theme={'dark'}/>
         </div>
     );
 }

@@ -6,7 +6,7 @@ import HomeBody2 from "../../components/body/HomeBody2";
 import HomeBody3 from "../../components/body/HomeBody3";
 import Footer from "../../components/footer/Footer";
 import Cards from "../../components/body/Cards";
-import { Fade, Bounce, Slide } from "react-awesome-reveal";
+import { Fade } from "react-awesome-reveal";
 
 function Home() {
   return (

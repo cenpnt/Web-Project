@@ -1,0 +1,52 @@
+.profile-container {
+  position: relative;
+}
+
+.ProfileIcon {
+  margin-right: 50px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+}
+
+.signOutContainer {
+  right: 0;
+  width: 150px;
+  position: absolute;
+  top: 60px; /* Adjust based on your layout */
+  background-color: rgba(237, 225, 225, 0.9); /* Red with slight transparency */
+  padding-left: 30px;
+  padding-bottom: 10px;
+  border-radius: 5px;
+  transform: translateY(-20px); /* Start off slightly above */
+  opacity: 0;
+  transition: opacity 0.3s ease, transform 0.3s ease; /* Smooth fade and slide */
+  pointer-events: none; /* Initially not clickable */
+  z-index: 1000;
+}
+
+.signOutContainer.show {
+  opacity: 1;
+  transform: translateY(0); /* Slide into view */
+  pointer-events: auto; /* Make it clickable when visible */
+}
+
+.signOutContainer.hide {
+  opacity: 0;
+  transform: translateY(-20px); /* Slide out of view */
+  pointer-events: none; /* Not clickable when hidden */
+}
+
+.signOutContainer .signOutBtn {
+  background-color: red;
+  color: white;
+  padding: 8px 12px;
+  border: none;
+  cursor: pointer;
+}
+
+.signOutContainer .signOutBtn:hover {
+  background-color: darkred;
+}
