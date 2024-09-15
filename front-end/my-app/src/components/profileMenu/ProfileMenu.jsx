@@ -1,10 +1,10 @@
 import './ProfileMenu.css';
 import Button from '../button/Button';
 import React from 'react';
-import SubMenu from '../header/navbar/submenu/SubMenu';
-import { profileMenu } from '../../constants';
+import { Icon } from '@chakra-ui/react'
 import { EditIcon } from '@chakra-ui/icons';
-import Icon from '../icon/Icon';
+import { FaRegUser } from "react-icons/fa6";
+import { GoSignOut } from "react-icons/go";
 
 function ProfileMenu({showSignOut, onSignOut}) {
 
@@ -16,10 +16,20 @@ function ProfileMenu({showSignOut, onSignOut}) {
             <div className='menuContainer' >
                 <ul>
                     
-                    <li><Icon dark={'https://cdn-icons-png.flaticon.com/128/266/266134.png'} light={'https://cdn-icons-png.flaticon.com/128/266/266134.png'} alt={'sign out'} theme={'https://cdn-icons-png.flaticon.com/128/266/266134.png'} anchor={'/'} width={16}/><span>Your Profile</span></li>
+                    <li>
+                        <Icon as={FaRegUser}/>
+                        <a href='/'>Your Profile</a>
+                    </li>
 
-                    <li><EditIcon/> <span>Edit Profile</span></li><hr />
-                    <li><Icon dark={'https://cdn-icons-png.flaticon.com/128/992/992680.png'} light={'https://cdn-icons-png.flaticon.com/128/992/992680.png'} alt={'sign out'} theme={'https://cdn-icons-png.flaticon.com/128/992/992680.png'} anchor={'/'} width={16}/><Button text={"Sign Out"} path={"/"} onClick={onSignOut}/></li>
+                    <li>
+                        <EditIcon/> 
+                        <a href='/'>Edit Profile</a>
+                    </li>
+                    <hr />
+                    <li>
+                        <Icon as={GoSignOut}/>
+                        <Button text={"Sign Out"} path={"/"} onClick={onSignOut}/>
+                    </li>
                 </ul>
             </div>
         </div>
