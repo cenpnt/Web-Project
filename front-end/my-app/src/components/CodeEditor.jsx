@@ -120,7 +120,7 @@ const CodeEditor = () => {
               ) : (
                 <>
                   <Box mt={5} ml={8} fontSize="35px" fontWeight={"bold"}>
-                    <Text color="white">Question List</Text>
+                    <Text color="white">Problems List</Text>
                   </Box>
                   <Box><hr style={{ backgroundColor: "white",  height: "2px", width: "100%" }} /></Box>
                   <Box mt={5} ml={5} mr={8}>
