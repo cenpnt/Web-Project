@@ -8,7 +8,7 @@ contourpy==1.2.0
 cycler==0.12.1
 dnspython==2.6.1
 email_validator==2.2.0
-fastapi==0.112.2
+fastapi[standard]==0.112.2
 fastapi-cli==0.0.5
 fonttools==4.44.0
 h11==0.14.0
@@ -24,7 +24,7 @@ matplotlib==3.8.1
 mdurl==0.1.2
 numpy==1.26.2
 packaging==23.2
-passlib==1.7.4
+passlib[bcrypt]==1.7.4
 Pillow==10.1.0
 pydantic==2.8.2
 pydantic_core==2.20.1
