@@ -23,7 +23,7 @@ function ProfileMenu({showSignOut, onSignOut}) {
 
                     <li>
                         <EditIcon/> 
-                        <a href='/'>Edit Profile</a>
+                        <a href='/editprofile'>Edit Profile</a>
                     </li>
                     <hr />
                     <li>
