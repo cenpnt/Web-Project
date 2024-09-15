@@ -1,10 +1,11 @@
 from fastapi import FastAPI, Depends, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy.orm import Session
-from .models import User
+from .models import User, Problem
 from .database import Base, engine, get_db
-from .schema import UserBase, UserResponse, UserCreated
+from .schema import UserResponse, UserCreated, ProblemResponse, ProblemCreated
 from passlib.context import CryptContext
+from typing import List
 
 app = FastAPI()
 
@@ -19,6 +20,7 @@ app.add_middleware(
 Base.metadata.create_all(bind=engine)
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
+# User Endpoints
 @app.post("/create_user", response_model = UserResponse)
 def create_user(user: UserCreated, db: Session = Depends(get_db)):
     existing_user = db.query(User).filter(User.username == user.username).first()
@@ -43,9 +45,48 @@ def create_login(user: UserCreated, db: Session = Depends(get_db)):
 
 @app.delete("/users/{user_id}")
 async def delete_user(user_id: int, db: Session = Depends(get_db)):
-    db_userID = db.query(User).filter(User.id == user_id).first()
-    if db_userID is None:
+    user = db.query(User).filter(User.id == user_id).first()
+    if user is None:
         raise HTTPException(status_code=404, detail="User not found")
-    db.delete(db_userID)
+    db.delete(user)
     db.commit()
-    return { "message" : "User deleted" }
+    return {"message": "User deleted"}
+
+# Problem Endpoints
+@app.get("/problems/{problem_id}", response_model=ProblemResponse)
+def get_problem(problem_id: int, db: Session = Depends(get_db)):
+    problem = db.query(Problem).filter(Problem.id == problem_id).first()
+    if problem is None:
+        raise HTTPException(status_code=404, detail="Problem not found")
+    return problem
+
+@app.get("/problems", response_model=List[ProblemResponse])
+def get_allProblems(db: Session = Depends(get_db)):
+    problems = db.query(Problem).all()
+    return problems
+    
+@app.post("/create_problems", response_model=ProblemResponse)
+def create_problem(problem: ProblemCreated, db: Session = Depends(get_db)):
+    existing_problem = db.query(Problem).filter(Problem.title == problem.title).first()
+    if existing_problem:
+        raise HTTPException(status_code=400, detail="Problem already contained")
+    
+    new_problem = Problem(
+        title=problem.title,
+        description=problem.description,
+        example=problem.example,
+        note=problem.note
+    )
+    db.add(new_problem)
+    db.commit()
+    db.refresh(new_problem)
+    return new_problem
+
+@app.delete("/problems/{problem_id}")
+async def delete_problem(problem_id: int, db: Session = Depends(get_db)):
+    problem = db.query(Problem).filter(Problem.id == problem_id).first()
+    if problem is None:
+        raise HTTPException(status_code=404, detail="Problem not found")
+    db.delete(problem)
+    db.commit()
+    return {"message": "Problem deleted"}
