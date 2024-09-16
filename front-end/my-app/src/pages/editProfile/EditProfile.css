@@ -163,3 +163,13 @@
 .save-button:hover {
     background-color:hsl(35, 100%, 45%);
 }
+
+.profile-error-message {
+  margin-bottom: 20px;  
+  color: red;
+}
+
+.input-error {
+    border-color: red;
+    box-shadow: 0 0 5px red;
+  }

@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { TbUpload } from "react-icons/tb";
 import './EditProfile.css';  // For styling
 import { Icon } from "@chakra-ui/react";
-import { ArrowBackIcon } from '@chakra-ui/icons'
+import { ArrowBackIcon } from '@chakra-ui/icons';
 import Button from "../../components/button/Button";
 
 function EditProfile() {
@@ -12,7 +12,11 @@ function EditProfile() {
         name: '',
         address: '',
         password: '',
+        confirmPassword: '',
+        profile: ''
     });
+    const [errorMessage, setErrorMessage] = useState('');
+    const [inputError, setInputError] = useState(false);
 
     const handleImageChange = (e) => {
         const file = e.target.files[0];
@@ -28,12 +32,43 @@ function EditProfile() {
     const handleInputChange = (e) => {
         const { name, value } = e.target;
         setFormData({ ...formData, [name]: value });
+
+        if (name === 'password' || name === 'confirmPassword') {
+            setInputError(false);
+            setErrorMessage('');
+        }
+    };
+
+    const isValidPassword = (password) => {
+        const hasNumber = /\d/; 
+        const hasUpperCase = /[A-Z]/; 
+        return password.length >= 8 && hasNumber.test(password) && hasUpperCase.test(password);
     };
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        // Here you can handle the form submission (e.g., send data to the server)
-        console.log('Profile Updated', formData);
+
+        // Validate if password and confirmPassword match
+        if (formData.password !== formData.confirmPassword) {
+            setInputError(true);
+            setErrorMessage("Passwords do not match.");
+            return;
+        }
+
+        // Validate password requirements
+        if (!isValidPassword(formData.password)) {
+            setInputError(true);
+            setErrorMessage(
+                "Password must be at least 8 characters long, contain a number, and an uppercase letter."
+            );
+            return;
+        }
+
+        // Exclude confirmPassword from the data sent to the backend
+        const { confirmPassword, ...dataToSubmit } = formData;
+
+        setErrorMessage('');  // Clear error message if any
+        console.log('Profile Updated', dataToSubmit);  // This is where the form data would be sent to the backend
     };
 
     return (
@@ -42,8 +77,7 @@ function EditProfile() {
 
             <div className="editProfileBox">
                 <div className="editProfileTop">
-                    <Button text={<ArrowBackIcon w={10} h={7}/>} path={"/u_student"} override/>
-                    
+                    <Button text={<ArrowBackIcon w={10} h={7}/>} path={"/u_student"} override />
                 </div>
                 <form onSubmit={handleSubmit}>
                     <div className="editProfileLeft">
@@ -59,14 +93,15 @@ function EditProfile() {
                             <div className="upload-section">
                                 <label htmlFor="profilePic" className="upload-label">
                                     <div className="upload-box">
-                                        <Icon as={TbUpload}/>
+                                        <Icon as={TbUpload} />
                                         <span className="upload-text">Upload Picture</span>
                                     </div>
                                 </label>
                                 <input 
                                     type="file" 
                                     id="profilePic" 
-                                    accept="image/*" 
+                                    accept="image/*"
+                                    value={formData.profile} 
                                     onChange={handleImageChange} 
                                     className="file-input"
                                 />
@@ -91,7 +126,7 @@ function EditProfile() {
                         <div className="input-section">
                             <label htmlFor="address">Address</label>
                             <input 
-                                type="address" 
+                                type="text" 
                                 id="address" 
                                 name="address"
                                 value={formData.address} 
@@ -108,24 +143,26 @@ function EditProfile() {
                                 id="password" 
                                 name="password"
                                 value={formData.password} 
-                                onChange={handleInputChange} 
-                                className="input-field"
+                                onChange={handleInputChange}
+                                className={`input-field ${inputError ? "input-error" : ""}`}
                                 placeholder="Enter new password"
                             />
                         </div>
 
                         <div className="input-section">
-                            <label htmlFor="passwordCon">Password Confirmation</label>
+                            <label htmlFor="confirmPassword">Confirm Password</label>
                             <input 
                                 type="password" 
-                                id="passwordCon" 
-                                name="passwordCOn"
-                                value={formData.password} 
+                                id="confirmPassword" 
+                                name="confirmPassword"
+                                value={formData.confirmPassword} 
                                 onChange={handleInputChange} 
-                                className="input-field"
+                                className={`input-field ${inputError ? "input-error" : ""}`}
                                 placeholder="Confirm password"
                             />
                         </div>
+
+                        {errorMessage && <div className="profile-error-message">{errorMessage}</div>}
 
                         <div className="save-button-container">
                             <button type="submit" className="save-button">Save Changes</button>
