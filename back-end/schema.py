@@ -1,9 +1,11 @@
 from pydantic import BaseModel
 from typing import Dict
+from .models import UserRole
 
 class UserBase(BaseModel):
     username: str
     password: str
+    role: UserRole = UserRole.user
 
 class UserCreated(UserBase):
     pass
@@ -26,3 +28,7 @@ class ProblemResponse(ProblemBase):
     id: int
     class Config:
         from_attributes = True
+
+class Token(BaseModel):
+    access_token: str
+    token_type: str
