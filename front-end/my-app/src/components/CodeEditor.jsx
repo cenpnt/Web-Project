@@ -5,6 +5,7 @@ import LanguageSelector from "./LanguageSelector";
 import { CODE_SNIPPETS } from "../constants";
 import Output from "./Output";
 import Icon from "./icon/Icon";
+import AddQuestionForm from "./form/QuestionForm";
 
 const CodeEditor = () => {
   const editorRef = useRef();
@@ -13,6 +14,7 @@ const CodeEditor = () => {
   const [selectedProblem, setSelectedProblem] = useState(null);
   const [currentProblem, setCurrentProblem] = useState(null);
   const [totalQuestion, setTotalQuestion] = useState(0);
+  const [showForm, setShowForm] = useState(false);
 
   const onMount = (editor) => {
     editorRef.current = editor;
@@ -31,8 +33,9 @@ const CodeEditor = () => {
         throw new Error('Cannot fetch the problem');
       }
       const problemData = await response.json();
-      setSelectedProblem(problemData)
-      setCurrentProblem(problemData.id)
+      setSelectedProblem(problemData);
+      setCurrentProblem(problemData.id);
+      fetchTotalQuestions();
     } catch (error) {
       console.error('There was a problem with the fetch operation', error);
     }
@@ -67,6 +70,14 @@ const CodeEditor = () => {
       setCurrentProblem((currentProblem) => currentProblem + 1);
       onButtonClick(currentProblem + 1);
     }
+  }
+
+  const addQuestion = () => {
+    setShowForm(true);
+  };
+
+  const cancelAddQuestion = () => {
+    setShowForm(false);
   }
 
   return (
@@ -120,7 +131,7 @@ const CodeEditor = () => {
               ) : (
                 <>
                   <Box mt={5} ml={8} fontSize="35px" fontWeight={"bold"}>
-                    <Text color="white">Problems List</Text>
+                    <Text color="white">Problem List</Text>
                   </Box>
                   <Box><hr style={{ backgroundColor: "white",  height: "2px", width: "100%" }} /></Box>
                   <Box mt={5} ml={5} mr={8}>
@@ -128,9 +139,15 @@ const CodeEditor = () => {
                     <Box><Button variant="unstyledButton" onClick={() => onButtonClick(2)}><Text fontSize={20}>2. Sum of two numbers</Text></Button></Box>
                     <Box><Button variant="unstyledButton" onClick={() => onButtonClick(3)}><Text fontSize={20}>3. Find the Largest Number</Text></Button></Box>
                     <Box><Button variant="unstyledButton" onClick={() => onButtonClick(4)}><Text fontSize={20}>4. Count Vowels in a String</Text></Button></Box>
+                    <Box><Button variant="unstyledButton" onClick={() => onButtonClick(5)}><Text fontSize={20}>5. Check Prime Number</Text></Button></Box>
+                  </Box>
+                  <Box display={"flex"} justifyContent={"flex-end"} ml={8} mr={8}>
+                    <Box><Button variant="unstyledButton" onClick={addQuestion}>+ Add Question</Button></Box>
+                    <Box><Button variant="unstyledButton">- Delete Question</Button></Box>
                   </Box>
                 </>
               )}
+              {showForm && <AddQuestionForm onCancel={cancelAddQuestion}/>}
         </Box>
 
         {/* Right side with two sections */}
