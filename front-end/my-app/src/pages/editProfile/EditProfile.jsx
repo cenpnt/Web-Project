@@ -77,7 +77,7 @@ function EditProfile() {
 
             <div className="editProfileBox">
                 <div className="editProfileTop">
-                    <Button text={<ArrowBackIcon w={10} h={7}/>} path={"/u_student"} override />
+                    <Button text={<ArrowBackIcon w={10} h={7}/>} back override />
                 </div>
                 <form onSubmit={handleSubmit}>
                     <div className="editProfileLeft">

@@ -3,7 +3,7 @@ import './Button.css';
 import { useNavigate } from "react-router-dom";
 import { useAuth } from '../../context/AuthContext';
 
-function Button({ text, path, onClick, theme, override = false }) {
+function Button({ text, path, onClick, theme, override = false, back }) {
     const { buttonText, buttonPath, buttonClick } = useAuth();
     const navigate = useNavigate();
 
@@ -14,6 +14,7 @@ function Button({ text, path, onClick, theme, override = false }) {
     const handleOnClick = () => {
         if(override) {
             if(path) navigate(path);
+            if(back) navigate(-1);
         } else {
             if (buttonClickHandler) {
                 buttonClickHandler();
