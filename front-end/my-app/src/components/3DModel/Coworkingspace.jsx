@@ -1,10 +1,10 @@
 import React, { useRef, useState, useEffect } from 'react';
 import { Canvas } from '@react-three/fiber';
 import { OrbitControls, PresentationControls, Stage, useGLTF } from '@react-three/drei';
-import './Coworkingspace.css'
+import './Coworkingspace.css';
 
 function Model() {
-  const gltf = useGLTF('/models/1762758.gltf'); // Adjust the path if necessary
+  const gltf = useGLTF('/models/1766960.gltf'); // Adjust the path if necessary
   return <primitive object={gltf.scene} />;
 }
 
@@ -13,18 +13,27 @@ export default function ModelViewer() {
   const [zoom, setZoom] = useState(20); // Initial zoom distance
   const [view, setView] = useState('front'); // Default view ('front' or 'top')
 
+  // State to store the default front view position
+  const [defaultPosition, setDefaultPosition] = useState([5, 0, 20]);
+  const [defaultTarget, setDefaultTarget] = useState([0, 0, 0]);
+
   // Function to change camera view
   const handleViewChange = (view) => {
     if (orbitRef.current) {
-      const camera = orbitRef.current.object; // Get camera from OrbitControls ref
+      const controls = orbitRef.current;
+      const camera = controls.object;
+
       if (view === 'top') {
         setView('top');
         camera.position.set(0, 25, 0); // Move camera to top view
-      } else {
+        controls.target.set(0, 0, 0); // Reset the target to center
+      } else if (view === 'front') {
         setView('front');
-        camera.position.set(5, 0, 20); // Move camera to front view
+        camera.position.set(...defaultPosition); // Move camera to default front view position
+        controls.target.set(...defaultTarget); // Set target to default
       }
-      orbitRef.current.update(); // Ensure the OrbitControls are updated
+
+      controls.update(); // Ensure the OrbitControls are updated
     }
   };
 
@@ -44,16 +53,16 @@ export default function ModelViewer() {
   return (
     <div className='modelcontainer'>
       <Canvas 
-        camera={{ position: [5, 0, zoom], fov: 45 }} 
+        camera={{ position: [5, 0, zoom], fov: 30 }} 
         style={{ width: "1000px", height: "550px", borderRadius: "10px", margin: "20px" }}
       >
         <color attach="background" args={["#101010"]}/>
         <ambientLight intensity={0.5} />
-        <directionalLight position={[10, 10, 5]} intensity={1} />
+        <directionalLight position={[10, 10, 5]} intensity={0.2} />
 
-        <PresentationControls speed={1.0} global zoom={.5} polar={[-0.1, Math.PI/4]}>
+        <PresentationControls speed={1.0} polar={[0, Math.PI/18]}>
           <Stage environment={"city"} shadows={false}>
-            <Model scale={0.5} receiveShadow={false} castShadow={false} />
+            <Model scale={0.4} receiveShadow={false} castShadow={false} />
           </Stage>
         </PresentationControls>
 

@@ -1,6 +1,6 @@
 .modelcontainer {
     width: 100%;
-    background-color: black;
+    background-color: rgb(255, 255, 255);
     padding: 10px;
     display: flex;
     flex-direction: column;
