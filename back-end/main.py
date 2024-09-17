@@ -8,7 +8,7 @@ from typing import List, Optional
 import jwt
 import os
 from dotenv import load_dotenv
-from .models import User, Problem
+from .models import User, Problem, UserRole
 from .database import Base, engine, get_db
 from .schema import UserResponse, UserCreated, ProblemResponse, ProblemCreated, Token
 load_dotenv()
@@ -59,7 +59,8 @@ def get_current_user(db: Session = Depends(get_db), token: str = Depends(oauth2_
     try:
         payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
         username: str = payload.get("sub")
-        if username is None:
+        role: str = payload.get("role")
+        if username is None or role is None:
             raise credentials_exception
     except jwt.PyJWTError:
         raise credentials_exception
@@ -72,6 +73,14 @@ def get_current_user(db: Session = Depends(get_db), token: str = Depends(oauth2_
 def get_current_active_user(current_user: User = Depends(get_current_user)):
     if current_user is None:
         raise HTTPException(status_code=400, detail="Inactive user")
+    return current_user
+
+def admin_only(current_user: User = Depends(get_current_active_user)):
+    if current_user.role != UserRole.admin:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="You do not have the necessary permission"
+        )
     return current_user
 
 # Login Endpoint
@@ -88,7 +97,7 @@ def login_for_access_token(form_data: OAuth2PasswordRequestForm = Depends(), db:
     return {"access_token": access_token, "token_type": "bearer"}
 
 # User Endpoints
-@app.post("/create_user", response_model = UserResponse)
+@app.post("/create_user", response_model = UserResponse, dependencies=[Depends(admin_only)])
 def create_user(user: UserCreated, db: Session = Depends(get_db)):
     existing_user = db.query(User).filter(User.username == user.username).first()
     if existing_user:
@@ -101,16 +110,7 @@ def create_user(user: UserCreated, db: Session = Depends(get_db)):
     db.refresh(new_user)
     return new_user
 
-# @app.post("/login", response_model = UserResponse)
-# def login(user: UserCreated, db: Session = Depends(get_db)):
-#     userData = db.query(User).filter(User.username == user.username).first()
-#     if not userData:
-#         raise HTTPException(status_code=404, detail="User not found")
-#     if not pwd_context.verify(user.password, userData.password):
-#         raise HTTPException(status_code=400, detail="Incorrect password")
-#     return userData
-
-@app.delete("/users/{user_id}")
+@app.delete("/users/{user_id}", dependencies=[Depends(admin_only)])
 async def delete_user(user_id: int, db: Session = Depends(get_db)):
     user = db.query(User).filter(User.id == user_id).first()
     if user is None:
@@ -132,7 +132,7 @@ def get_allProblems(db: Session = Depends(get_db)):
     problems = db.query(Problem).all()
     return problems
     
-@app.post("/create_problems", response_model=ProblemResponse)
+@app.post("/create_problems", response_model=ProblemResponse, dependencies=[Depends(admin_only)])
 def create_problem(problem: ProblemCreated, db: Session = Depends(get_db)):
     existing_problem = db.query(Problem).filter(Problem.title == problem.title).first()
     if existing_problem:
@@ -149,7 +149,7 @@ def create_problem(problem: ProblemCreated, db: Session = Depends(get_db)):
     db.refresh(new_problem)
     return new_problem
 
-@app.delete("/problems/{problem_id}")
+@app.delete("/problems/{problem_id}", dependencies=[Depends(admin_only)])
 async def delete_problem(problem_id: int, db: Session = Depends(get_db)):
     problem = db.query(Problem).filter(Problem.id == problem_id).first()
     if problem is None:
