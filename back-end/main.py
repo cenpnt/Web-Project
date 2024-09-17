@@ -1,11 +1,17 @@
-from fastapi import FastAPI, Depends, HTTPException
+from fastapi import FastAPI, Depends, HTTPException, status
 from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy.orm import Session
+from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
+from passlib.context import CryptContext
+from datetime import datetime, timedelta, timezone
+from typing import List, Optional
+import jwt
+import os
+from dotenv import load_dotenv
 from .models import User, Problem
 from .database import Base, engine, get_db
-from .schema import UserResponse, UserCreated, ProblemResponse, ProblemCreated
-from passlib.context import CryptContext
-from typing import List
+from .schema import UserResponse, UserCreated, ProblemResponse, ProblemCreated, Token
+load_dotenv()
 
 app = FastAPI()
 
@@ -16,9 +22,70 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"], 
 )
-
+# DB initialization
 Base.metadata.create_all(bind=engine)
+
+# Password hashing
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
+
+# JWT settings
+SECRET_KEY = os.getenv("SECRET_KEY")
+ALGORITHM = "HS256"
+ACCESS_TOKEN_EXPIRE_MINUTES = 30
+oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
+
+# Create JWT token
+def create_access_token(user: User, expires_delta: Optional[timedelta] = None):
+    to_encode = {
+        "sub": user.username,
+        "role": user.role.value
+    }
+    if expires_delta:
+        expire = datetime.now(timezone.utc) + expires_delta
+    else:
+        expire = datetime.now(timezone.utc) + timedelta(minutes=15)
+
+    to_encode.update({"exp": expire})
+    encoded_jwt = jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
+    return encoded_jwt
+
+# Dependency to get the current user
+def get_current_user(db: Session = Depends(get_db), token: str = Depends(oauth2_scheme)):
+    credentials_exception = HTTPException(
+        status_code=status.HTTP_401_UNAUTHORIZED,
+        detail="Could not validate credentials",
+        headers={"WWW-Authenticate": "Bearer"}
+    )
+    try:
+        payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
+        username: str = payload.get("sub")
+        if username is None:
+            raise credentials_exception
+    except jwt.PyJWTError:
+        raise credentials_exception
+    
+    user = db.query(User).filter(User.username == username).first()
+    if user is None:
+        raise credentials_exception
+    return user
+
+def get_current_active_user(current_user: User = Depends(get_current_user)):
+    if current_user is None:
+        raise HTTPException(status_code=400, detail="Inactive user")
+    return current_user
+
+# Login Endpoint
+@app.post("/token", response_model=Token)
+def login_for_access_token(form_data: OAuth2PasswordRequestForm = Depends(), db: Session = Depends(get_db)):
+    userData = db.query(User).filter(User.username == form_data.username).first()    
+    if not userData:
+         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="User not found")
+    if not pwd_context.verify(form_data.password, userData.password):
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Incorrect password")
+
+    access_token_expires = timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
+    access_token = create_access_token(userData, expires_delta=access_token_expires)
+    return {"access_token": access_token, "token_type": "bearer"}
 
 # User Endpoints
 @app.post("/create_user", response_model = UserResponse)
@@ -28,20 +95,20 @@ def create_user(user: UserCreated, db: Session = Depends(get_db)):
         raise HTTPException(status_code=400, detail="Username already taken")
     
     hashed_password = pwd_context.hash(user.password)
-    new_user = User(username=user.username, password=hashed_password)
+    new_user = User(username=user.username, password=hashed_password, role=user.role)
     db.add(new_user)
     db.commit()
     db.refresh(new_user)
     return new_user
 
-@app.post("/login", response_model = UserResponse)
-def create_login(user: UserCreated, db: Session = Depends(get_db)):
-    userData = db.query(User).filter(User.username == user.username).first()
-    if not userData:
-        raise HTTPException(status_code=404, detail="User not found")
-    if not pwd_context.verify(user.password, userData.password):
-        raise HTTPException(status_code=400, detail="Incorrect password")
-    return userData
+# @app.post("/login", response_model = UserResponse)
+# def login(user: UserCreated, db: Session = Depends(get_db)):
+#     userData = db.query(User).filter(User.username == user.username).first()
+#     if not userData:
+#         raise HTTPException(status_code=404, detail="User not found")
+#     if not pwd_context.verify(user.password, userData.password):
+#         raise HTTPException(status_code=400, detail="Incorrect password")
+#     return userData
 
 @app.delete("/users/{user_id}")
 async def delete_user(user_id: int, db: Session = Depends(get_db)):
@@ -69,7 +136,7 @@ def get_allProblems(db: Session = Depends(get_db)):
 def create_problem(problem: ProblemCreated, db: Session = Depends(get_db)):
     existing_problem = db.query(Problem).filter(Problem.title == problem.title).first()
     if existing_problem:
-        raise HTTPException(status_code=400, detail="Problem already contained")
+        raise HTTPException(status_code=400, detail="Problem already exist")
     
     new_problem = Problem(
         title=problem.title,
