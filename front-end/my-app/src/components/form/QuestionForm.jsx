@@ -35,7 +35,6 @@ const AddQuestionForm = ({ onCancel }) => {
         if(!response.ok) {
             throw new Error('Failed to create the problem');
         }
-        const data = await response.json();
         setTitle("");
         setDescription("");
         setInputExample("");
