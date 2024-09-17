@@ -18,7 +18,7 @@ function ProfileMenu({showSignOut, onSignOut}) {
                     
                     <li>
                         <Icon as={FaRegUser}/>
-                        <a href='/'>Your Profile</a>
+                        <a href='/u_student'>Your Profile</a>
                     </li>
 
                     <li>
