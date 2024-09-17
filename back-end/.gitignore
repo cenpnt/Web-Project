@@ -1,2 +1,14 @@
-/__pycache__
+# Ignore SQLite databases and lock files
+*.db
+*.db-journal
+*.db-wal
+
+# Ignore Python cache files and virtual environments
+__pycache__/
+*.pyc
+*.pyo
+venv/
+.venv/
+
+# Ignore environment files (e.g., credentials)
 .env
