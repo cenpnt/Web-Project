@@ -22,6 +22,14 @@ export const AuthProvider = ({ children }) => {
             }
         }
         
+        const checkExpiration = () => {
+            if(isTokenExpired()) {
+                logout();
+            }
+        };
+        checkExpiration();
+        const intervalID = setInterval(checkExpiration, 3600000);
+        return () => clearInterval(intervalID);
     }, []);
 
     const login = (userData) => {
@@ -36,8 +44,15 @@ export const AuthProvider = ({ children }) => {
         setUser(null);
         localStorage.removeItem('isLoggedIn');
         localStorage.removeItem('user');
+        localStorage.removeItem('access_token');
+        localStorage.removeItem('token_expiration');
         navigate('/');
     }
+
+    const isTokenExpired = () => {
+        const tokenExpiration = localStorage.getItem('token_expiration');
+        return tokenExpiration ? new Date().getTime() > parseInt(tokenExpiration) : true;
+    };
 
     const buttonText = isLoggedIn ? "Sign out" : "Sign in";
     const buttonPath = isLoggedIn ? "/" : "/login";
