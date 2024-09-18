@@ -4,6 +4,7 @@ import Logo from "../../components/Logo";
 import { useState, useRef } from "react";
 import { useNavigate } from 'react-router-dom'
 import { useAuth } from '../../context/AuthContext';
+import { jwtDecode } from "jwt-decode";
 
 function Login() {
   const [username, setUsername] = useState("");
@@ -38,7 +39,10 @@ function Login() {
       if (response.ok) {
         // successful login
         const data = await response.json();
+        const decodedToken = jwtDecode(data.access_token);
+        const expirationTime = decodedToken.exp * 1000;
         localStorage.setItem('access_token', data.access_token);  // Store JWT in localStorage
+        localStorage.setItem('token_expiration', expirationTime); // Store token expiration time
         login(data.access_token);
         navigate('/u_student');
       } else {
