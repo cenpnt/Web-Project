@@ -1,5 +1,6 @@
+import React from 'react';
 import { useEffect, useRef, useState } from "react";
-import { Box, HStack, VStack, Button, Text } from "@chakra-ui/react";
+import { Box, HStack, VStack, Button, Text, Grid } from "@chakra-ui/react";
 import { Editor } from "@monaco-editor/react";
 import LanguageSelector from "./LanguageSelector";
 import { CODE_SNIPPETS } from "../constants";
@@ -11,11 +12,17 @@ const CodeEditor = () => {
   const editorRef = useRef();
   const [value, setValue] = useState("");
   const [language, setLanguage] = useState("javascript");
-  const [selectedProblem, setSelectedProblem] = useState(null);
-  const [currentProblem, setCurrentProblem] = useState(null);
+  const [selectedProblem, setSelectedProblem] = useState(null);   // When select a problem it will render that problem (title, description, ...)
+  const [currentProblemIndex, setCurrentProblemIndex] = useState(null);  // Keep track of the current problem to check whether user can go to the next question or prev question
   const [totalQuestion, setTotalQuestion] = useState(0);
   const [showForm, setShowForm] = useState(false);
+  const [problems, setProblems] = useState([]);   // Collect all problems inside an array for index access
   const isAdmin = localStorage.getItem('isAdmin') === 'true';
+  const token = localStorage.getItem('access_token');
+
+  useEffect(() => {
+    fetchProblems();
+  }, []);
 
   const onMount = (editor) => {
     editorRef.current = editor;
@@ -27,49 +34,54 @@ const CodeEditor = () => {
     setValue(CODE_SNIPPETS[language]);
   };
 
-  const onButtonClick = async (problem_id) => {
+  const onButtonClick = async (index) => {
+    if (index < 0 || index >= problems.length) {
+      console.error("Index out of bounds");
+      return;
+    }
+    
+    const problem_id = problems[index]?.id; // Safely access problem.id
+    if (!problem_id) {
+      console.error("Problem ID is undefined");
+      return;
+    }
+  
     try {
       const response = await fetch(`http://localhost:8000/problems/${problem_id}`);
-      if(!response.ok) {
+      if (!response.ok) {
         throw new Error('Cannot fetch the problem');
       }
       const problemData = await response.json();
       setSelectedProblem(problemData);
-      setCurrentProblem(problemData.id);
-      fetchTotalQuestions();
+      setCurrentProblemIndex(index);
     } catch (error) {
       console.error('There was a problem with the fetch operation', error);
     }
   }
 
-  const fetchTotalQuestions = async () => {
+  const fetchProblems = async () => {
     try {
       const response = await fetch("http://localhost:8000/problems");
-      if(!response.ok) {
-        throw new Error('Cannot fetch the problem');
+      if (!response.ok) {
+        throw new Error('Cannot fetch the problems');
       }
       const allProblems = await response.json();
-      setTotalQuestion(allProblems.length)
+      setTotalQuestion(allProblems.length);
+      setProblems(allProblems);
     } catch (error) {
-      console.error('Error fetching the total number of problems: ', error);
+      console.error('Error fetching the problems:', error);
     }
   }
-
-  useEffect(() => {
-    fetchTotalQuestions();
-  }, []);
-
+  
   const prevButton = () => {
-    if(currentProblem > 1) {
-      setCurrentProblem((currentProblem) => currentProblem - 1);
-      onButtonClick(currentProblem - 1);
+    if (currentProblemIndex > 0) {
+      onButtonClick(currentProblemIndex - 1);
     }
   }
 
   const nextButton = () => {
-    if(currentProblem < totalQuestion) {
-      setCurrentProblem((currentProblem) => currentProblem + 1);
-      onButtonClick(currentProblem + 1);
+    if (currentProblemIndex < totalQuestion - 1) {
+      onButtonClick(currentProblemIndex + 1);
     }
   }
 
@@ -79,6 +91,34 @@ const CodeEditor = () => {
 
   const cancelAddQuestion = () => {
     setShowForm(false);
+  }
+
+  const deleteQuestion = async (problem_id) => {
+    try {
+      const response = await fetch(`http://localhost:8000/problems/${problem_id}`, {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${token}`
+        }
+      });
+      if(!response.ok) {
+        throw new Error('Failed to delete the problem')
+      }
+      // Update state after successful deletion
+      setProblems(prevProblems => prevProblems.filter(problem => problem.id !== problem_id));
+      // Reset the selected problem if it was deleted
+      if (selectedProblem && selectedProblem.id === problem_id) {
+        setSelectedProblem(null);
+        setCurrentProblemIndex(null);
+      }
+    } catch (error) {
+      console.error("Error deleting problem", error);
+    }
+  }
+
+  const newQuestionAdded = () => {   // Update state when new question added
+    fetchProblems();
   }
 
   return (
@@ -110,7 +150,7 @@ const CodeEditor = () => {
                   </Button>
                 </Box>
                 <Box mt={5} ml={8} mr={8}>
-                  <Box fontSize="50px" fontWeight="bold" color="white">{selectedProblem.id}. {selectedProblem.title}</Box>
+                  <Box fontSize="50px" fontWeight="bold" color="white">{currentProblemIndex + 1}. {selectedProblem.title}</Box>
                   <Box fontSize="25px" color="gray.300" mt="2">{selectedProblem.description}</Box>
                   <Box fontSize="25px" color="gray.300" mt="2">{selectedProblem.output}</Box>
                   <Box fontSize="25px" color="gray.300" mt="2">
@@ -135,29 +175,38 @@ const CodeEditor = () => {
                     <Text color="white">Problem List</Text>
                   </Box>
                   <Box><hr style={{ backgroundColor: "white",  height: "2px", width: "100%" }} /></Box>
-                  <Box mt={5} ml={5} mr={8}>
-                    <Box><Button variant="unstyledButton" onClick={() => onButtonClick(1)}><Text fontSize={20}>1. Hello World Program</Text></Button></Box>
-                    <Box><Button variant="unstyledButton" onClick={() => onButtonClick(2)}><Text fontSize={20}>2. Sum of two numbers</Text></Button></Box>
-                    <Box><Button variant="unstyledButton" onClick={() => onButtonClick(3)}><Text fontSize={20}>3. Find the Largest Number</Text></Button></Box>
-                    <Box><Button variant="unstyledButton" onClick={() => onButtonClick(4)}><Text fontSize={20}>4. Count Vowels in a String</Text></Button></Box>
-                    <Box><Button variant="unstyledButton" onClick={() => onButtonClick(5)}><Text fontSize={20}>5. Check Prime Number</Text></Button></Box>
-                  </Box>
-                  <Box display={"flex"} justifyContent={"flex-end"} ml={8} mr={8}>
-                    { isAdmin && (<Box><Button variant="unstyledButton" onClick={addQuestion}>+ Add Question</Button></Box>) }
-                    { isAdmin && (<Box><Button variant="unstyledButton">- Delete Question</Button></Box>) }
+                  <Grid templateColumns="repeat(3, 1fr)" gap={4} mt={5} ml={5} mr={8}>
+                    {problems.map((problem, index) => (
+                      <React.Fragment key={index}> {/* Use index as the key */}
+                        <Box display="flex" alignItems="center" justifyContent="start">
+                          <Button variant="unstyledButton" onClick={() => onButtonClick(index)}>
+                            <Text fontSize={20}>{index + 1}. {problem.title}</Text> {/* Use index for display */}
+                          </Button>
+                        </Box>
+                          <Box display="flex" alignItems="center" justifyContent="center">
+                            { isAdmin && (<Button variant="unstyledButton" onClick={() => deleteQuestion(problem.id)} textAlign="center" color="#e1403f" _hover={{ color: "hsl(0, 73%, 45%)" }}>- Delete Question</Button>)}
+                          </Box>
+                        <Box display="flex" alignItems="center" justifyContent="center">
+                          <Button>Done</Button>
+                        </Box>
+                      </React.Fragment>
+                    ))}
+                  </Grid>
+                  <Box display={"flex"} justifyContent={"flex-start"} ml={8} mr={8}>
+                    { isAdmin && (<Box><Button variant="unstyledButton" onClick={addQuestion} color="#36a16a" _hover={{ color: "hsl(149, 50%, 30%)" }}>+ Add Question</Button></Box>) }
                   </Box>
                 </>
               )}
-              {showForm && <AddQuestionForm onCancel={cancelAddQuestion}/>}
+              {showForm && <AddQuestionForm onCancel={cancelAddQuestion} onSuccess={newQuestionAdded}/>}
         </Box>
 
         {/* Right side with two sections */}
         <VStack spacing={5} w="50%" h="100%">
           {/* Upper box (Editor) with 50% height */}
-          <Box w="100%" h="70%" backgroundColor={'#1e1e1e'} overflow="auto" borderRadius={10}>
+          <Box w="100%" h="70%" backgroundColor={'#1e1e1e'} overflow="hidden" borderRadius={10}>
             <LanguageSelector language={language} onSelect={onSelect} />
             <Editor
-              height="80%"
+              height="100%"
               theme="vs-dark"
               language={language}
               defaultValue={CODE_SNIPPETS[language]}
@@ -166,7 +215,7 @@ const CodeEditor = () => {
               onChange={(value) => setValue(value)}
             />
           </Box>
-          <Box w="100%" h="30%" overflow="auto" borderRadius={10}>
+          <Box w="100%" h="30%" overflow="hidden" borderRadius={10}>
             <Output editorRef={editorRef} language={language} />
           </Box>
         </VStack>
