@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Box, Button, Input, Textarea, FormControl, FormLabel } from "@chakra-ui/react";
 
-const AddQuestionForm = ({ onCancel }) => {
+const AddQuestionForm = ({ onCancel, onSuccess }) => {
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [inputExample, setInputExample] = useState("");
@@ -9,8 +9,6 @@ const AddQuestionForm = ({ onCancel }) => {
   const [note, setNote] = useState("");
 
   const token = localStorage.getItem("access_token");
-  console.log("Token:", token);
-
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -40,7 +38,12 @@ const AddQuestionForm = ({ onCancel }) => {
         setInputExample("");
         setOutputExample("");
         setNote("");
-        onCancel();
+        if(onSuccess) {
+          onSuccess();
+        }
+        if(onCancel) {
+          onCancel();
+        }
     } catch (error) {
         console.error("Error creating new problem: ", error.message);
     }
@@ -50,7 +53,7 @@ const AddQuestionForm = ({ onCancel }) => {
     <Box p={5} bg="#2d2d2d" borderRadius="md" boxShadow="md" color="white">
       <form onSubmit={handleSubmit}>
         <FormControl mb={4}>
-          <FormLabel htmlFor="title">Title</FormLabel>
+          <FormLabel htmlFor="title" color="white">Title</FormLabel>
           <Input
             id="title"
             value={title}
@@ -61,7 +64,7 @@ const AddQuestionForm = ({ onCancel }) => {
           />
         </FormControl>
         <FormControl mb={4}>
-          <FormLabel htmlFor="description">Description</FormLabel>
+          <FormLabel htmlFor="description" color="white">Description</FormLabel>
           <Textarea
             id="description"
             value={description}
@@ -72,7 +75,7 @@ const AddQuestionForm = ({ onCancel }) => {
           />
         </FormControl>
         <FormControl mb={4}>
-          <FormLabel htmlFor="inputExample">Example Input</FormLabel>
+          <FormLabel htmlFor="inputExample" color="white">Example Input</FormLabel>
           <Input
             id="inputExample"
             value={inputExample}
@@ -83,7 +86,7 @@ const AddQuestionForm = ({ onCancel }) => {
           />
         </FormControl>
         <FormControl mb={4}>
-          <FormLabel htmlFor="outputExample">Example Output</FormLabel>
+          <FormLabel htmlFor="outputExample" color="white">Example Output</FormLabel>
           <Input
             id="outputExample"
             value={outputExample}
@@ -94,7 +97,7 @@ const AddQuestionForm = ({ onCancel }) => {
           />
         </FormControl>
         <FormControl mb={4}>
-          <FormLabel htmlFor="note">Note</FormLabel>
+          <FormLabel htmlFor="note" color="white">Note</FormLabel>
           <Textarea
             id="note"
             value={note}
@@ -104,12 +107,14 @@ const AddQuestionForm = ({ onCancel }) => {
             color="white"
           />
         </FormControl>
-        <Button type="submit" colorScheme="teal" mr={3}>
-          Add Question
-        </Button>
-        <Button type="button" onClick={onCancel}>
-          Cancel
-        </Button>
+        <Box display="flex">
+          <Button type="submit" colorScheme="green" mr={3}>
+            Add Question
+          </Button>
+          <Button type="button" onClick={onCancel}>
+            Cancel
+          </Button>
+        </Box>
       </form>
     </Box>
   );
