@@ -15,6 +15,7 @@ const CodeEditor = () => {
   const [currentProblem, setCurrentProblem] = useState(null);
   const [totalQuestion, setTotalQuestion] = useState(0);
   const [showForm, setShowForm] = useState(false);
+  const isAdmin = localStorage.getItem('isAdmin') === 'true';
 
   const onMount = (editor) => {
     editorRef.current = editor;
@@ -142,8 +143,8 @@ const CodeEditor = () => {
                     <Box><Button variant="unstyledButton" onClick={() => onButtonClick(5)}><Text fontSize={20}>5. Check Prime Number</Text></Button></Box>
                   </Box>
                   <Box display={"flex"} justifyContent={"flex-end"} ml={8} mr={8}>
-                    <Box><Button variant="unstyledButton" onClick={addQuestion}>+ Add Question</Button></Box>
-                    <Box><Button variant="unstyledButton">- Delete Question</Button></Box>
+                    { isAdmin && (<Box><Button variant="unstyledButton" onClick={addQuestion}>+ Add Question</Button></Box>) }
+                    { isAdmin && (<Box><Button variant="unstyledButton">- Delete Question</Button></Box>) }
                   </Box>
                 </>
               )}
