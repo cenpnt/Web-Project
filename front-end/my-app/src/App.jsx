@@ -13,12 +13,13 @@ import Queensland from './pages/queensland/Queensland';
 import ScrollToTop from './components/ScrollToTop';
 import Contact from './pages/contact/Contact';
 import SEAcademy from './pages/SEAcademy';
+import theme from './components/theme';
 
 function App() {
   return (
     <Router>
       <AuthProvider>
-        <ChakraProvider>
+        <ChakraProvider theme={theme}>
           <ScrollToTop>
             <Routes>
               <Route path="/" element={<AuthHeader theme='dark'><Home /></AuthHeader>} />
