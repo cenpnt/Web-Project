@@ -1,5 +1,6 @@
 import React, { createContext, useState, useEffect, useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { jwtDecode } from 'jwt-decode'
 
 const AuthContext = createContext(null);
 
@@ -22,21 +23,32 @@ export const AuthProvider = ({ children }) => {
             }
         }
         
-        const checkExpiration = () => {
-            if(isTokenExpired()) {
-                logout();
-            }
-        };
-        checkExpiration();
-        const intervalID = setInterval(checkExpiration, 3600000);
-        return () => clearInterval(intervalID);
+        if(storedLoginStatus) {    // Only chcek when user already logged in
+            const checkExpiration = () => {
+                if (isTokenExpired()) {
+                    logout();
+                }
+            };
+            checkExpiration();
+            const intervalID = setInterval(checkExpiration, 3600000); // Check every hour
+            return () => clearInterval(intervalID);
+        }
     }, []);
 
-    const login = (userData) => {
+    const login = (data) => {
+        const decodedToken = jwtDecode(data);
+        const expirationTime = decodedToken.exp * 1000;
         setIsLoggedIn(true);
-        setUser(userData);
+        setUser(decodedToken.sub);
+        localStorage.setItem('access_token', data);  // Store JWT in localStorage
+        localStorage.setItem('token_expiration', expirationTime); // Store token expiration time
         localStorage.setItem('isLoggedIn', 'true');
-        localStorage.setItem('user', JSON.stringify(userData));
+        localStorage.setItem('user', JSON.stringify(decodedToken.sub));
+        if(decodedToken.role === 'admin') {
+            localStorage.setItem('isAdmin', 'true');
+        } else {
+            localStorage.setItem('isAdmin', 'false');
+        }
     };
 
     const logout = () => {
@@ -51,7 +63,10 @@ export const AuthProvider = ({ children }) => {
 
     const isTokenExpired = () => {
         const tokenExpiration = localStorage.getItem('token_expiration');
-        return tokenExpiration ? new Date().getTime() > parseInt(tokenExpiration) : true;
+        if (!tokenExpiration) {
+            return false; // No expiration set, assume token is not expired
+        }
+        return new Date().getTime() > parseInt(tokenExpiration);
     };
 
     const buttonText = isLoggedIn ? "Sign out" : "Sign in";
