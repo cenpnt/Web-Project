@@ -1,0 +1,54 @@
+.profile-section {
+    text-align: center;
+}
+
+.profile-picture img {
+    width: 200px;
+    height: 200px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid #ddd;
+    margin-left: auto;
+    margin-right: auto;
+
+}
+
+.upload-section {
+    margin-top: 10px;
+    position: relative;
+    text-align: center;
+}
+
+.upload-box {
+    color:  hsl(38, 87%, 58%);
+    border: 2px dashed  hsl(38, 87%, 58%); 
+    border-radius: 10px;
+    padding: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    width: 200px;
+    height: 75px;
+    cursor: pointer;
+    transition: border-color 0.3s ease;
+    margin-top: 10px;
+}
+
+.upload-box:hover {
+    border-color: hsl(38, 87%, 45%); 
+    color: hsl(38, 87%, 45%);
+}
+
+.upload-icon {
+    margin-bottom: 5px;
+}
+
+.upload-text {
+    font-weight: 600;
+    font-size: 14px;
+}
+
+.file-input {
+    display: none;
+}
