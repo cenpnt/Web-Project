@@ -8,9 +8,9 @@ from typing import List, Optional
 import jwt
 import os
 from dotenv import load_dotenv
-from .models import User, Problem, UserRole
+from .models import User, Problem, UserRole, SolvedProblem
 from .database import Base, engine, get_db
-from .schema import UserResponse, UserCreated, ProblemResponse, ProblemCreated, Token
+from .schema import UserResponse, UserCreated, ProblemResponse, ProblemCreated, Token, SolvedProblemCreated, SolvedProblemResponse
 load_dotenv()
 
 app = FastAPI()
@@ -158,3 +158,16 @@ async def delete_problem(problem_id: int, db: Session = Depends(get_db)):
     db.delete(problem)
     db.commit()
     return {"message": "Problem deleted"}
+
+# SolvedProblem Endpoint
+@app.post("/solved_problem", response_model=SolvedProblemResponse)
+def create_solved_problem(problem: SolvedProblemCreated, db: Session = Depends(get_db)):
+    existing_problem = db.query(SolvedProblem).filter(SolvedProblem.problem_id == problem.problem_id, SolvedProblem.user_id == problem.user_id).first()
+    if existing_problem:
+        raise HTTPException(status_code=400, detail="User has already solved this problem")
+    
+    new_solved_problem = SolvedProblem(user_id = problem.user_id, problem_id = problem.problem_id)
+    db.add(new_solved_problem)
+    db.commit()
+    db.refresh(new_solved_problem)
+    return new_solved_problem
