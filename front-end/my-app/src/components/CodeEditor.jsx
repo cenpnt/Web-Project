@@ -17,11 +17,17 @@ const CodeEditor = () => {
   const [totalQuestion, setTotalQuestion] = useState(0);
   const [showForm, setShowForm] = useState(false);
   const [problems, setProblems] = useState([]);   // Collect all problems inside an array for index access
+  const [solvedStatus, setSolvedStatus] = useState(Array(problems.length).fill(false));   // Solved status for each problem in problems arr
   const isAdmin = localStorage.getItem('isAdmin') === 'true';
   const token = localStorage.getItem('access_token');
 
   useEffect(() => {
-    fetchProblems();
+    const fetchData = async () => {
+      await fetchProblems();
+      await fetchSolvedProblems();
+    };
+
+    fetchData();
   }, []);
 
   const onMount = (editor) => {
@@ -72,6 +78,23 @@ const CodeEditor = () => {
       console.error('Error fetching the problems:', error);
     }
   }
+
+  const fetchSolvedProblems = async () => {
+    try {
+      const response = await fetch("http://localhost:8000/all_solved_problem");
+      if(!response.ok) {
+        throw new Error('Cannot fetch solved problems');
+      }
+      const allSolvedProblems = await response.json();
+      setSolvedStatus(prev => {
+        return problems.map(problem => 
+          allSolvedProblems.some(solved => solved.id === problem.id)
+        );
+      });
+    } catch (error) {
+      console.error('Error fetching solved problems: ', error);
+    }
+  }
   
   const prevButton = () => {
     if (currentProblemIndex > 0) {
@@ -119,6 +142,40 @@ const CodeEditor = () => {
 
   const newQuestionAdded = () => {   // Update state when new question added
     fetchProblems();
+  }
+
+  const onDoneButtonClick = async (index) => {
+    const user_id = localStorage.getItem('userID');
+    const problem_id = problems[index]?.id;
+    if(!user_id || !problem_id) {
+      console.error("User ID or Problem ID is undefined");
+      return;
+    }
+
+    try {
+      const response = await fetch('http://localhost:8000/solved_problem', {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          user_id,
+          problem_id
+        })
+      })
+
+      if(!response.ok) {
+        throw new Error('Failed to mark problem as solved');
+      }
+      setSolvedStatus(prev => {
+        const newStatus = [...prev];
+        newStatus[index] = true;
+        return newStatus
+      });
+
+    } catch (error) {
+      console.error("Error marking problem as solved ", error);
+    }
   }
 
   return (
@@ -180,14 +237,14 @@ const CodeEditor = () => {
                       <React.Fragment key={index}> {/* Use index as the key */}
                         <Box display="flex" alignItems="center" justifyContent="start">
                           <Button variant="unstyledButton" onClick={() => onButtonClick(index)}>
-                            <Text fontSize={20}>{index + 1}. {problem.title}</Text> {/* Use index for display */}
+                            <Text fontSize={20} color={solvedStatus[index] ? "hsl(149, 50%, 50%)" : "white"}>{index + 1}. {problem.title}</Text>
                           </Button>
                         </Box>
                           <Box display="flex" alignItems="center" justifyContent="center">
                             { isAdmin && (<Button variant="unstyledButton" onClick={() => deleteQuestion(problem.id)} textAlign="center" color="#e1403f" _hover={{ color: "hsl(0, 73%, 45%)" }}>- Delete Question</Button>)}
                           </Box>
                         <Box display="flex" alignItems="center" justifyContent="center">
-                          <Button>Done</Button>
+                          { !solvedStatus[index] && <Button onClick={() => onDoneButtonClick(index)}>Done</Button> }
                         </Box>
                       </React.Fragment>
                     ))}
