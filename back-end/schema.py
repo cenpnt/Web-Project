@@ -32,3 +32,15 @@ class ProblemResponse(ProblemBase):
 class Token(BaseModel):
     access_token: str
     token_type: str
+
+class SolvedProblemBase(BaseModel):
+    user_id: int
+    problem_id: int
+
+class SolvedProblemCreated(SolvedProblemBase):
+    pass
+
+class SolvedProblemResponse(SolvedProblemBase):
+    id: int
+    class Config:
+        from_attributes = True
