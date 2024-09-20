@@ -38,7 +38,8 @@ oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
 def create_access_token(user: User, expires_delta: Optional[timedelta] = None):
     to_encode = {
         "sub": user.username,
-        "role": user.role.value
+        "role": user.role.value,
+        "userID": user.id
     }
     if expires_delta:
         expire = datetime.now(timezone.utc) + expires_delta
@@ -60,7 +61,8 @@ def get_current_user(db: Session = Depends(get_db), token: str = Depends(oauth2_
         payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
         username: str = payload.get("sub")
         role: str = payload.get("role")
-        if username is None or role is None:
+        userID: int = payload.get("userID")
+        if username is None or role is None or userID is None:
             raise credentials_exception
     except jwt.PyJWTError:
         raise credentials_exception
@@ -129,7 +131,7 @@ def get_problem(problem_id: int, db: Session = Depends(get_db)):
     return problem
 
 @app.get("/problems", response_model=List[ProblemResponse])
-def get_allProblems(db: Session = Depends(get_db)):
+def get_all_problems(db: Session = Depends(get_db)):
     problems = db.query(Problem).all()
     return problems
     
@@ -171,3 +173,17 @@ def create_solved_problem(problem: SolvedProblemCreated, db: Session = Depends(g
     db.commit()
     db.refresh(new_solved_problem)
     return new_solved_problem
+
+@app.get("/all_solved_problem", response_model=List[SolvedProblemResponse])
+def get_all_solved_problem(db: Session = Depends(get_db)):
+    problems = db.query(SolvedProblem).all()
+    return problems
+
+@app.delete("/solve_problem/{id}", dependencies=[Depends(admin_only)])
+def delete_solved_problem(id: int, db: Session = Depends(get_db)):
+    problem = db.query(SolvedProblem).filter(SolvedProblem.id == id).first()
+    if problem is None:
+        raise HTTPException(status_code=404, detail="Problem not found")
+    db.delete(problem)
+    db.commit()
+    return { "message": "Problem deleted" }
