@@ -1,44 +1,67 @@
-import React, { useState, useRef } from "react";
-import { TbUpload } from "react-icons/tb";
-import './EditProfile.css';  // For styling
-import { Icon } from "@chakra-ui/react";
+import React, { useState, useEffect, useRef } from "react";
+import ProfilePicture from "../../components/editProfileComponent/profilePicture/ProfilePicture";
+import InputField from "../../components/editProfileComponent/inputfield/InputField";
+import ProfileErrorMessage from "../../components/editProfileComponent/profileErrorMessage/ProfileErrorMessage";
 import { ArrowBackIcon } from '@chakra-ui/icons';
-import { EditIcon } from "@chakra-ui/icons";
-import { CloseIcon } from "@chakra-ui/icons";
+import { Modal, ModalOverlay, ModalContent, ModalHeader, ModalFooter, ModalBody, ModalCloseButton, Button as ChakraButton } from '@chakra-ui/react';
+import { useDisclosure } from '@chakra-ui/hooks';
 import Button from "../../components/button/Button";
+import "./EditProfile.css";
 
 function EditProfile() {
-    const defaultProfilePic = "https://instagram.fbkk22-1.fna.fbcdn.net/v/t1.15752-9/423063124_412325167940689_1360113152861860307_n.png?stp=dst-png_s403x403&_nc_cat=101&ccb=1-7&_nc_sid=0024fc&_nc_ohc=7a2feRAfE88Q7kNvgGSKS2i&_nc_ht=instagram.fbkk22-1.fna&_nc_gid=ARjrtvajyDsYhWLKO91EmuR&oh=03_Q7cD1QHfGzBu51Ig93BOro_n1PqGmgRFg5OekQaVUyae6QvQAg&oe=670E1B4A";
-    const [selectedImage, setSelectedImage] = useState(defaultProfilePic);
-    const [formData, setFormData] = useState({
-        name: 'John Doe',
-        address: '123 Street, City',
-        password: 'Johndoe1234',
-        confirmPassword: '',
-        profile: ''
-    });
-    const [isEditing, setIsEditing] = useState({
-        name: false,
-        address: false,
-        password: false,
-    });
+    const [formData, setFormData] = useState({ name: 'name', address: 'address', password: 'password', profile: '' });
+    const [selectedImage, setSelectedImage] = useState('https://cdn.discordapp.com/attachments/1280538997944225846/1286578688426643476/image.jpg?ex=66ee6b46&is=66ed19c6&hm=2fa2f6abc2665e07de12b673293d2ac5cf0f6e3314ab2ae89c13ade3cba53224&');
+    const [isEditing, setIsEditing] = useState({ name: false, address: false, password: false });
+    const [fieldSaved, setFieldSaved] = useState({ name: false, address: false, password: false });
     const [errorMessage, setErrorMessage] = useState('');
     const [inputError, setInputError] = useState(false);
-    const [confirmPass, setConfirmPass] = useState(false);
+    const [confirmPassword, setConfirmPassword] = useState('');
+    const [newPassword, setNewPassword] = useState(''); 
+    const [currentPassword, setCurrentPassword] = useState('');
 
-    // Refs for each input field
+    const { isOpen, onOpen, onClose } = useDisclosure();
+
     const nameInputRef = useRef(null);
     const addressInputRef = useRef(null);
     const passwordInputRef = useRef(null);
     const conPassInputRef = useRef(null);
+    const curPassInputRef = useRef(null);
 
-
-    const handleKeyPress = (e) => {
-        if (e.key === 'Enter') {
-            e.preventDefault();
-            conPassInputRef.current?.focus();
+    const handlePasswordSave = (e) => {
+        e.preventDefault(); // Prevent form submission
+    
+        // Check if the passwords match and are valid
+        if (newPassword !== confirmPassword) {
+            setInputError(true);
+            setErrorMessage('Passwords do not match');
+            return; // Do not close the modal
         }
-    }
+        
+        if (!validatePassword(newPassword)) {
+            setInputError(true);
+            setErrorMessage('Password must contain at least 8 characters, a capital letter, and a number.');
+            return; // Do not close the modal
+        }
+    
+        // If everything is valid, save the password and close the modal
+        saveFieldChange('password', e);
+        onClose(); // Only close the modal if there are no errors
+    };
+    
+
+    useEffect(() => {
+        const fetchData = async () => {
+            try {
+                const response = await fetch('/api/user/profile');
+                const data = await response.json();
+                setFormData({ name: data.name, address: data.address, password: data.password, profile: data.profile });
+                setSelectedImage(data.profile);
+            } catch (error) {
+                console.error('Error fetching data', error);
+            }
+        };
+        fetchData();
+    }, []);
 
     const handleImageChange = (e) => {
         const file = e.target.files[0];
@@ -48,218 +71,251 @@ function EditProfile() {
                 setSelectedImage(reader.result);
             };
             reader.readAsDataURL(file);
+            uploadProfilePicture(reader.result);
         }
+    };
+
+    const uploadProfilePicture = async (imageData) => {
+        try {
+            const response = await fetch('/api/upload/profile-pic', {
+                method: 'POST',
+                body: JSON.stringify({ image: imageData }),
+                headers: { 'Content-Type': 'application/json' },
+            });
+            console.log('Image uploaded', response);
+        } catch (error) {
+            console.error('Error uploading image', error);
+        }
+    };
+
+    const validatePassword = (password) => {
+        const hasCapitalLetter = /[A-Z]/.test(password);
+        const hasNumber = /\d/.test(password);
+        const hasMinLength = password.length >= 8;
+
+        return hasCapitalLetter && hasNumber && hasMinLength;
     };
 
     const handleInputChange = (e) => {
         const { name, value } = e.target;
-        setFormData({ ...formData, [name]: value });
+    
+            if (name === 'name' || name === 'address') {
+            setFormData((prevData) => ({ ...prevData, [name]: value }));
+        }
+    
+        if (name === 'password') {
+            setNewPassword(value);
+            if (!validatePassword(value)) {
+                setInputError(true);
+                setErrorMessage('Password must contain at least 8 characters, a capital letter, and a number.');
+            } else {
+                setInputError(false);
+                setErrorMessage('');
+            }
+        }
+        
+        if (name === 'currentPassword') {
+            setCurrentPassword(value);
+        }
 
-        if (name === 'password' || name === 'confirmPassword') {
-            setInputError(false);
-            setErrorMessage('');
+        if (name === 'confirmPassword') {
+            setConfirmPassword(value);
         }
     };
+    
 
-    const isValidPassword = (password) => {
-        const hasNumber = /\d/;
-        const hasUpperCase = /[A-Z]/;
-        return password.length >= 8 && hasNumber.test(password) && hasUpperCase.test(password);
-    };
-
-    const handleSubmit = (e) => {
+    const saveFieldChange = async (fieldName, e) => {
         e.preventDefault();
 
-        if (formData.password && formData.password !== formData.confirmPassword) {
-            setInputError(true);
-            setErrorMessage("Passwords do not match.");
-            return;
+        if (fieldName === 'password') {
+            // setConfirmPass(false);
+            setConfirmPassword('');
+            setFormData((prevData) => ({ ...prevData, password: newPassword })); 
+            setNewPassword('');
         }
 
-        if (formData.password && !isValidPassword(formData.password)) {
-            setInputError(true);
-            setErrorMessage(
-                "Password must be at least 8 characters long, contain a number, and an uppercase letter."
-            );
-            return;
+        const fieldValue = formData[fieldName];
+        try {
+            const response = await fetch(`/api/update/${fieldName}`, {
+                method: 'PUT',
+                body: JSON.stringify({ [fieldName]: fieldValue }),
+                headers: { 'Content-Type': 'application/json' },
+            });
+            console.log(`${fieldName} updated successfully`, response);
+            setFieldSaved((prevState) => ({ ...prevState, [fieldName]: true }));
+            setTimeout(() => {
+                setFieldSaved((prevState) => ({ ...prevState, [fieldName]: false }));
+            }, 10000);
+            setIsEditing((prevState) => ({ ...prevState, [fieldName]: false }));
+        } catch (error) {
+            console.error(`Error updating ${fieldName}`, error);
         }
-
-        const { confirmPassword, ...dataToSubmit } = formData;
-
-        setErrorMessage('');
-        console.log('Profile Updated', dataToSubmit);
-        setIsEditing({ name: false, address: false, password: false });
     };
 
     const toggleEdit = (field) => {
         setIsEditing((prevState) => {
             const updatedState = { ...prevState, [field]: !prevState[field] };
-    
-            // Use setTimeout to delay focus until after the input is enabled
             if (updatedState[field]) {
                 setTimeout(() => {
-                    if (field === 'name') {
-                        nameInputRef.current?.focus();
-                    } else if (field === 'address') {
-                        addressInputRef.current?.focus();
-                    } else if (field === 'password') {
+                    if (field === 'name') nameInputRef.current?.focus();
+                    else if (field === 'address') addressInputRef.current?.focus();
+                    else if (field === 'password') {
                         passwordInputRef.current?.focus();
-                        setConfirmPass(true);
                     }
-                }, 0); // Slight delay to ensure the input is enabled
+                }, 0);
             }
-    
             return updatedState;
         });
-    
-        if (field === 'password') setConfirmPass(false);
+
+        if (field === 'password') {
+            setConfirmPassword('');
+        }        
     };
-    
-    
+
+    const checkCurrentPassword = () => {
+        if (currentPassword !== formData.password) {
+            setInputError(true);
+            setErrorMessage('Incorrect Password');
+        } 
+        return currentPassword !== formData.password;
+    }
+
+
+    const handleKeyDown = (field, e) => {
+        if (e.key === 'Enter') {
+            e.preventDefault();
+            if (field === 'password') {
+                conPassInputRef.current?.focus();
+            } else if (field === 'confirmPassword') {
+                saveFieldChange('password', e);
+            } else if (field === 'currentPassword') {
+                if (checkCurrentPassword() === false) {
+                    passwordInputRef.current?.focus();
+                }
+                
+            } else {
+                saveFieldChange(field, e);
+            }
+        }
+    };
 
     return (
         <div className="editProfile">
             <h3>Edit Profile</h3>
-
             <div className="editProfileBox">
                 <div className="editProfileTop">
-                    <Button text={<ArrowBackIcon w={10} h={7}/>} back override />
+                    <Button text={<ArrowBackIcon w={10} h={7} />} back override />
                 </div>
-                <form onSubmit={handleSubmit}>
-                    <div className="editProfileLeft">
-                        <div className="profile-section">
-                            <div className="profile-picture">
-                                <img 
-                                    src={selectedImage} 
-                                    alt="Profile Preview" 
-                                    className="profile-image"
-                                />
-                            </div>
 
-                            <div className="upload-section">
-                                <label htmlFor="profilePic" className="upload-label">
-                                    <div className="upload-box">
-                                        <Icon as={TbUpload} />
-                                        <span className="upload-text">Upload Picture</span>
-                                    </div>
-                                </label>
-                                <input 
-                                    type="file" 
-                                    id="profilePic" 
-                                    accept="image/*"
-                                    value={formData.profile} 
-                                    onChange={handleImageChange} 
-                                    className="file-input"
-                                />
-                            </div>
-                        </div>
+                <form>
+                    <div className="editProfileLeft">
+                        <ProfilePicture selectedImage={selectedImage} onImageChange={handleImageChange} />
                     </div>
 
                     <div className="editprofileRight">
-                        {/* Name Section */}
-                        <div className="input-section">
-                            <label htmlFor="name">Name</label>
-                                <div className="input-button-section">
-                                    <input 
-                                        type="text" 
-                                        id="name" 
-                                        name="name"
-                                        value={formData.name} 
-                                        onChange={handleInputChange} 
-                                        className="input-field"
-                                        disabled={!isEditing.name}
-                                        ref={nameInputRef} // Reference for name input
-                                    />
-                                <button 
-                                    type="button" 
-                                    onClick={() => toggleEdit('name')} 
-                                    className="edit-button"
-                                >
-                                    {isEditing.name ? <CloseIcon/> : <EditIcon/>}
-                                </button>
-                            </div>
-                        </div>
+                        <InputField
+                            label="Name"
+                            value={formData.name}
+                            onChange={handleInputChange}
+                            isEditing={isEditing.name}
+                            onSave={(e) => saveFieldChange('name', e)}
+                            onToggleEdit={() => toggleEdit('name')}
+                            inputRef={nameInputRef}
+                            onKeyDown={(e) => handleKeyDown('name', e)}
+                            isSuccess={fieldSaved.name}
+                            isPassword={false}
+                        />
 
-                        {/* Address Section */}
-                        <div className="input-section">
-                            <label htmlFor="address">Address</label>
-                            <div className="input-button-section">
-                               
-                                <input 
-                                    type="text" 
-                                    id="address" 
-                                    name="address"
-                                    value={formData.address} 
-                                    onChange={handleInputChange} 
-                                    className="input-field"
-                                    disabled={!isEditing.address}
-                                    ref={addressInputRef} // Reference for address input
-                                />
-
-                                <button 
-                                    type="button" 
-                                    onClick={() => toggleEdit('address')} 
-                                    className="edit-button"
-                                >
-                                    {isEditing.address ? <CloseIcon/> : <EditIcon/>}
-                                </button>
-                            </div>
-                        </div>
-
-                        {/* Password Section */}
-                        <div className="input-section">
-                            <label htmlFor="password">Password</label>
-                            <div className="input-button-section">
-                                <input 
-                                    type="password" 
-                                    id="password" 
-                                    name="password"
-                                    value={formData.password} 
-                                    onChange={handleInputChange}
-                                    className={`input-field ${inputError ? "input-error" : ""}`}
-                                    placeholder="Enter new password"
-                                    disabled={!isEditing.password}
-                                    ref={passwordInputRef} // Reference for password input
-                                    onKeyDown={handleKeyPress}
-                                />
-                                    
-                                <button 
-                                    type="button" 
-                                    onClick={() => toggleEdit('password')} 
-                                    className="edit-button"
-                                >
-                                    {isEditing.password ? <CloseIcon/> : <EditIcon/>}
-                                </button>
-                            </div>
-
-                            {confirmPass ?
-                            <div className="confirmed-password"> 
-                                <input 
-                                type="password" 
-                                id="confirmPassword" 
-                                name="confirmPassword"
-                                value={formData.confirmPassword} 
-                                onChange={handleInputChange} 
-                                className={`input-field ${inputError ? "input-error" : ""}`}
-                                placeholder="Confirm password"
-                                ref={conPassInputRef}
-                                />
-                            </div> :
-                                <></>
-                            }
-
-                          
-                        </div>
-
-                        {errorMessage && <div className="profile-error-message">{errorMessage}</div>}
-
-  
-                            <div className="save-button-container">
-                                <button type="submit" className="save-button">Save Changes</button>
-                            </div>
-
+                        <InputField
+                            label="Address"
+                            value={formData.address}
+                            onChange={handleInputChange}
+                            isEditing={isEditing.address}
+                            onSave={(e) => saveFieldChange('address', e)}
+                            onToggleEdit={() => toggleEdit('address')}
+                            inputRef={addressInputRef}
+                            onKeyDown={(e) => handleKeyDown('address', e)}
+                            isSuccess={fieldSaved.address}
+                            isPassword={false}
+                        />
+                        <InputField
+                            label="Password"
+                            value={formData.password} // Show masked password (8 dots as a placeholder)
+                            isEditing={false} 
+                            onToggleEdit={() => {
+                                onOpen();  
+                            }}
+                            isPassword={true}
+                            isSuccess={fieldSaved.password}
+                        />
                     </div>
                 </form>
+
+                <Modal isOpen={isOpen} onClose={onClose}>
+                    <ModalOverlay />
+                    <ModalContent>
+                        <ModalHeader>Edit Password</ModalHeader>
+                        <ModalCloseButton />
+                        <ModalBody>
+                        <div className="input-section">
+                                <label htmlFor="currentPassword">Current Password</label>
+                                <div className="input-button-section">
+                                    <input 
+                                        type="password" 
+                                        id="currentPassword" 
+                                        name="currentPassword"
+                                        value={currentPassword} // Separate state for new password
+                                        onChange={handleInputChange}
+                                        className={`input-field ${inputError ? "input-error" : ""}`}
+                                        placeholder="Enter new password"
+                                        ref={curPassInputRef} 
+                                        onKeyDown={(e) => handleKeyDown('currentPassword', e)} 
+                                    />
+                                </div>
+                            </div>
+                            <div className="input-section">
+                                <label htmlFor="newPassword">New Password</label>
+                                <div className="input-button-section">
+                                    <input 
+                                        type="password" 
+                                        id="newPassword" 
+                                        name="password"
+                                        value={newPassword} // Separate state for new password
+                                        onChange={handleInputChange}
+                                        className={`input-field ${inputError ? "input-error" : ""}`}
+                                        placeholder="Enter new password"
+                                        ref={passwordInputRef} 
+                                        onKeyDown={(e) => handleKeyDown('password', e)} 
+                                    />
+                                </div>
+                            </div>
+                            <div className="input-section">
+                                <label htmlFor="confirmPassword">Confirm Password</label>
+                                <div className="input-button-section">
+                                    <input 
+                                        type="password" 
+                                        id="confirmPassword" 
+                                        name="confirmPassword"
+                                        value={confirmPassword} 
+                                        onChange={handleInputChange}
+                                        className={`input-field ${inputError ? "input-error" : ""}`}
+                                        placeholder="Confirm new password"
+                                        ref={conPassInputRef} 
+                                        onKeyDown={(e) => handleKeyDown('confirmPassword', e)} 
+                                    />
+                                </div>
+                            </div>
+                            <ProfileErrorMessage message={errorMessage} />
+                        </ModalBody>
+
+                        <ModalFooter>
+                            <ChakraButton colorScheme="blue" mr={3} onClick={handlePasswordSave}>
+                                Save
+                            </ChakraButton>
+                            <ChakraButton variant="ghost" onClick={onClose}>Cancel</ChakraButton>
+                        </ModalFooter>
+                    </ModalContent>
+                </Modal>
             </div>
         </div>
     );

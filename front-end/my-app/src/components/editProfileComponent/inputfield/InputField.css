@@ -1,0 +1,81 @@
+.input-section {
+    margin-top: 10px;
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 10px;
+}
+
+.input-section label {
+    font-size: 14px;
+    font-weight: 600;
+    color: #555;
+    margin-bottom: 0px;
+}
+
+
+.input-field {
+    margin-top: 0px;
+    margin-bottom: 0px;
+    padding: 5px 0;
+    border: none;
+    border-bottom: 1px solid #ccc;
+
+    font-size: 16px;
+    width: 100%;
+    max-width: 400px;
+
+    transition: border-color 0.3s ease, width 0.3s ease;  /* Smooth transition */
+    outline: none;
+}
+
+
+.input-field:focus {
+    border-bottom-color: #007bff;  
+}
+
+
+.input-error {
+    border-bottom-color: red;
+    box-shadow: none; 
+}
+
+
+.input-section {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 30px;
+    position: relative;
+}
+
+.input-button-section {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    position: relative;
+}
+
+
+.input-button-section {
+    display: flex;
+    align-items: center;
+    margin-top: 15px;
+
+}
+
+.input-icon-section {
+    display: flex;
+    gap: 5px;
+} 
+
+.input-success {
+    margin-top: 0px;
+    margin-bottom: 0px;
+    padding: 5px 0;
+    border: none;
+    border-bottom: 2px solid #32CD32; 
+    font-size: 16px;
+    width: 100%;
+    max-width: 400px;
+    transition: border-color 0.3s ease, width 0.3s ease;  
+    outline: none;
+}
