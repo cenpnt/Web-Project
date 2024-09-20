@@ -1,4 +1,4 @@
-/* EditProfile.css */
+
 .editProfile {
     display: flex;
     flex-direction: column;
@@ -26,7 +26,7 @@
 }
 
 .editProfileTop {
-    margin-bottom: 20px;
+    margin-bottom: 50px;
 }
 
 .editProfile form {
@@ -35,12 +35,7 @@
     justify-content: center;
     align-items: center;
     gap: 50px;
-    /* background-color: #fff;
-    padding: 20px;
-    border-radius: 8px;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-    width: 1200px;
-    height: 500px; */
+
 }
 
 .editProfileLeft {
@@ -63,7 +58,7 @@
     border: 2px solid #ddd;
     margin-left: auto;
     margin-right: auto;
-    /* margin-bottom: 10px; */
+
 }
 
 .upload-section {
@@ -74,7 +69,7 @@
 
 .upload-box {
     color:  hsl(38, 87%, 58%);
-    border: 2px dashed  hsl(38, 87%, 58%); /* Light purple color for border */
+    border: 2px dashed  hsl(38, 87%, 58%); 
     border-radius: 10px;
     padding: 20px;
     display: flex;
@@ -117,9 +112,10 @@
 }
 
 .input-section {
+    margin-top: 10px;
     display: flex;
     flex-direction: column;
-    margin-bottom: 20px;
+    margin-bottom: 10px;
 }
 
 .input-section label {
@@ -129,18 +125,18 @@
     margin-bottom: 0px;
 }
 
-/* Input field styled to look like an underline */
+
 .input-field {
     margin-top: 0px;
     margin-bottom: 0px;
     padding: 5px 0;
     border: none;
     border-bottom: 1px solid #ccc;
-   /* Bottom border to simulate an underline */
+
     font-size: 16px;
     width: 100%;
     max-width: 400px;
-    /* box-sizing: border-box; */
+
     transition: border-color 0.3s ease, width 0.3s ease;  /* Smooth transition */
     outline: none;
 }
@@ -171,7 +167,7 @@
     position: relative;
 }
 
-.edit-button {
+.edit-button, .save-button {
     background: none;
     border: none;
     cursor: pointer;
@@ -179,7 +175,7 @@
     transition: transform 0.3s ease;
 }
 
-.edit-button:hover {
+.edit-button:hover, .save-button:hover {
     transform: scale(1.1);  /* Slight scaling on hover for better feedback */
 }
 
@@ -189,20 +185,6 @@
     justify-content: flex-start;
 }
 
-.save-button {
-    background-color:  hsl(35, 100%, 50%);
-    color: #fff;
-    padding: 10px 20px;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    font-size: 16px;
-    transition: background-color 0.3s ease;
-}
-
-.save-button:hover {
-    background-color:hsl(35, 100%, 45%);
-}
 
 .profile-error-message {
   margin-bottom: 20px;  
@@ -214,12 +196,20 @@
     display: flex;
     align-items: center;
     margin-top: 15px;
-    /* margin-bottom: 10px; */
-    /* justify-content: space-between; */
+
 }
 
 .confirmed-password {
     margin-top: 20px;
 }
 
+.input-icon-section {
+    display: flex;
+    gap: 5px;
+} 
+
+.input-success {
+    border-bottom-color: #32de84;
+    box-shadow: none; 
+}
 
