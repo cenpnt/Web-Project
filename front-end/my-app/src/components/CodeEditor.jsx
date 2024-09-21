@@ -17,18 +17,23 @@ const CodeEditor = () => {
   const [totalQuestion, setTotalQuestion] = useState(0);
   const [showForm, setShowForm] = useState(false);
   const [problems, setProblems] = useState([]);   // Collect all problems inside an array for index access
-  const [solvedStatus, setSolvedStatus] = useState(Array(problems.length).fill(false));   // Solved status for each problem in problems arr
+  const [solvedStatus, setSolvedStatus] = useState([]);   // Solved status for each problem in problems arr
   const isAdmin = localStorage.getItem('isAdmin') === 'true';
   const token = localStorage.getItem('access_token');
 
   useEffect(() => {
     const fetchData = async () => {
       await fetchProblems();
-      await fetchSolvedProblems();
     };
-
+  
     fetchData();
   }, []);
+  
+  useEffect(() => {
+    if (problems.length > 0) {
+      fetchSolvedProblems();
+    }
+  }, [problems]);
 
   const onMount = (editor) => {
     editorRef.current = editor;
@@ -80,17 +85,18 @@ const CodeEditor = () => {
   }
 
   const fetchSolvedProblems = async () => {
+    const user_id = localStorage.getItem('userID');
     try {
       const response = await fetch("http://localhost:8000/all_solved_problem");
       if(!response.ok) {
         throw new Error('Cannot fetch solved problems');
       }
       const allSolvedProblems = await response.json();
-      setSolvedStatus(prev => {
-        return problems.map(problem => 
-          allSolvedProblems.some(solved => solved.id === problem.id)
-        );
-      });
+      setSolvedStatus(
+        problems.map(problem =>
+          allSolvedProblems.some(solved => solved.problem_id === problem.id && solved.user_id === parseInt(user_id))
+        )
+      );
     } catch (error) {
       console.error('Error fetching solved problems: ', error);
     }
@@ -234,7 +240,7 @@ const CodeEditor = () => {
                   <Box><hr style={{ backgroundColor: "white",  height: "2px", width: "100%" }} /></Box>
                   <Grid templateColumns="repeat(3, 1fr)" gap={4} mt={5} ml={5} mr={8}>
                     {problems.map((problem, index) => (
-                      <React.Fragment key={index}> {/* Use index as the key */}
+                      <React.Fragment key={index}>
                         <Box display="flex" alignItems="center" justifyContent="start">
                           <Button variant="unstyledButton" onClick={() => onButtonClick(index)}>
                             <Text fontSize={20} color={solvedStatus[index] ? "hsl(149, 50%, 50%)" : "white"}>{index + 1}. {problem.title}</Text>
