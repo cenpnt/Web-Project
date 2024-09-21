@@ -17,12 +17,23 @@ const CodeEditor = () => {
   const [totalQuestion, setTotalQuestion] = useState(0);
   const [showForm, setShowForm] = useState(false);
   const [problems, setProblems] = useState([]);   // Collect all problems inside an array for index access
+  const [solvedStatus, setSolvedStatus] = useState([]);   // Solved status for each problem in problems arr
   const isAdmin = localStorage.getItem('isAdmin') === 'true';
   const token = localStorage.getItem('access_token');
 
   useEffect(() => {
-    fetchProblems();
+    const fetchData = async () => {
+      await fetchProblems();
+    };
+  
+    fetchData();
   }, []);
+  
+  useEffect(() => {
+    if (problems.length > 0) {
+      fetchSolvedProblems();
+    }
+  }, [problems]);
 
   const onMount = (editor) => {
     editorRef.current = editor;
@@ -72,6 +83,24 @@ const CodeEditor = () => {
       console.error('Error fetching the problems:', error);
     }
   }
+
+  const fetchSolvedProblems = async () => {
+    const user_id = localStorage.getItem('userID');
+    try {
+      const response = await fetch("http://localhost:8000/all_solved_problem");
+      if(!response.ok) {
+        throw new Error('Cannot fetch solved problems');
+      }
+      const allSolvedProblems = await response.json();
+      setSolvedStatus(
+        problems.map(problem =>
+          allSolvedProblems.some(solved => solved.problem_id === problem.id && solved.user_id === parseInt(user_id))
+        )
+      );
+    } catch (error) {
+      console.error('Error fetching solved problems: ', error);
+    }
+  }
   
   const prevButton = () => {
     if (currentProblemIndex > 0) {
@@ -119,6 +148,40 @@ const CodeEditor = () => {
 
   const newQuestionAdded = () => {   // Update state when new question added
     fetchProblems();
+  }
+
+  const onDoneButtonClick = async (index) => {
+    const user_id = localStorage.getItem('userID');
+    const problem_id = problems[index]?.id;
+    if(!user_id || !problem_id) {
+      console.error("User ID or Problem ID is undefined");
+      return;
+    }
+
+    try {
+      const response = await fetch('http://localhost:8000/solved_problem', {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          user_id,
+          problem_id
+        })
+      })
+
+      if(!response.ok) {
+        throw new Error('Failed to mark problem as solved');
+      }
+      setSolvedStatus(prev => {
+        const newStatus = [...prev];
+        newStatus[index] = true;
+        return newStatus
+      });
+
+    } catch (error) {
+      console.error("Error marking problem as solved ", error);
+    }
   }
 
   return (
@@ -177,17 +240,17 @@ const CodeEditor = () => {
                   <Box><hr style={{ backgroundColor: "white",  height: "2px", width: "100%" }} /></Box>
                   <Grid templateColumns="repeat(3, 1fr)" gap={4} mt={5} ml={5} mr={8}>
                     {problems.map((problem, index) => (
-                      <React.Fragment key={index}> {/* Use index as the key */}
+                      <React.Fragment key={index}>
                         <Box display="flex" alignItems="center" justifyContent="start">
                           <Button variant="unstyledButton" onClick={() => onButtonClick(index)}>
-                            <Text fontSize={20}>{index + 1}. {problem.title}</Text> {/* Use index for display */}
+                            <Text fontSize={20} color={solvedStatus[index] ? "hsl(149, 50%, 50%)" : "white"}>{index + 1}. {problem.title}</Text>
                           </Button>
                         </Box>
                           <Box display="flex" alignItems="center" justifyContent="center">
                             { isAdmin && (<Button variant="unstyledButton" onClick={() => deleteQuestion(problem.id)} textAlign="center" color="#e1403f" _hover={{ color: "hsl(0, 73%, 45%)" }}>- Delete Question</Button>)}
                           </Box>
                         <Box display="flex" alignItems="center" justifyContent="center">
-                          <Button>Done</Button>
+                          { !solvedStatus[index] && <Button onClick={() => onDoneButtonClick(index)}>Done</Button> }
                         </Box>
                       </React.Fragment>
                     ))}

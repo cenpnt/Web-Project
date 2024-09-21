@@ -44,8 +44,9 @@ export const AuthProvider = ({ children }) => {
         localStorage.setItem('token_expiration', expirationTime); // Store token expiration time
         localStorage.setItem('isLoggedIn', 'true');
         localStorage.setItem('user', JSON.stringify(decodedToken.sub));
+        localStorage.setItem('userID', decodedToken.userID);
         if(decodedToken.role === 'admin') {
-            localStorage.setItem('isAdmin', 'true');
+            localStorage.setItem('isAdmin', 'true');    
         } else {
             localStorage.setItem('isAdmin', 'false');
         }
@@ -58,6 +59,8 @@ export const AuthProvider = ({ children }) => {
         localStorage.removeItem('user');
         localStorage.removeItem('access_token');
         localStorage.removeItem('token_expiration');
+        localStorage.removeItem('userID');
+        localStorage.removeItem('isAdmin');
         navigate('/');
     }
 
