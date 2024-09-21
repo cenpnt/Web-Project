@@ -45,7 +45,7 @@ const CodeEditor = () => {
     setValue(CODE_SNIPPETS[language]);
   };
 
-  const onButtonClick = async (index) => {
+  const onSelectProblem = async (index) => {
     if (index < 0 || index >= problems.length) {
       console.error("Index out of bounds");
       return;
@@ -104,13 +104,13 @@ const CodeEditor = () => {
   
   const prevButton = () => {
     if (currentProblemIndex > 0) {
-      onButtonClick(currentProblemIndex - 1);
+      onSelectProblem(currentProblemIndex - 1);
     }
   }
 
   const nextButton = () => {
     if (currentProblemIndex < totalQuestion - 1) {
-      onButtonClick(currentProblemIndex + 1);
+      onSelectProblem(currentProblemIndex + 1);
     }
   }
 
@@ -242,7 +242,7 @@ const CodeEditor = () => {
                     {problems.map((problem, index) => (
                       <React.Fragment key={index}>
                         <Box display="flex" alignItems="center" justifyContent="start">
-                          <Button variant="unstyledButton" onClick={() => onButtonClick(index)}>
+                          <Button variant="unstyledButton" onClick={() => onSelectProblem(index)}>
                             <Text fontSize={20} color={solvedStatus[index] ? "hsl(149, 50%, 50%)" : "white"}>{index + 1}. {problem.title}</Text>
                           </Button>
                         </Box>
