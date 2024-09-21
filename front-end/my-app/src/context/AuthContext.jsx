@@ -44,7 +44,7 @@ export const AuthProvider = ({ children }) => {
         localStorage.setItem('token_expiration', expirationTime); // Store token expiration time
         localStorage.setItem('isLoggedIn', 'true');
         localStorage.setItem('user', JSON.stringify(decodedToken.sub));
-        localStorage.setItem('userID', parseInt(decodedToken.userID));
+        localStorage.setItem('userID', decodedToken.userID);
         if(decodedToken.role === 'admin') {
             localStorage.setItem('isAdmin', 'true');    
         } else {
