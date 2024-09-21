@@ -213,3 +213,18 @@
     box-shadow: none; 
 }
 
+.password-validation {
+    margin-top: 10px;
+    font-size: 14px;
+}
+
+.validation-item {
+    display: flex;
+    align-items: center;
+    margin-bottom: 5px;
+}
+
+.validation-item span {
+    margin-left: 8px;
+}
+
