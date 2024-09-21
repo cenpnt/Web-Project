@@ -103,7 +103,7 @@ function EditProfile() {
             setFormData((prevData) => ({ ...prevData, [name]: value }));
         }
     
-        if (name === 'password') {
+        if (name === 'password' && !checkCurrentPassword()) {
             setNewPassword(value);
             if (!validatePassword(value)) {
                 setInputError(true);
@@ -118,7 +118,7 @@ function EditProfile() {
             setCurrentPassword(value);
         }
 
-        if (name === 'confirmPassword') {
+        if (name === 'confirmPassword' && !checkCurrentPassword()) {
             setConfirmPassword(value);
         }
     };
@@ -127,8 +127,8 @@ function EditProfile() {
     const saveFieldChange = async (fieldName, e) => {
         e.preventDefault();
 
-        if (fieldName === 'password') {
-            // setConfirmPass(false);
+        if (fieldName === 'password' && !checkCurrentPassword() && validatePassword(newPassword)) {
+            setCurrentPassword('')
             setConfirmPassword('');
             setFormData((prevData) => ({ ...prevData, password: newPassword })); 
             setNewPassword('');
