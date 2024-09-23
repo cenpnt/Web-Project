@@ -9,10 +9,10 @@ import Button from "../../components/button/Button";
 import "./EditProfile.css";
 
 function EditProfile() {
-    const [formData, setFormData] = useState({ name: 'name', address: 'address', password: 'password', profile: '' });
-    const [selectedImage, setSelectedImage] = useState('https://cdn.discordapp.com/attachments/1280538997944225846/1286578688426643476/image.jpg?ex=66ee6b46&is=66ed19c6&hm=2fa2f6abc2665e07de12b673293d2ac5cf0f6e3314ab2ae89c13ade3cba53224&');
-    const [isEditing, setIsEditing] = useState({ name: false, address: false, password: false });
-    const [fieldSaved, setFieldSaved] = useState({ name: false, address: false, password: false });
+    const [formData, setFormData] = useState({ username: 'name', address: 'address', password: '', profile: '' });
+    const [selectedImage, setSelectedImage] = useState('');
+    const [isEditing, setIsEditing] = useState({ username: false, address: false, password: false });
+    const [fieldSaved, setFieldSaved] = useState({ username: false, address: false, password: false });
     const [errorMessage, setErrorMessage] = useState('');
     const [inputError, setInputError] = useState(false);
     const [conPassError, setConPassError] = useState(false);
@@ -20,14 +20,14 @@ function EditProfile() {
     const [confirmPassword, setConfirmPassword] = useState('');
     const [newPassword, setNewPassword] = useState(''); 
     const [currentPassword, setCurrentPassword] = useState('');
-    const [originalFormData, setOriginalFormData] = useState({ name: '', address: '', password: '' });
+    const [originalFormData, setOriginalFormData] = useState({ username: '', address: '', password: '' });
 
 
     const { isOpen, onOpen, onClose } = useDisclosure();
 
     const toast = useToast(); // Add useToast hook
 
-    const nameInputRef = useRef(null);
+    const usernameInputRef = useRef(null);
     const addressInputRef = useRef(null);
     const passwordInputRef = useRef(null);
     const conPassInputRef = useRef(null);
@@ -56,6 +56,7 @@ function EditProfile() {
         }
     
         // If everything is valid, save the password and close the modal
+        // setFormData.passwor
         saveFieldChange('password', e);
         onClose(); // Only close the modal if there are no errors
     };
@@ -63,10 +64,17 @@ function EditProfile() {
 
     useEffect(() => {
         const fetchData = async () => {
+            const userID = localStorage.getItem('userID');
             try {
-                const response = await fetch('/api/user/profile');
+                const response = await fetch(`http://localhost:8000/user/data/${userID}`);
                 const data = await response.json();
-                setFormData({ name: data.name, address: data.address, password: data.password, profile: data.profile });
+                setFormData((prevData) => ({ 
+                    ...prevData,
+                    username: data.username, 
+                    address: data.address, 
+                    profile: data.profile,
+                    password: prevData.password, 
+                }));
                 setSelectedImage(data.profile);
             } catch (error) {
                 console.error('Error fetching data', error);
@@ -136,8 +144,8 @@ function EditProfile() {
     const handleInputChange = (e) => {
         const { name, value } = e.target;
     
-        // Handle name and address fields
-        if (name === 'name' || name === 'address') {
+        // Handle username and address fields
+        if (name === 'username' || name === 'address') {
             setFormData((prevData) => ({
                 ...prevData,
                 [name]: value
@@ -145,7 +153,7 @@ function EditProfile() {
         }
     
         // Handle password field and validation
-        if (name === 'password' && !checkCurrentPassword()) {
+        if (name === 'password') {
             setNewPassword(value);
             // Validate password and update state
             const validations = {
@@ -170,29 +178,40 @@ function EditProfile() {
         }
     
         // Handle confirm password field
-        if (name === 'confirmPassword' && !checkCurrentPassword()) {
+        if (name === 'confirmPassword') {
             setConfirmPassword(value);
         }
     };
     
-      
-    
-
     const saveFieldChange = async (fieldName, e) => {
         e.preventDefault();
 
-        if (fieldName === 'password' && !checkCurrentPassword() && validatePassword(newPassword)) {
-            setCurrentPassword('')
-            setConfirmPassword('');
-            setFormData((prevData) => ({ ...prevData, password: newPassword })); 
-            setNewPassword('');
+        if (fieldName === 'password') {
+            const isCurrentPasswordValid = await checkCurrentPassword();  // await the checkCurrentPassword result
+            const isPasswordValid = validatePassword(newPassword);
+    
+            if (isCurrentPasswordValid && isPasswordValid) {
+                setCurrentPassword(''); 
+                setConfirmPassword('');
+                setFormData((prevData) => ({ ...prevData, password: newPassword })); 
+                setNewPassword('');
+                console.log("Password updated to:", newPassword);
+            } else {
+                // handle the error cases here
+                console.log("Password update condition failed");
+                return;
+            }
         }
 
         const fieldValue = formData[fieldName];
+        const userID = localStorage.getItem('userID');
         try {
-            const response = await fetch(`/api/update/${fieldName}`, {
+            const response = await fetch(`http://localhost:8000/edit_profile/${userID}`, {
                 method: 'PUT',
-                body: JSON.stringify({ fieldValue }),
+                body: JSON.stringify({ 
+                    fieldName: fieldName,
+                    newValue: fieldValue
+                 }),
                 headers: { 'Content-Type': 'application/json' },
             });
             if (response.ok) {
@@ -227,12 +246,12 @@ function EditProfile() {
                 }
             });
 
-        // Revert to original value on failure
-        setFormData((prevData) => ({
-            ...prevData,
-            [fieldName]: originalFormData[fieldName],
-        }));
-    }
+            // Revert to original value on failure
+            setFormData((prevData) => ({
+                ...prevData,
+                [fieldName]: originalFormData[fieldName],
+            }));
+        }
     };
 
     const toggleEdit = (field) => {
@@ -245,7 +264,7 @@ function EditProfile() {
                     [field]: formData[field],
                 }));
                 setTimeout(() => {
-                    if (field === 'name') nameInputRef.current?.focus();
+                    if (field === 'username') usernameInputRef.current?.focus();
                     else if (field === 'address') addressInputRef.current?.focus();
                     else if (field === 'password') passwordInputRef.current?.focus();
                 }, 0);
@@ -259,12 +278,35 @@ function EditProfile() {
     };
     
 
-    const checkCurrentPassword = () => {
-        if (currentPassword !== formData.password) {
-            setCurrPassError(true);
-            setErrorMessage('Incorrect Password');
-        } 
-        return currentPassword !== formData.password;
+    const checkCurrentPassword = async () => {
+        console.log(currentPassword);
+        const userID = localStorage.getItem("userID");
+        try {
+            const response = await fetch(`http://localhost:8000/edit_profile/check_password/${userID}`, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    password: currentPassword
+                })
+            });
+            if(!response.ok) {
+                setCurrPassError(true);
+                setErrorMessage('Incorrect Password');
+                return false;
+
+            } else {
+                setCurrPassError(false);
+                setErrorMessage('');
+                return true;
+            }
+
+        } catch (error) {
+            console.error("Error checking current password", error)
+        }
+        // if (currentPassword !== formData.password) {
+            
+        // } 
+        // return currentPassword !== formData.password;
     }
 
 
@@ -302,17 +344,17 @@ function EditProfile() {
 
                     <div className="editprofileRight">
                         <InputField
-                            label="Name"
-                            value={formData.name}
+                            label="Username"
+                            value={formData.username}
                             onChange={handleInputChange}
-                            isEditing={isEditing.name}
-                            onSave={(e) => saveFieldChange('name', e)}
-                            onToggleEdit={() => toggleEdit('name')}
-                            inputRef={nameInputRef}
-                            onKeyDown={(e) => handleKeyDown('name', e)}
-                            isSuccess={fieldSaved.name}
+                            isEditing={isEditing.username}
+                            onSave={(e) => saveFieldChange('username', e)}
+                            onToggleEdit={() => toggleEdit('username')}
+                            inputRef={usernameInputRef}
+                            onKeyDown={(e) => handleKeyDown('username', e)}
+                            isSuccess={fieldSaved.username}
                             isPassword={false}
-                            originalValue={originalFormData.name}
+                            originalValue={originalFormData.username}
                         />
 
                         <InputField
@@ -360,7 +402,8 @@ function EditProfile() {
                                         className={`input-field ${curPassError ? "input-error" : ""}`}
                                         placeholder="Enter current password"
                                         ref={curPassInputRef} 
-                                        onKeyDown={(e) => handleKeyDown('currentPassword', e)} 
+                                        onKeyDown={(e) => handleKeyDown('currentPassword', e)}
+                                        onBlur={() => checkCurrentPassword()}
                                     />
                                 </div>
                             </div>
