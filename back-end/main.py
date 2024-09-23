@@ -49,8 +49,3 @@ async def delete_user(user_id: int, db: Session = Depends(get_db)):
     db.delete(db_userID)
     db.commit()
     return { "message" : "User deleted" }
-
-# Edit profile Endpoint
-# @app.put("/update_profile/${fieldName}")
-# def update_profile(fieldName: str, db: Session = Depends(get_db)):
-#     user = db.query(User).filter(User.username == ).first()
