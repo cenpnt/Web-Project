@@ -19,7 +19,7 @@ function ProfileIcon({ onSignOut }) {
       {/* Profile Icon */}
       <button className={"ProfileIcon"} onClick={toggleSignOut}>
         <img
-          src="https://cdn.discordapp.com/attachments/1280538997944225846/1283869999542308977/profileicon.png?ex=66e68add&is=66e5395d&hm=281220cc65aa6a9e7016fe2aa75dcad530693cd9d6f3239f705fcb7365d93c03&"
+          src="https://instagram.fbkk22-1.fna.fbcdn.net/v/t1.15752-9/423063124_412325167940689_1360113152861860307_n.png?stp=dst-png_s403x403&_nc_cat=101&ccb=1-7&_nc_sid=0024fc&_nc_ohc=7a2feRAfE88Q7kNvgGSKS2i&_nc_ht=instagram.fbkk22-1.fna&_nc_gid=ARjrtvajyDsYhWLKO91EmuR&oh=03_Q7cD1QHfGzBu51Ig93BOro_n1PqGmgRFg5OekQaVUyae6QvQAg&oe=670E1B4A"
           width={50}
           alt="Profile Icon"
         />

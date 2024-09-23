@@ -52,15 +52,16 @@
     transition: color 0.3s ease;
   }
   
-.menuContainer ul li span {
+.menuContainer ul li a {
     margin-left: 5px;
+    text-decoration: none;
 }
 
 .menuContainer hr {
   width: 130px;
 }
 
-  .menuContainer ul li:hover {
-    color: rgb(216, 154, 37);
-  }
+.menuContainer ul li:hover {
+  color: rgb(216, 154, 37);
+}
   

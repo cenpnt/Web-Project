@@ -2,7 +2,7 @@ import React from "react";
 import "./Glasgow.css";
 import ControlledCarousel from "../../components/body/carousel/ControlledCarousel";
 import Logo from "../../components/Logo";
-import Detail from "../../components/Detail";
+import Detail from "../../components/detail/Detail";
 import Footer from "../../components/footer/Footer";
 import { arr1, arr2, arr3, slides } from "../../constants";
 
