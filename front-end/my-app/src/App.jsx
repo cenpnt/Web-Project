@@ -14,6 +14,7 @@ import ScrollToTop from './components/ScrollToTop';
 import Contact from './pages/contact/Contact';
 import SEAcademy from './pages/SEAcademy';
 import theme from './components/theme';
+import EditProfile from './pages/editProfile/EditProfile';
 
 function App() {
   return (
@@ -29,6 +30,7 @@ function App() {
               <Route path="/queensland-doubledegree" element={<AuthHeader theme='dark'><Queensland /></AuthHeader>} />
               <Route path="/contact" element={<AuthHeader theme='dark'><Contact /></AuthHeader>}/>
               <Route path="/se_academy" element={<AuthHeader theme='dark'><SEAcademy /></AuthHeader>}/>
+              <Route path="/editprofile" element={<EditProfile/>}/>
             </Routes>
           </ScrollToTop>
         </ChakraProvider>
