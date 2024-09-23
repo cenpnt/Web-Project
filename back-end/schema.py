@@ -44,3 +44,13 @@ class SolvedProblemResponse(SolvedProblemBase):
     id: int
     class Config:
         from_attributes = True
+
+class EditProfileBase(BaseModel):
+    fieldName: str
+    newValue: str
+
+class CheckPasswordBase(BaseModel):
+    password: str
+
+class SuccessResponse(BaseModel):
+    message: str
