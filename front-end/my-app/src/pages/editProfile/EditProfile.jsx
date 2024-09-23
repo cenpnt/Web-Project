@@ -192,7 +192,7 @@ function EditProfile() {
         try {
             const response = await fetch(`/api/update/${fieldName}`, {
                 method: 'PUT',
-                body: JSON.stringify({ [fieldName]: fieldValue }),
+                body: JSON.stringify({ fieldValue }),
                 headers: { 'Content-Type': 'application/json' },
             });
             if (response.ok) {
