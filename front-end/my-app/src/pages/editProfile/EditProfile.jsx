@@ -20,6 +20,8 @@ function EditProfile() {
     const [confirmPassword, setConfirmPassword] = useState('');
     const [newPassword, setNewPassword] = useState(''); 
     const [currentPassword, setCurrentPassword] = useState('');
+    const [originalFormData, setOriginalFormData] = useState({ name: '', address: '', password: '' });
+
 
     const { isOpen, onOpen, onClose } = useDisclosure();
 
@@ -224,28 +226,38 @@ function EditProfile() {
                     marginTop: '170px', // Adjust this value to move it closer to the center
                 }
             });
-        }
+
+        // Revert to original value on failure
+        setFormData((prevData) => ({
+            ...prevData,
+            [fieldName]: originalFormData[fieldName],
+        }));
+    }
     };
 
     const toggleEdit = (field) => {
         setIsEditing((prevState) => {
             const updatedState = { ...prevState, [field]: !prevState[field] };
             if (updatedState[field]) {
+                // Capture the original value before editing starts
+                setOriginalFormData((prevData) => ({
+                    ...prevData,
+                    [field]: formData[field],
+                }));
                 setTimeout(() => {
                     if (field === 'name') nameInputRef.current?.focus();
                     else if (field === 'address') addressInputRef.current?.focus();
-                    else if (field === 'password') {
-                        passwordInputRef.current?.focus();
-                    }
+                    else if (field === 'password') passwordInputRef.current?.focus();
                 }, 0);
             }
             return updatedState;
         });
-
+    
         if (field === 'password') {
             setConfirmPassword('');
-        }        
+        }
     };
+    
 
     const checkCurrentPassword = () => {
         if (currentPassword !== formData.password) {
@@ -300,6 +312,7 @@ function EditProfile() {
                             onKeyDown={(e) => handleKeyDown('name', e)}
                             isSuccess={fieldSaved.name}
                             isPassword={false}
+                            originalValue={originalFormData.name}
                         />
 
                         <InputField
@@ -313,6 +326,7 @@ function EditProfile() {
                             onKeyDown={(e) => handleKeyDown('address', e)}
                             isSuccess={fieldSaved.address}
                             isPassword={false}
+                            originalValue={originalFormData.address}
                         />
                         <InputField
                             label="Password"
@@ -323,6 +337,7 @@ function EditProfile() {
                             }}
                             isPassword={true}
                             isSuccess={fieldSaved.password}
+                            originalValue={originalFormData.password}
                         />
                     </div>
                 </form>
