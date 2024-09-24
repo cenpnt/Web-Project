@@ -14,12 +14,14 @@ import ScrollToTop from './components/ScrollToTop';
 import Contact from './pages/contact/Contact';
 import SEAcademy from './pages/SEAcademy';
 import Coworkingspace from './pages/coworkingspace/Coworkingspace';
+import theme from './components/theme';
+import EditProfile from './pages/editProfile/EditProfile';
 
 function App() {
   return (
     <Router>
       <AuthProvider>
-        <ChakraProvider>
+        <ChakraProvider theme={theme}>
           <ScrollToTop>
             <Routes>
               <Route path="/" element={<AuthHeader theme='dark'><Home /></AuthHeader>} />
@@ -30,6 +32,7 @@ function App() {
               <Route path="/contact" element={<AuthHeader theme='dark'><Contact /></AuthHeader>}/>
               <Route path="/se_academy" element={<AuthHeader theme='dark'><SEAcademy /></AuthHeader>}/>
               <Route path="/coworkingspace" element={<AuthHeader theme='dark'><Coworkingspace /></AuthHeader>} />
+              <Route path="/editprofile" element={<EditProfile/>}/>
             </Routes>
           </ScrollToTop>
         </ChakraProvider>

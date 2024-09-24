@@ -24,20 +24,21 @@ function Login() {
     e.preventDefault();
 
     try {
-      const response = await fetch("http://localhost:8000/login", {
+      const response = await fetch("http://localhost:8000/token", {
         method: "POST",
         headers: {
-          "Content-Type": "application/json",
+          "Content-Type": "application/x-www-form-urlencoded",
         },
-        body: JSON.stringify({ username, password }),
+        body: new URLSearchParams({ // Use URLSearchParams to encode
+          username,
+          password
+        }),
       });
 
       if (response.ok) {
         // successful login
         const data = await response.json();
-        console.log('Login successful:', data);
-
-        login(data.user);
+        login(data.access_token);
         navigate('/u_student');
       } else {
         // Error

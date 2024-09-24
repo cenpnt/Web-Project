@@ -1,0 +1,232 @@
+
+.editProfile {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    background-color: #f3f4f7;
+}
+
+.editProfile h3 {
+    font-weight: lighter;
+    font-size: 30px;
+    color: #333;
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.editProfileBox {
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    width: 1100px;
+    height: 600px; 
+    padding: 20px;
+}
+
+.editProfileTop {
+    margin-bottom: 50px;
+}
+
+.editProfile form {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    gap: 50px;
+
+}
+
+.editProfileLeft {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width: 250px;
+}
+
+.profile-section {
+    text-align: center;
+}
+
+.profile-picture img {
+    width: 200px;
+    height: 200px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid #ddd;
+    margin-left: auto;
+    margin-right: auto;
+
+}
+
+.upload-section {
+    margin-top: 10px;
+    position: relative;
+    text-align: center;
+}
+
+.upload-box {
+    color:  hsl(38, 87%, 58%);
+    border: 2px dashed  hsl(38, 87%, 58%); 
+    border-radius: 10px;
+    padding: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    width: 200px;
+    height: 75px;
+    cursor: pointer;
+    transition: border-color 0.3s ease;
+    margin-top: 10px;
+}
+
+.upload-box:hover {
+    border-color: hsl(38, 87%, 45%); 
+    color: hsl(38, 87%, 45%);
+}
+
+.upload-icon {
+    margin-bottom: 5px;
+}
+
+.upload-text {
+    font-weight: 600;
+    font-size: 14px;
+}
+
+.file-input {
+    display: none;
+}
+
+
+.editprofileRight {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    width: 100%;
+    max-width: 600px;
+    max-height: 500px;
+}
+
+.input-section {
+    margin-top: 10px;
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 10px;
+}
+
+.input-section label {
+    font-size: 14px;
+    font-weight: 600;
+    color: #555;
+    margin-left: 5px;
+    margin-bottom: 0px;
+}
+
+
+.input-field {
+    margin-top: 0px;
+    margin-bottom: 0px;
+    padding: 5px 10px;
+    border: none;
+    border-bottom: 1px solid #ccc;
+    background-color: #fff;
+
+    font-size: 16px;
+    width: 100%;
+    max-width: 400px;
+
+    transition: border-color 0.3s ease, width 0.3s ease;  /* Smooth transition */
+    outline: none;
+}
+
+
+.input-field:focus {
+    border-bottom-color: #007bff;  
+}
+
+
+.input-error {
+    border-bottom-color: red;
+    box-shadow: none; 
+}
+
+
+.input-section {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 30px;
+    position: relative;
+}
+
+.input-button-section {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    position: relative;
+}
+
+.edit-button, .save-button {
+    background: none;
+    border: none;
+    cursor: pointer;
+    margin-left: 10px;
+    transition: transform 0.3s ease;
+}
+
+.edit-button:hover, .save-button:hover {
+    transform: scale(1.1);  /* Slight scaling on hover for better feedback */
+}
+
+
+.save-button-container {
+    display: flex;
+    justify-content: flex-start;
+}
+
+
+.profile-error-message {
+  margin-bottom: 20px;  
+  color: red;
+}
+
+
+.input-button-section {
+    display: flex;
+    align-items: center;
+    margin-top: 15px;
+
+}
+
+.confirmed-password {
+    margin-top: 20px;
+}
+
+.input-icon-section {
+    display: flex;
+    gap: 5px;
+} 
+
+.input-success {
+    border-bottom-color: #32de84;
+    box-shadow: none; 
+}
+
+.password-validation {
+    margin-top: 10px;
+    font-size: 14px;
+}
+
+.validation-item {
+    display: flex;
+    align-items: center;
+    margin-bottom: 5px;
+}
+
+.validation-item span {
+    margin-left: 8px;
+}
+

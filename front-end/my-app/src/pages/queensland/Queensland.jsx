@@ -2,7 +2,7 @@ import React from "react";
 import "./Queensland.css";
 import ControlledCarousel from "../../components/body/carousel/ControlledCarousel";
 import Logo from "../../components/Logo";
-import Detail from "../../components/Detail";
+import Detail from "../../components/detail/Detail";
 import Footer from "../../components/footer/Footer";
 
 function Queensland() {

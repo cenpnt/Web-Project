@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import DetailContent from './DetailContent';
+import DetailContent from '../detailContent/DetailContent';
 import './Detail.css'
 
 function Detail({ arr, hideText, showText }) {

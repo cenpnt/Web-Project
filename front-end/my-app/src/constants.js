@@ -6,10 +6,10 @@ export const LANGUAGE_VERSIONS = {
 
 export const CODE_SNIPPETS = {
   javascript:
-    '\nfunction greet(name) {\n\tconsole.log("Hello, " + name  + "!");\n}\n\ngreet("Alex");\n',
+    'function solution() {\n\t\n}\n\nsolution();',
   python:
-    '\ndef greet(name):\n\tprint("Hello, " + name + "!")\n\ngreet("Alex")\n',
-  java: '\npublic class HelloWorld {\n\tpublic static void main(String[] args) {\n\t\tSystem.out.println("Hello World");\n\t}\n}\n',
+  'def solution():\n\t\n\nsolution();',
+  java: 'public class Solution {\n\tpublic static void main(String[] args) {\n\t\t\n\t}\n}\n',
 };
 
 const year1n2 = {
