@@ -1,4 +1,7 @@
-from fastapi import FastAPI, Depends, HTTPException, status
+from fastapi import FastAPI, Depends, HTTPException, status, UploadFile, File
+from uuid import uuid4
+from fastapi.responses import JSONResponse
+from fastapi.staticfiles import StaticFiles
 from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy.orm import Session
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
@@ -10,7 +13,7 @@ import os
 from dotenv import load_dotenv
 from .models import User, Problem, UserRole, SolvedProblem
 from .database import Base, engine, get_db
-from .schema import UserResponse, UserCreated, ProblemResponse, ProblemCreated, Token, SolvedProblemCreated, SolvedProblemResponse
+from .schema import UserResponse, UserCreated, ProblemResponse, ProblemCreated, Token, SolvedProblemCreated, SolvedProblemResponse, EditProfileBase, SuccessResponse, CheckPasswordBase
 load_dotenv()
 
 app = FastAPI()
@@ -22,6 +25,16 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"], 
 )
+# Configuration
+UPLOAD_DIR = "uploads"
+BASE_URL = "http://localhost:8000"  # Adjust this to your server's base URL
+
+# Ensure upload directory exists
+os.makedirs(UPLOAD_DIR, exist_ok=True)
+
+# Mount the upload directory to serve files statically
+app.mount("/uploads", StaticFiles(directory=UPLOAD_DIR), name="uploads")
+
 # DB initialization
 Base.metadata.create_all(bind=engine)
 
@@ -113,7 +126,16 @@ def create_user(user: UserCreated, db: Session = Depends(get_db)):
     db.refresh(new_user)
     return new_user
 
-@app.delete("/users/{user_id}", dependencies=[Depends(admin_only)])
+@app.get("/user/data/{id}", response_model=UserResponse)
+def get_profile_data(id: int, db: Session = Depends(get_db)):
+    data = db.query(User).filter(User.id == id).first()
+    if data is None:
+        raise HTTPException(status_code=404, detail="User not found")
+    
+    data.profile_pic = f"{data.profile_pic}"
+    return data
+
+@app.delete("/users/{user_id}", response_model=SuccessResponse, dependencies=[Depends(admin_only)])
 async def delete_user(user_id: int, db: Session = Depends(get_db)):
     user = db.query(User).filter(User.id == user_id).first()
     if user is None:
@@ -152,7 +174,7 @@ def create_problem(problem: ProblemCreated, db: Session = Depends(get_db)):
     db.refresh(new_problem)
     return new_problem
 
-@app.delete("/problems/{problem_id}", dependencies=[Depends(admin_only)])
+@app.delete("/problems/{problem_id}", response_model=SuccessResponse, dependencies=[Depends(admin_only)])
 async def delete_problem(problem_id: int, db: Session = Depends(get_db)):
     problem = db.query(Problem).filter(Problem.id == problem_id).first()
     if problem is None:
@@ -179,7 +201,7 @@ def get_all_solved_problem(db: Session = Depends(get_db)):
     problems = db.query(SolvedProblem).all()
     return problems
 
-@app.delete("/solve_problem/{id}", dependencies=[Depends(admin_only)])
+@app.delete("/solve_problem/{id}", response_model=SuccessResponse, dependencies=[Depends(admin_only)])
 def delete_solved_problem(id: int, db: Session = Depends(get_db)):
     problem = db.query(SolvedProblem).filter(SolvedProblem.id == id).first()
     if problem is None:
@@ -187,3 +209,78 @@ def delete_solved_problem(id: int, db: Session = Depends(get_db)):
     db.delete(problem)
     db.commit()
     return { "message": "Problem deleted" }
+
+# Edit Profile Endpoints
+@app.post("/edit_profile/check_password/{id}", response_model=SuccessResponse)
+def check_password(id: int, password_data: CheckPasswordBase, db: Session = Depends(get_db)):
+    user = db.query(User).filter(User.id == id).first()
+    if user is None:
+        raise HTTPException(status_code=404, detail="User not found")
+    is_valid = pwd_context.verify(password_data.password, user.password)
+    if not is_valid:
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Invalid password")
+    
+    return {"message": "Password is correct"}
+
+@app.put("/edit_profile/{id}", response_model=SuccessResponse)
+def edit_profile(id: int, profile_data: EditProfileBase, db: Session = Depends(get_db)):
+    user = db.query(User).filter(User.id == id).first()
+    if user is None:
+        raise HTTPException(status_code=404, detail="User not found")
+    
+    allowed_field = ['username', 'password', 'profile_pic', 'bio']
+    if profile_data.fieldName not in allowed_field:
+        raise HTTPException(status_code=400, detail="Invalid field name")
+    
+    if profile_data.fieldName == 'password':
+        hashed_password = pwd_context.hash(profile_data.newValue)
+        setattr(user, "password", hashed_password)
+    else:
+        setattr(user, profile_data.fieldName, profile_data.newValue)
+
+    db.commit()
+    return { "message": f"{profile_data.fieldName} has been changed" }
+
+@app.put("/upload_profile_pic/{id}", response_model=SuccessResponse)
+def upload_profile_pic(id: int, file: UploadFile = File(...), db: Session = Depends(get_db)):
+    user = db.query(User).filter(User.id == id).first()
+    if user is None:
+        raise HTTPException(status_code=404, detail="User not found")
+    
+    # Generate a unique filename
+    file_extension = os.path.splitext(file.filename)[1]
+    unique_filename = f"{uuid4()}{file_extension}"
+    file_location = os.path.join(UPLOAD_DIR, unique_filename)
+
+    # Save the file
+    with open(file_location, "wb+") as file_object:
+        file_object.write(file.file.read())
+
+    # Generate the file URL
+    file_url = f"{BASE_URL}/uploads/{unique_filename}"
+    
+    # Update the user's profile_pic field with the file URL
+    user.profile_pic = file_url
+    db.commit()
+    return { "message": "Profile picture updated successfully", "file_url": file_url }
+
+@app.delete("/delete_profile_pic/{filename}", dependencies=[Depends(admin_only)])
+def delete_profile_picture(filename: str):
+    file_path = os.path.join(UPLOAD_DIR, filename)
+    
+    try:
+        if os.path.exists(file_path):
+            os.remove(file_path)
+            return JSONResponse(status_code=200, content={"message": "File deleted successfully"})
+        else:
+            raise HTTPException(status_code=404, detail="File not found")
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"An error occurred: {str(e)}")
+
+# Server Endpoint
+@app.post("/upload_image/")
+async def upload_image(file: UploadFile = File(...)):
+    file_location = os.path.join(UPLOAD_DIR, file.filename)
+    with open(file_location, "wb") as f:
+        f.write(await file.read())
+    return JSONResponse(content={"filename": file.filename, "url": f"http://localhost:8000/uploads/{file.filename}"})

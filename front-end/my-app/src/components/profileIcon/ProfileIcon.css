@@ -11,6 +11,10 @@
   align-items: center;
 }
 
+.ProfileIcon img {
+  border-radius: 50%;
+}
+
 .signOutContainer {
   right: 0;
   width: 150px;
