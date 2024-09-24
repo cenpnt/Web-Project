@@ -2,7 +2,7 @@ import React from 'react';
 import { EditIcon, CloseIcon, CheckIcon } from '@chakra-ui/icons';
 import "./InputField.css";
 
-const InputField = ({ label, value, onChange, isEditing, onSave, onToggleEdit, inputRef, onKeyDown, error, isSuccess, isPassword, originalValue }) => {
+const InputField = ({ label, value, onChange, isEditing, onSave, onToggleEdit, inputRef, onKeyDown, error, isSuccess, isPassword, originalValue, isBIO, placeholder }) => {
     
     // When Save or Cancel is clicked, stop editing the field
     const handleSave = (e) => {
@@ -26,17 +26,30 @@ const InputField = ({ label, value, onChange, isEditing, onSave, onToggleEdit, i
         <div className="input-section">
             <label>{label}</label>
             <div className="input-button-section">
-                <input
-                    type={isPassword ? 'password' : 'text'}
-                    className={`input-field ${isSuccess ? 'input-success' : ''} ${error ? 'input-error' : ''}`}
-                    name={label.toLowerCase()}  // Ensure this is set so handleInputChange updates correctly
-                    value={value}
-                    onChange={onChange}
-                    disabled={!isEditing}  // Disable field when not in editing mode
-                    ref={inputRef}
-                    onKeyDown={onKeyDown}
-                />
-
+                {isBIO ? <textarea 
+                   className={`input-textarea ${isSuccess ? 'input-success' : ''} ${error ? 'input-error' : ''}`}
+                   name={label.toLowerCase()}  // Ensure this is set so handleInputChange updates correctly
+                   value={value}
+                   onChange={onChange}
+                   disabled={!isEditing}  // Disable field when not in editing mode
+                   ref={inputRef}
+                   onKeyDown={onKeyDown}
+                   placeholder={placeholder}
+                    wrap='soft'
+                ></textarea>:
+                    <input
+                        type={`${isPassword ? 'password' : 'text'}`}
+                        className={`input-field ${isSuccess ? 'input-success' : ''} ${error ? 'input-error' : ''}`}
+                        name={label.toLowerCase()}  // Ensure this is set so handleInputChange updates correctly
+                        value={value}
+                        onChange={onChange}
+                        disabled={!isEditing}  // Disable field when not in editing mode
+                        ref={inputRef}
+                        onKeyDown={onKeyDown}
+                        placeholder={placeholder}
+                    />
+                }
+                
                 <div className="input-icon-section">
                     {isEditing && (
                         <>
