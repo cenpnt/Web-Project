@@ -9,10 +9,10 @@ import Button from "../../components/button/Button";
 import "./EditProfile.css";
 
 function EditProfile() {
-    const [formData, setFormData] = useState({ username: 'name', address: 'address', password: '', profile: '' });
-    const [selectedImage, setSelectedImage] = useState('');
-    const [isEditing, setIsEditing] = useState({ username: false, address: false, password: false });
-    const [fieldSaved, setFieldSaved] = useState({ username: false, address: false, password: false });
+    const [formData, setFormData] = useState({ username: 'name', bio: '', password: '', profile: '' });
+    const [selectedImage, setSelectedImage] = useState('http://localhost:8000/uploads/anonymous_dark.png');
+    const [isEditing, setIsEditing] = useState({ username: false, bio: false, password: false });
+    const [fieldSaved, setFieldSaved] = useState({ username: false, bio: false, password: false });
     const [errorMessage, setErrorMessage] = useState('');
     const [inputError, setInputError] = useState(false);
     const [conPassError, setConPassError] = useState(false);
@@ -20,7 +20,7 @@ function EditProfile() {
     const [confirmPassword, setConfirmPassword] = useState('');
     const [newPassword, setNewPassword] = useState(''); 
     const [currentPassword, setCurrentPassword] = useState('');
-    const [originalFormData, setOriginalFormData] = useState({ username: '', address: '', password: '' });
+    const [originalFormData, setOriginalFormData] = useState({ username: '', bio: '', password: '' });
 
 
     const { isOpen, onOpen, onClose } = useDisclosure();
@@ -28,7 +28,7 @@ function EditProfile() {
     const toast = useToast(); // Add useToast hook
 
     const usernameInputRef = useRef(null);
-    const addressInputRef = useRef(null);
+    const bioInputRef = useRef(null);
     const passwordInputRef = useRef(null);
     const conPassInputRef = useRef(null);
     const curPassInputRef = useRef(null);
@@ -40,7 +40,7 @@ function EditProfile() {
     });
 
     const handlePasswordSave = (e) => {
-        e.preventDefault(); // Prevent form submission
+        e.preventDefault(); // Prevent form submission  
     
         // Check if the passwords match and are valid
         if (newPassword !== confirmPassword) {
@@ -71,11 +71,13 @@ function EditProfile() {
                 setFormData((prevData) => ({ 
                     ...prevData,
                     username: data.username, 
-                    address: data.address, 
-                    profile: data.profile,
+                    bio: data.bio, 
+                    profile: data.profile_pic,
                     password: prevData.password, 
                 }));
-                setSelectedImage(data.profile);
+                if(data.profile_pic && data.profile_pic !== 'None') {
+                    setSelectedImage(data.profile_pic);
+                }
             } catch (error) {
                 console.error('Error fetching data', error);
             }
@@ -91,16 +93,19 @@ function EditProfile() {
                 setSelectedImage(reader.result);
             };
             reader.readAsDataURL(file);
-            uploadProfilePicture(reader.result);
+            uploadProfilePicture(file);
         }
     };
 
     const uploadProfilePicture = async (imageData) => {
+        const userID = localStorage.getItem('userID');
+        const formData = new FormData();
+        formData.append('file', imageData);
+
         try {
-            const response = await fetch('/api/upload/profile-pic', {
-                method: 'POST',
-                body: JSON.stringify({ image: imageData }),
-                headers: { 'Content-Type': 'application/json' },
+            const response = await fetch(`http://localhost:8000/upload_profile_pic/${userID}`, {
+                method: 'PUT',
+                body: formData,
             });
             if (response.ok) {
                 toast({
@@ -144,8 +149,8 @@ function EditProfile() {
     const handleInputChange = (e) => {
         const { name, value } = e.target;
     
-        // Handle username and address fields
-        if (name === 'username' || name === 'address') {
+        // Handle username and bio fields
+        if (name === 'username' || name === 'bio') {
             setFormData((prevData) => ({
                 ...prevData,
                 [name]: value
@@ -186,24 +191,25 @@ function EditProfile() {
     const saveFieldChange = async (fieldName, e) => {
         e.preventDefault();
 
+        let fieldValue;
+
         if (fieldName === 'password') {
             const isCurrentPasswordValid = await checkCurrentPassword();  // await the checkCurrentPassword result
             const isPasswordValid = validatePassword(newPassword);
     
             if (isCurrentPasswordValid && isPasswordValid) {
+                fieldValue = newPassword;
                 setCurrentPassword(''); 
                 setConfirmPassword('');
                 setFormData((prevData) => ({ ...prevData, password: newPassword })); 
                 setNewPassword('');
-                console.log("Password updated to:", newPassword);
             } else {
-                // handle the error cases here
                 console.log("Password update condition failed");
                 return;
             }
+        } else {
+            fieldValue = formData[fieldName]
         }
-
-        const fieldValue = formData[fieldName];
         const userID = localStorage.getItem('userID');
         try {
             const response = await fetch(`http://localhost:8000/edit_profile/${userID}`, {
@@ -265,7 +271,7 @@ function EditProfile() {
                 }));
                 setTimeout(() => {
                     if (field === 'username') usernameInputRef.current?.focus();
-                    else if (field === 'address') addressInputRef.current?.focus();
+                    else if (field === 'bio') bioInputRef.current?.focus();
                     else if (field === 'password') passwordInputRef.current?.focus();
                 }, 0);
             }
@@ -303,10 +309,6 @@ function EditProfile() {
         } catch (error) {
             console.error("Error checking current password", error)
         }
-        // if (currentPassword !== formData.password) {
-            
-        // } 
-        // return currentPassword !== formData.password;
     }
 
 
@@ -354,21 +356,8 @@ function EditProfile() {
                             onKeyDown={(e) => handleKeyDown('username', e)}
                             isSuccess={fieldSaved.username}
                             isPassword={false}
+                            isBIO={false}
                             originalValue={originalFormData.username}
-                        />
-
-                        <InputField
-                            label="Address"
-                            value={formData.address}
-                            onChange={handleInputChange}
-                            isEditing={isEditing.address}
-                            onSave={(e) => saveFieldChange('address', e)}
-                            onToggleEdit={() => toggleEdit('address')}
-                            inputRef={addressInputRef}
-                            onKeyDown={(e) => handleKeyDown('address', e)}
-                            isSuccess={fieldSaved.address}
-                            isPassword={false}
-                            originalValue={originalFormData.address}
                         />
                         <InputField
                             label="Password"
@@ -381,6 +370,23 @@ function EditProfile() {
                             isSuccess={fieldSaved.password}
                             originalValue={originalFormData.password}
                         />
+
+                        <InputField
+                            label="Bio"
+                            value={formData.bio}
+                            onChange={handleInputChange}
+                            isEditing={isEditing.bio}
+                            onSave={(e) => saveFieldChange('bio', e)}
+                            onToggleEdit={() => toggleEdit('bio')}
+                            inputRef={bioInputRef}
+                            onKeyDown={(e) => handleKeyDown('bio', e)}
+                            isSuccess={fieldSaved.bio}
+                            isPassword={false}
+                            isBIO={true}
+                            originalValue={originalFormData.bio}
+                            placeholder={'Enter your bio'}
+                        />
+                       
                     </div>
                 </form>
 
