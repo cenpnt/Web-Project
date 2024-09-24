@@ -1,12 +1,13 @@
 import React, { useRef, useState, useEffect } from 'react';
-import { Canvas } from '@react-three/fiber';
-import { OrbitControls, PresentationControls, Stage, useGLTF } from '@react-three/drei';
+import { Canvas, useThree } from '@react-three/fiber';
+import { OrbitControls, Stage, useGLTF } from '@react-three/drei';
+import ReservationBox from '../reserveBox/reserveBox';
+import { room1, room2, room3 } from '../../constants';
 import './Coworkingspace.css';
 
 function Model({ onRoomClick }) {
-  const gltf = useGLTF('/models/coworking4.gltf');
+  const gltf = useGLTF('/models/coworking5.gltf');
 
-  // Adding click event to each room
   const handleClick = (roomName) => {
     onRoomClick(roomName);
   };
@@ -15,7 +16,6 @@ function Model({ onRoomClick }) {
     <primitive
       object={gltf.scene}
       onPointerDown={(e) => {
-        // Check for specific clicked room by object name
         if (e.object.name === 'Room1') handleClick('Room1');
         else if (e.object.name === 'Room2') handleClick('Room2');
         else if (e.object.name === 'Room3') handleClick('Room3');
@@ -24,79 +24,100 @@ function Model({ onRoomClick }) {
   );
 }
 
+function CameraController({ view, zoom, resetTrigger }) {
+  const { camera, gl } = useThree();
+  const controlsRef = useRef();
+  
+  useEffect(() => {
+    if (controlsRef.current) {
+      if (view === 'top') {
+        camera.position.set(0, zoom, 0);
+        controlsRef.current.target.set(0, 0, 0);
+      } else if (view === 'front'){
+        camera.position.set(10000, 0, zoom+5);  // Modified this line
+        controlsRef.current.target.set(0, 0, 0); 
+      } else {
+        camera.position.set(0, 10, 0);
+        controlsRef.current.target.set(0, 0, 0);
+      }
+      controlsRef.current.update();
+    }
+  }, [view, zoom, camera, resetTrigger]); // Add resetTrigger to dependencies
+  
+  return (
+    <OrbitControls
+      ref={controlsRef}
+      args={[camera, gl.domElement]}
+      minPolarAngle={0}
+      maxPolarAngle={Math.PI / 2}
+      minDistance={5}
+      maxDistance={30}
+    />
+  );
+}
+
 export default function ModelViewer() {
-  const orbitRef = useRef();
   const [zoom, setZoom] = useState(20);
   const [view, setView] = useState('front');
-  const [defaultPosition, setDefaultPosition] = useState([5, 0, 20]);
-  const [defaultTarget, setDefaultTarget] = useState([0, 0, 0]);
+  const [selectedRoom, setSelectedRoom] = useState(null);
+  const [resetTrigger, setResetTrigger] = useState(0);
 
-  const handleViewChange = (view) => {
-    if (orbitRef.current) {
-      const controls = orbitRef.current;
-      const camera = controls.object;
-
-      if (view === 'top') {
-        setView('top');
-        camera.position.set(0, 25, 0);
-        controls.target.set(0, 0, 0);
-      } else if (view === 'front') {
-        setView('front');
-        camera.position.set(...defaultPosition);
-        controls.target.set(...defaultTarget);
-      }
-
-      controls.update();
-    }
+  const handleViewChange = (newView) => {
+    setView(newView);
+    setZoom(10); // Reset zoom when changing views
+    setResetTrigger(prev => prev + 1);
   };
 
-  const handleZoom = (direction) => {
-    if (direction === 'in' && zoom > 5) setZoom(zoom - 1);
-    if (direction === 'out' && zoom < 30) setZoom(zoom + 1);
-  };
+  // const handleZoom = (direction) => {
+  //   setZoom(prevZoom => {
+  //     if (direction === 'in' && prevZoom > 5) return prevZoom - 1;
+  //     if (direction === 'out' && prevZoom < 30) return prevZoom + 1;
+  //     return prevZoom;
+  //   });
+  // };
 
-  useEffect(() => {
-    if (orbitRef.current) {
-      orbitRef.current.object.position.set(5, 0, zoom);
-      orbitRef.current.update();
-    }
-  }, [zoom]);
-
-  // Action when a room is clicked
   const handleRoomClick = (roomName) => {
-    console.log(`You clicked on ${roomName}`); // Replace this with desired action
+    if (roomName === 'Room1') setSelectedRoom(room1);
+    else if (roomName === 'Room2') setSelectedRoom(room2);
+    else if (roomName === 'Room3') setSelectedRoom(room3);
+  };
+
+  const handleClose = () => {
+    setSelectedRoom(null);
   };
 
   return (
-    <div className="modelcontainer">
-      <Canvas
-        camera={{ position: [5, 0, zoom], fov: 30 }}
-        style={{ width: '1000px', height: '550px', borderRadius: '10px', margin: '20px' }}
-      >
-        <color attach="background" args={['#101010']} />
-        <ambientLight intensity={0.5} />
-        <directionalLight position={[10, 10, 5]} intensity={0.2} />
-
-        <PresentationControls speed={1.0} polar={[0, Math.PI / 18]}>
+    <div className="modelviewer-container">
+      <div className="modelcontainer">
+        <Canvas style={{ width: '90%', height: '600px', borderRadius: '10px', margin: '20px' }}>
+          <color attach="background" args={['#101010']} />
+          <ambientLight intensity={0.5} />
+          <directionalLight position={[10, 10, 5]} intensity={0.2} />
+          
           <Stage environment={'city'} shadows={false}>
-            <Model scale={0.4} receiveShadow={false} castShadow={false} onRoomClick={handleRoomClick} />
+            <Model scale={1.3} receiveShadow={false} castShadow={false} onRoomClick={handleRoomClick} />
           </Stage>
-        </PresentationControls>
 
-        <OrbitControls
-          ref={orbitRef}
-          enableZoom={false}
-          minPolarAngle={0}
-          maxPolarAngle={Math.PI / 2}
-        />
-      </Canvas>
+          <CameraController view={view} zoom={zoom} resetTrigger={resetTrigger} />
+        </Canvas>
 
-      <div className="button-container" style={{ display: 'flex', justifyContent: 'center', marginTop: '10px' }}>
-        <button onClick={() => handleViewChange('front')}>Front View</button>
-        <button onClick={() => handleViewChange('top')}>Top View</button>
-        <button onClick={() => handleZoom('in')}>+ Zoom In</button>
-        <button onClick={() => handleZoom('out')}>- Zoom Out</button>
+        <div className="button-container">
+          <button onClick={() => handleViewChange('front')}>Front View</button>
+          <button onClick={() => handleViewChange('top')}>Top View</button>
+          {/* <button onClick={() => handleZoom('in')}>+ Zoom In</button>
+          <button onClick={() => handleZoom('out')}>- Zoom Out</button> */}
+          <button onClick={() => handleViewChange('fit')} style={{ display: 'flex', alignItems: 'center', justifyContent: 'center'}}><img src="https://cdn-icons-png.flaticon.com/128/14759/14759477.png" alt="Front View" style={{ width: '30px', height: '30px', marginRight: '5px' }} />Fit Screen</button>
+        </div>
       </div>
+
+      {selectedRoom && (
+        <ReservationBox
+          roomName={selectedRoom.roomName}
+          roomImage={selectedRoom.roomImage}
+          amenities={selectedRoom.amenities}
+          onClose={handleClose}
+        />
+      )}
     </div>
   );
 }
