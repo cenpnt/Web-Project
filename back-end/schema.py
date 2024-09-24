@@ -1,6 +1,7 @@
 from pydantic import BaseModel
 from typing import Dict
 from .models import UserRole
+from typing import Optional
 
 class UserBase(BaseModel):
     username: str
@@ -12,8 +13,8 @@ class UserCreated(UserBase):
 
 class UserResponse(UserBase):
     id: int
-    profile_pic: str
-    bio: str
+    profile_pic: Optional[str] = None
+    bio: Optional[str] = None
     class Config:
         from_attributes = True
 
