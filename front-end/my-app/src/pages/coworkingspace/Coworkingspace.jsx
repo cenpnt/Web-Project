@@ -1,7 +1,7 @@
 import React from "react";
 import './Coworkingspace.css';
 import Footer from "../../components/footer/Footer";
-import ModelViewer from "../../components/3DModel/Coworkingspace";
+import ModelViewer from "../../components/3DModel/Coworkingspace3D";
 
 function Coworkingspace(){
     return (
