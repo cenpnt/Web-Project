@@ -13,6 +13,8 @@ class User(Base):
     username = Column(String, unique=True, index=True)
     password = Column(String)
     role = Column(Enum(UserRole), default=UserRole.user)
+    profile_pic = Column(String, nullable=True)
+    bio = Column(String)
     
     # Establish relationship between User and SolvedProblem
     solved_problems = relationship("SolvedProblem", back_populates="user")
