@@ -12,6 +12,7 @@ class UserCreated(UserBase):
 
 class UserResponse(UserBase):
     id: int
+    profile_pic: str
     class Config:
         from_attributes = True
 
