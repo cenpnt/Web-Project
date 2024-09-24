@@ -1,0 +1,10 @@
+.co-Container {
+    background-color: rgb(255, 255, 255);
+
+}
+
+.co-Text{
+    padding-top: 30px;
+    text-align: center;
+    color: rgb(0, 0, 0);
+}

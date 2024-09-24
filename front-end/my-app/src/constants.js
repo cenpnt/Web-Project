@@ -250,7 +250,7 @@ export const card4 = {
       subItems: [
         { text: "Laboratory", path: "/" },
         { text: "Lecture Room", path: "/" },
-        { text: 'Co-Working Space Booking System', path: '/admission' }
+        { text: 'Co-Working Space Booking System', path: '/coworkingspace' }
       ]
     }
     
@@ -262,3 +262,21 @@ export const card4 = {
       {text: "Sign Out", path: "", smalltext: ""}
     
   ];
+
+  export const room1 = {
+    roomName: "Room1",
+    roomImage: "https://media.discordapp.net/attachments/1280538997944225846/1287795573335916564/IMG_0792.jpg?ex=66f2d896&is=66f18716&hm=a6c7f0c6e9cbd1cfc72c6cbf2bb4b1a78518799279f12ecc7576f61de1377237&=&format=webp&width=883&height=662", 
+    amenities: ['Capacity of 5','Wi-Fi', 'Table', 'Smart-TV (Interactive Display Writing Board)'], 
+  };
+
+  export const room2 = {
+    roomName: "Room2",
+    roomImage: "https://media.discordapp.net/attachments/1280538997944225846/1287804527155740767/IMG_1058.png?ex=66f2e0ed&is=66f18f6d&hm=3c1893c8d7086c388e639bfa2c888c0fa6055ce784b7a6a5370d558cac5fc830&=&format=webp&quality=lossless&width=815&height=662",
+    amenities: ['Capacity of 5','Wi-Fi', 'Table']
+  }
+
+  export const room3 = {
+    roomName: "Room3",
+    roomImage: "https://media.discordapp.net/attachments/1280538997944225846/1288183653591027804/image.jpg?ex=66f44204&is=66f2f084&hm=52f3da034638b1b27739348241e8c88b19d1b8fa28791707564307e19bbfb340&=&format=webp&width=933&height=662",
+    amenities: ['Capacity of 10','Wi-fi', 'Smart-TV (Interactive Display Writing Board)', 'Meeting desk']
+  }
