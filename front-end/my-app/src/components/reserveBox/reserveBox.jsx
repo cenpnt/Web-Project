@@ -10,8 +10,7 @@ const getFormattedButtonDate = (date) => {
 
 function ReservationBox({ roomName, roomImage, onClose, amenities, members }) {
   const [isReserving, setIsReserving] = useState(false);
-  const [selectedDateIndex, setSelectedDateIndex] = useState(null);
-  const [selectedTime, setSelectedTime] = useState(null);
+  const [selectedDateIndex, setSelectedDateIndex] = useState(0);
   const [reserved, setReserved] = useState([]);
 
   const today = new Date();
@@ -24,16 +23,20 @@ function ReservationBox({ roomName, roomImage, onClose, amenities, members }) {
     fetchAllReservedData();
   }, []);
 
-  const handleReserveClick = () => {
-    setIsReserving(true);
-  };
-
   const getCurrentTimeFormatted = () => {
     const now = new Date();
     const hours = String(now.getHours()).padStart(2, '0');
     const minutes = String(now.getMinutes()).padStart(2, '0');
     return `${hours}:${minutes}`;
   };
+
+  const getCustomFormattedDate = (date) => {
+    const day = String(date.getDate()).padStart(2, '0');  // Get the day and ensure it's 2 digits
+    const month = String(date.getMonth() + 1).padStart(2, '0');  // Get the month (January is 0) and ensure it's 2 digits
+    const year = String(date.getFullYear()).slice(-2);  // Get the last two digits of the year
+  
+    return `${day}/${month}/${year}`;
+  }
 
   const fetchAllReservedData = async () => {
     try {
@@ -42,15 +45,21 @@ function ReservationBox({ roomName, roomImage, onClose, amenities, members }) {
         throw new Error("Problem while fetching all reserved data");
       }
       const allReserved = await response.json();
-      setReserved(allReserved);
+      const newReservation = allReserved.map(reservation => ({
+        date: reservation.date,
+        time: reservation.time,
+        room_id: reservation.room_id
+      }));
+      setReserved(newReservation);
     } catch (error) {
       console.error("Error: ", error);
     }
   }
 
-  const reserveRoom = async (room_id) => {
-    const user_id = localStorage.getItem('user_id');
-    const currentTime = getCurrentTimeFormatted();
+  const reserveRoom = async (room_id, time) => {
+    const date = new Date();
+    date.setDate(date.getDate() + selectedDateIndex)
+    const user_id = localStorage.getItem('userID');
     try {
       const response = await fetch('http://localhost:8000/reserve', {
         method: "POST",
@@ -58,17 +67,26 @@ function ReservationBox({ roomName, roomImage, onClose, amenities, members }) {
         body: JSON.stringify({
           user_id,
           room_id,
-          data: selectedDateIndex,
-          time: currentTime
+          date: getCustomFormattedDate(date),
+          time
         })
       })
       if(!response.ok) {
         throw new Error("Failed to reserve the room");
       }
+      const data = await response.json();
+      const newReservation = {
+        date: data.date,
+        time: data.time,
+        room_id: data.room_id
+      }
+      setReserved(prev => [...prev, newReservation]);
     } catch (error) {
       console.error("Error reserving room: ", error);
     }
   }
+
+  const threeDate = [today, tomorrow, dayAftertomorrow];
 
   return (
     <div className="reservation-box">
@@ -78,7 +96,7 @@ function ReservationBox({ roomName, roomImage, onClose, amenities, members }) {
           <form className="reservation-form">
             <label>Select Date:</label>
             <div className="date-selection">
-              {[today, tomorrow, dayAftertomorrow].map((date, index) => (
+              {threeDate.map((date, index) => (
                 <Button
                   key={date.toString()}
                   onClick={() => setSelectedDateIndex(index)}
@@ -99,9 +117,27 @@ function ReservationBox({ roomName, roomImage, onClose, amenities, members }) {
 
             <label>Select Time:</label>
             <div className="time-selection">
-              {["12:00", "13:00", "14:00", "15:00", "16:00", "17:00", "18:00", "19:00", "20:00", "21:00", "22:00", "23:00"].map((time) => (
-                <Button key={time} onClick={() => setSelectedTime(time)} isDisabled={getCurrentTimeFormatted() > time}>{time}</Button>
-              ))}
+            {["12:00", "13:00", "14:00", "15:00", "16:00", "17:00", "18:00", "19:00", "20:00", "21:00", "22:00", "23:00"].map((time) => (
+              <Button 
+              key={time} 
+              onClick={() => {
+                reserveRoom(roomName.match(/\d+/)[0], time);
+              }} 
+              isDisabled={
+                (selectedDateIndex === 0 && getCurrentTimeFormatted() > time) || 
+                reserved.some(reservation => {
+                  const selectedDate = threeDate[selectedDateIndex];
+                  return (
+                    reservation.date === getCustomFormattedDate(selectedDate) && 
+                    reservation.time === time && 
+                    reservation.room_id === parseInt(roomName.match(/\d+/)[0])
+                  );
+                })
+              }
+              >
+              {time}
+            </Button>
+            ))}
             </div>
             <div className="member-box">
               <label>Invite Member <span>*require at least {members} members</span></label>
@@ -158,7 +194,7 @@ function ReservationBox({ roomName, roomImage, onClose, amenities, members }) {
           >
             <CloseIcon></CloseIcon>
           </Button>
-          <Button colorScheme="blue" onClick={handleReserveClick}>
+          <Button colorScheme="blue" onClick={() => setIsReserving(true)}>
             Reserve
           </Button>
         </>
