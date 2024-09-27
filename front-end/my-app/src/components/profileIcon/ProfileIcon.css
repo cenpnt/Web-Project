@@ -16,7 +16,6 @@
     height: 50px;
     border-radius: 50%;
     object-fit: cover;
-    border: 2px solid #ddd;
     margin-left: auto;
     margin-right: auto;
 }
