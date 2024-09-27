@@ -11,9 +11,9 @@ from typing import List, Optional
 import jwt
 import os
 from dotenv import load_dotenv
-from .models import User, Problem, UserRole, SolvedProblem
+from .models import User, Problem, UserRole, SolvedProblem, Reservation
 from .database import Base, engine, get_db
-from .schema import UserResponse, UserCreated, ProblemResponse, ProblemCreated, Token, SolvedProblemCreated, SolvedProblemResponse, EditProfileBase, SuccessResponse, CheckPasswordBase
+from .schema import UserResponse, UserCreated, ProblemResponse, ProblemCreated, Token, SolvedProblemCreated, SolvedProblemResponse, EditProfileBase, SuccessResponse, CheckPasswordBase, ReservationCreated, ReservationResponse
 load_dotenv()
 
 app = FastAPI()
@@ -284,3 +284,36 @@ async def upload_image(file: UploadFile = File(...)):
     with open(file_location, "wb") as f:
         f.write(await file.read())
     return JSONResponse(content={"filename": file.filename, "url": f"http://localhost:8000/uploads/{file.filename}"})
+
+# Room Reservation Endpoints
+@app.post("/reserve", response_model=ReservationResponse)
+def create_reserve(reserve: ReservationCreated, db: Session = Depends(get_db)):
+    existing_reserve = db.query(Reservation).filter(Reservation.room_id == reserve.room_id, Reservation.time == reserve.time, Reservation.date == reserve.date).first()
+    if existing_reserve:
+        raise HTTPException(status_code=400, detail="Room has already been reserved")
+    
+    new_reserve = Reservation(
+        user_id = reserve.user_id,
+        room_id = reserve.room_id,
+        date = reserve.date,
+        time =  reserve.time
+    )
+    db.add(new_reserve)
+    db.commit()
+    db.refresh(new_reserve)
+    return new_reserve
+
+@app.get("/all_reserve/", response_model=List[ReservationResponse])
+def get_all_reservation(db: Session = Depends(get_db)):
+    all_reservation = db.query(Reservation).all()
+    return all_reservation
+
+@app.delete("/cancel_reserve/{id}", response_model=SuccessResponse)
+def cancel_reserve(id: int, db: Session = Depends(get_db)):
+    reserve_id = db.query(Reservation).filter(Reservation.id == id).first()
+    if reserve_id is None:
+        raise HTTPException(status_code=404, detail="Reserve not found")
+    
+    db.delete(reserve_id)
+    db.commit
+    return { "message": "canceled reserve" }
