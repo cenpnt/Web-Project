@@ -3,7 +3,7 @@ import { Canvas, useThree } from "@react-three/fiber";
 import { OrbitControls, Stage, useGLTF } from "@react-three/drei";
 import ReservationBox from "../reserveBox/reserveBox";
 import { room1, room2, room3 } from "../../constants";
-import "./Coworkingspace3D.css";
+import { Box, Flex, Button, Image } from "@chakra-ui/react";
 
 function Model({ onRoomClick }) {
   const gltf = useGLTF("/models/coworking5.gltf");
@@ -34,7 +34,7 @@ function CameraController({ view, zoom, resetTrigger }) {
         camera.position.set(0, zoom, 0);
         controlsRef.current.target.set(0, 0, 0);
       } else if (view === "front") {
-        camera.position.set(10000, 0, zoom + 5); // Modified this line
+        camera.position.set(10000, 0, zoom + 5);
         controlsRef.current.target.set(0, 0, 0);
       } else {
         camera.position.set(0, 10, 0);
@@ -42,7 +42,7 @@ function CameraController({ view, zoom, resetTrigger }) {
       }
       controlsRef.current.update();
     }
-  }, [view, zoom, camera, resetTrigger]); // Add resetTrigger to dependencies
+  }, [view, zoom, camera, resetTrigger]);
 
   return (
     <OrbitControls
@@ -64,17 +64,9 @@ export default function ModelViewer() {
 
   const handleViewChange = (newView) => {
     setView(newView);
-    setZoom(10); // Reset zoom when changing views
+    setZoom(10);
     setResetTrigger((prev) => prev + 1);
   };
-
-  // const handleZoom = (direction) => {
-  //   setZoom(prevZoom => {
-  //     if (direction === 'in' && prevZoom > 5) return prevZoom - 1;
-  //     if (direction === 'out' && prevZoom < 30) return prevZoom + 1;
-  //     return prevZoom;
-  //   });
-  // };
 
   const handleRoomClick = (roomName) => {
     if (roomName === "Room1") setSelectedRoom(room1);
@@ -87,68 +79,58 @@ export default function ModelViewer() {
   };
 
   return (
-    <div className="modelviewer-container">
-      <div className="modelcontainer">
-        <Canvas
-          style={{
-            width: "90%",
-            height: "600px",
-            borderRadius: "10px",
-            margin: "20px",
-          }}
-        >
-          <color attach="background" args={["#101010"]} />
-          <ambientLight intensity={0.5} />
-          <directionalLight position={[10, 10, 5]} intensity={0.2} />
+    <Flex width="98%" height="80vh" padding="10px" justifyContent="center">
+      <Box width={selectedRoom ? "70%" : "100%"} transition="width 0.3s ease-in-out">
+        <Box width="100%" height="70vh" borderRadius="10px" margin="20px" backgroundColor="#101010">
+          <Canvas>
+            <color attach="background" args={["#101010"]} />
+            <ambientLight intensity={0.5} />
+            <directionalLight position={[10, 10, 5]} intensity={0.2} />
 
-          <Stage environment={"city"} shadows={false}>
-            <Model
-              scale={1.3}
-              receiveShadow={false}
-              castShadow={false}
-              onRoomClick={handleRoomClick}
+            <Stage environment={"city"} shadows={false}>
+              <Model
+                scale={1.3}
+                receiveShadow={false}
+                castShadow={false}
+                onRoomClick={handleRoomClick}
+              />
+            </Stage>
+
+            <CameraController
+              view={view}
+              zoom={zoom}
+              resetTrigger={resetTrigger}
             />
-          </Stage>
+          </Canvas>
+        </Box>
 
-          <CameraController
-            view={view}
-            zoom={zoom}
-            resetTrigger={resetTrigger}
-          />
-        </Canvas>
-
-        <div className="button-container">
-          <button onClick={() => handleViewChange("front")}>Front View</button>
-          <button onClick={() => handleViewChange("top")}>Top View</button>
-          {/* <button onClick={() => handleZoom('in')}>+ Zoom In</button>
-          <button onClick={() => handleZoom('out')}>- Zoom Out</button> */}
-          <button
-            onClick={() => handleViewChange("fit")}
-            style={{
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-            }}
-          >
-            <img
+        <Flex justifyContent="center" marginTop="10px">
+          <Button onClick={() => handleViewChange("front")} margin="0 10px">Front View</Button>
+          <Button onClick={() => handleViewChange("top")} margin="0 10px">Top View</Button>
+          <Button onClick={() => handleViewChange("fit")} margin="0 10px" display="flex" alignItems="center">
+            <Image
               src="https://cdn-icons-png.flaticon.com/128/14759/14759477.png"
               alt="Front View"
-              style={{ width: "30px", height: "30px", marginRight: "5px" }}
+              width="30px"
+              height="30px"
+              marginRight="5px"
             />
             Fit Screen
-          </button>
-        </div>
-      </div>
+          </Button>
+        </Flex>
+      </Box>
 
       {selectedRoom && (
-        <ReservationBox
-          roomName={selectedRoom.roomName}
-          roomImage={selectedRoom.roomImage}
-          amenities={selectedRoom.amenities}
-          members={selectedRoom.members}
-          onClose={handleClose}
-        />
+        <Box width="30%" transition="width 0.3s ease-in-out">
+          <ReservationBox
+            roomName={selectedRoom.roomName}
+            roomImage={selectedRoom.roomImage}
+            amenities={selectedRoom.amenities}
+            members={selectedRoom.members}
+            onClose={handleClose}
+          />
+        </Box>
       )}
-    </div>
+    </Flex>
   );
 }
