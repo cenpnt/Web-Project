@@ -18,6 +18,7 @@ class User(Base):
     
     # Establish relationship between User and SolvedProblem
     solved_problems = relationship("SolvedProblem", back_populates="user")
+    room_reservation = relationship("Reservation", back_populates="user")
 
 class Problem(Base):
     __tablename__ = 'problems'
@@ -40,3 +41,14 @@ class SolvedProblem(Base):
     # Relationships
     user = relationship("User", back_populates="solved_problems")
     problem = relationship("Problem", back_populates="solved_problems")
+
+class Reservation(Base):
+    __tablename__ = 'room_reservation'
+    id = Column(Integer, primary_key=True, index=True)
+    user_id = Column(Integer, ForeignKey('users.id'))
+    room_id = Column(Integer, index=True)
+    date = Column(String)
+    time = Column(String)
+
+    user = relationship("User", back_populates="room_reservation")
+    
