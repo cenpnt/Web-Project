@@ -69,5 +69,8 @@ class ReservationCreated(ReservationBase):
 
 class ReservationResponse(ReservationBase):
     id: int
+    date: str
+    time: str
+    room_id : int
     class Config:
         from_attributes = True
