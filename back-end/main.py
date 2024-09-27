@@ -315,5 +315,5 @@ def cancel_reserve(id: int, db: Session = Depends(get_db)):
         raise HTTPException(status_code=404, detail="Reserve not found")
     
     db.delete(reserve_id)
-    db.commit
+    db.commit()
     return { "message": "canceled reserve" }
