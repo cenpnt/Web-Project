@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import "./reserveBox.css";
 import { Button } from "@chakra-ui/react";
 import { CloseIcon, AddIcon } from "@chakra-ui/icons";
@@ -10,7 +10,9 @@ const getFormattedButtonDate = (date) => {
 
 function ReservationBox({ roomName, roomImage, onClose, amenities, members }) {
   const [isReserving, setIsReserving] = useState(false);
-  const [selectedDate, setSelectedDate] = useState(null);
+  const [selectedDateIndex, setSelectedDateIndex] = useState(null);
+  const [selectedTime, setSelectedTime] = useState(null);
+  const [reserved, setReserved] = useState([]);
 
   const today = new Date();
   const tomorrow = new Date(today);
@@ -18,78 +20,88 @@ function ReservationBox({ roomName, roomImage, onClose, amenities, members }) {
   const dayAftertomorrow = new Date(today);
   dayAftertomorrow.setDate(today.getDate() + 2);
 
+  useEffect(() => {
+    fetchAllReservedData();
+  }, []);
+
   const handleReserveClick = () => {
     setIsReserving(true);
   };
 
-  const handleDateSelection = (date) => {
-    setSelectedDate(date);
+  const getCurrentTimeFormatted = () => {
+    const now = new Date();
+    const hours = String(now.getHours()).padStart(2, '0');
+    const minutes = String(now.getMinutes()).padStart(2, '0');
+    return `${hours}:${minutes}`;
   };
+
+  const fetchAllReservedData = async () => {
+    try {
+      const response = await fetch('http://localhost:8000/all_reserve');
+      if(!response.ok) {
+        throw new Error("Problem while fetching all reserved data");
+      }
+      const allReserved = await response.json();
+      setReserved(allReserved);
+    } catch (error) {
+      console.error("Error: ", error);
+    }
+  }
+
+  const reserveRoom = async (room_id) => {
+    const user_id = localStorage.getItem('user_id');
+    const currentTime = getCurrentTimeFormatted();
+    try {
+      const response = await fetch('http://localhost:8000/reserve', {
+        method: "POST",
+        headers: { "Content-Type" : "application/json" },
+        body: JSON.stringify({
+          user_id,
+          room_id,
+          data: selectedDateIndex,
+          time: currentTime
+        })
+      })
+      if(!response.ok) {
+        throw new Error("Failed to reserve the room");
+      }
+    } catch (error) {
+      console.error("Error reserving room: ", error);
+    }
+  }
 
   return (
     <div className="reservation-box">
       {isReserving ? (
-        // Render the date and time selection form when reserving
         <>
           <h2>Reserve {roomName}</h2>
           <form className="reservation-form">
             <label>Select Date:</label>
             <div className="date-selection">
-              <Button
-                onClick={() => handleDateSelection(today)}
-                variant={"outline"}
-                color="hsl(35, 100%, 50%)"
-                borderColor="hsl(35, 100%, 50%)"
-                _hover={{
-                  bgColor: "hsl(35, 100%, 70%)",
-                  color: "black",
-                  borderColor: "hsl(35, 100%, 70%)",
-                }}
-              >
-                {getFormattedButtonDate(today)}
-              </Button>
-              <Button
-                onClick={() => handleDateSelection(today)}
-                variant={"outline"}
-                color="hsl(35, 100%, 50%)"
-                borderColor="hsl(35, 100%, 50%)"
-                _hover={{
-                  bgColor: "hsl(35, 100%, 70%)",
-                  color: "black",
-                  borderColor: "hsl(35, 100%, 70%)",
-                }}
-              >
-                {getFormattedButtonDate(tomorrow)}
-              </Button>
-              <Button
-                onClick={() => handleDateSelection(dayAftertomorrow)}
-                variant={"outline"}
-                color="hsl(35, 100%, 50%)"
-                borderColor="hsl(35, 100%, 50%)"
-                _hover={{
-                  bgColor: "hsl(35, 100%, 70%)",
-                  color: "black",
-                  borderColor: "hsl(35, 100%, 70%)",
-                }}
-              >
-                {getFormattedButtonDate(dayAftertomorrow)}
-              </Button>
+              {[today, tomorrow, dayAftertomorrow].map((date, index) => (
+                <Button
+                  key={date.toString()}
+                  onClick={() => setSelectedDateIndex(index)}
+                  variant={"outline"}
+                  color={selectedDateIndex === index ? "black" : "hsl(35, 100%, 50%)"}
+                  bgColor={selectedDateIndex === index ? "hsl(35, 100%, 70%)" : "transparent"}
+                  borderColor={selectedDateIndex === index ? "hsl(35, 100%, 70%)" : "hsl(35, 100%, 50%)"}
+                  _hover={{
+                    bgColor: "hsl(35, 100%, 70%)",
+                    color: "black",
+                    borderColor: "hsl(35, 100%, 70%)",
+                  }}
+                >
+                  {getFormattedButtonDate(date)}
+                </Button>
+              ))}
             </div>
 
             <label>Select Time:</label>
             <div className="time-selection">
-              <Button>12:00</Button>
-              <Button>13:00</Button>
-              <Button>14:00</Button>
-              <Button>15:00</Button>
-              <Button>16:00</Button>
-              <Button>17:00</Button>
-              <Button>18:00</Button>
-              <Button>19:00</Button>
-              <Button>20:00</Button>
-              <Button>21:00</Button>
-              <Button>22:00</Button>
-              <Button>23:00</Button>
+              {["12:00", "13:00", "14:00", "15:00", "16:00", "17:00", "18:00", "19:00", "20:00", "21:00", "22:00", "23:00"].map((time) => (
+                <Button key={time} onClick={() => setSelectedTime(time)} isDisabled={getCurrentTimeFormatted() > time}>{time}</Button>
+              ))}
             </div>
             <div className="member-box">
               <label>Invite Member <span>*require at least {members} members</span></label>
@@ -111,7 +123,7 @@ function ReservationBox({ roomName, roomImage, onClose, amenities, members }) {
               </div>
             </div>
             <div className="form-buttons">
-              <Button type="buttton" colorScheme="blue" mr="10px">
+              <Button type="button" colorScheme="blue" mr="10px">
                 Confirm Reservation
               </Button>
               <Button
@@ -125,7 +137,6 @@ function ReservationBox({ roomName, roomImage, onClose, amenities, members }) {
           </form>
         </>
       ) : (
-        // Render the room details and amenities when not reserving
         <>
           <h2>{roomName}</h2>
           {roomImage && (
