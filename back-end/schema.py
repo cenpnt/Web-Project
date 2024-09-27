@@ -57,3 +57,17 @@ class CheckPasswordBase(BaseModel):
 
 class SuccessResponse(BaseModel):
     message: str
+
+class ReservationBase(BaseModel):
+    user_id: int
+    room_id: int
+    date: str
+    time: str
+
+class ReservationCreated(ReservationBase):
+    pass
+
+class ReservationResponse(ReservationBase):
+    id: int
+    class Config:
+        from_attributes = True
