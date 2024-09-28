@@ -73,11 +73,7 @@ export default function ModelViewer() {
     else if (roomName === "Room2") setSelectedRoom(room2);
     else if (roomName === "Room3") setSelectedRoom(room3);
   };
-
-  const handleClose = () => {
-    setSelectedRoom(null);
-  };
-
+  
   return (
     <Flex width="98%" height="80vh" padding="10px" justifyContent="center">
       <Box width={selectedRoom ? "70%" : "100%"} transition="width 0.3s ease-in-out">
@@ -127,7 +123,7 @@ export default function ModelViewer() {
             roomImage={selectedRoom.roomImage}
             amenities={selectedRoom.amenities}
             members={selectedRoom.members}
-            onClose={handleClose}
+            onCloseBox={() => setSelectedRoom(null)}
           />
         </Box>
       )}
