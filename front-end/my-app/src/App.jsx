@@ -16,6 +16,7 @@ import SEAcademy from './pages/SEAcademy';
 import Coworkingspace from './pages/coworkingspace/Coworkingspace';
 import theme from './components/theme';
 import EditProfile from './pages/editProfile/EditProfile';
+import AcceptInvitation from './pages/acceptInvitation/AcceptInvitation';
 
 function App() {
   return (
@@ -33,6 +34,7 @@ function App() {
               <Route path="/se_academy" element={<AuthHeader theme='dark'><SEAcademy /></AuthHeader>}/>
               <Route path="/coworkingspace" element={<AuthHeader theme='dark'><Coworkingspace /></AuthHeader>} />
               <Route path="/editprofile" element={<EditProfile/>}/>
+              <Route path="accept_invitation" element={<AcceptInvitation />}/>
             </Routes>
           </ScrollToTop>
         </ChakraProvider>
