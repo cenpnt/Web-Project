@@ -74,3 +74,12 @@ class ReservationResponse(ReservationBase):
     room_id : int
     class Config:
         from_attributes = True
+
+class EmailBase(BaseModel):
+    sender_email: str
+    receiver_email: str
+    subject: str
+    message: str
+
+class EmailCreated(EmailBase):
+    pass

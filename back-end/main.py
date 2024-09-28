@@ -10,10 +10,13 @@ from datetime import datetime, timedelta, timezone
 from typing import List, Optional
 import jwt
 import os
+import smtplib
+from email.mime.text import MIMEText
+from email.mime.multipart import MIMEMultipart
 from dotenv import load_dotenv
 from .models import User, Problem, UserRole, SolvedProblem, Reservation
 from .database import Base, engine, get_db
-from .schema import UserResponse, UserCreated, ProblemResponse, ProblemCreated, Token, SolvedProblemCreated, SolvedProblemResponse, EditProfileBase, SuccessResponse, CheckPasswordBase, ReservationCreated, ReservationResponse
+from .schema import UserResponse, UserCreated, ProblemResponse, ProblemCreated, Token, SolvedProblemCreated, SolvedProblemResponse, EditProfileBase, SuccessResponse, CheckPasswordBase, ReservationCreated, ReservationResponse, EmailCreated
 load_dotenv()
 
 app = FastAPI()
@@ -316,4 +319,23 @@ def cancel_reserve(id: int, db: Session = Depends(get_db)):
     
     db.delete(reserve_id)
     db.commit()
-    return { "message": "canceled reserve" }
+    return { "message": "Canceled reserve" }
+
+# Email Endpoint
+@app.post('/send_email', response_model=SuccessResponse)
+def send_email(email: EmailCreated):
+    msg = MIMEMultipart()
+    msg['From'] = f"SE KMITL"
+    msg['To'] = email.receiver_email
+    msg['Subject'] = email.subject
+    
+    msg.attach(MIMEText(email.message, 'plain'))
+
+    server = smtplib.SMTP("smtp.gmail.com", 587)
+    server.starttls()
+    server.login(email.sender_email, "bdirkzqhhcsoaocd")
+    
+    server.sendmail(email.sender_email, email.receiver_email, msg.as_string())
+    server.quit()
+    
+    return { "message": "Email has been sent successfully"}
