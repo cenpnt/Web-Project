@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, String, JSON, Enum, ForeignKey
+from sqlalchemy import Column, Integer, String, JSON, Enum, ForeignKey, DateTime
 from sqlalchemy.orm import relationship
 from enum import Enum as PyEnum
 from .database import Base
@@ -19,6 +19,7 @@ class User(Base):
     # Establish relationship between User and SolvedProblem
     solved_problems = relationship("SolvedProblem", back_populates="user")
     room_reservation = relationship("Reservation", back_populates="user")
+    invitations = relationship("Invitation", back_populates="user")
 
 class Problem(Base):
     __tablename__ = 'problems'
@@ -51,4 +52,14 @@ class Reservation(Base):
     time = Column(String)
 
     user = relationship("User", back_populates="room_reservation")
-    
+
+class Invitation(Base):
+    __tablename__ = "invitations"
+    id = Column(Integer, primary_key=True, index=True)
+    sender_id = Column(Integer, ForeignKey('users.id'), nullable=False)
+    receiver_email = Column(String, nullable=False)
+    token = Column(String, nullable=False, unique=True, index=True)
+    status = Column(String, nullable=False, default="pending")
+    expires_at = Column(DateTime)
+
+    user = relationship("User", back_populates="invitations")
