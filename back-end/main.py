@@ -11,26 +11,27 @@ from typing import List, Optional
 import jwt
 import os
 import smtplib
+import secrets
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 from dotenv import load_dotenv
-from .models import User, Problem, UserRole, SolvedProblem, Reservation
+from .models import User, Problem, UserRole, SolvedProblem, Reservation, Invitation
 from .database import Base, engine, get_db
-from .schema import UserResponse, UserCreated, ProblemResponse, ProblemCreated, Token, SolvedProblemCreated, SolvedProblemResponse, EditProfileBase, SuccessResponse, CheckPasswordBase, ReservationCreated, ReservationResponse, EmailCreated
+from .schema import UserResponse, UserCreated, ProblemResponse, ProblemCreated, Token, SolvedProblemCreated, SolvedProblemResponse, EditProfileBase, SuccessResponse, CheckPasswordBase, ReservationCreated, ReservationResponse, InvitationCreated, InvitationResponse, AcceptInvitationRequest
 load_dotenv()
 
 app = FastAPI()
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:3000"],
+    allow_origins=["*"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"], 
 )
 # Configuration
 UPLOAD_DIR = "uploads"
-BASE_URL = "http://localhost:8000"  # Adjust this to your server's base URL
+BASE_URL = "http://localhost:8000"
 
 # Ensure upload directory exists
 os.makedirs(UPLOAD_DIR, exist_ok=True)
@@ -113,6 +114,7 @@ def login_for_access_token(form_data: OAuth2PasswordRequestForm = Depends(), db:
     access_token_expires = timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
     access_token, expire = create_access_token(userData, expires_delta=access_token_expires)
     expires_in = int((expire - datetime.now(timezone.utc)).total_seconds())
+    print(expires_in)
     return {"access_token": access_token, "token_type": "bearer", "expires_in": expires_in}
 
 # User Endpoints
@@ -128,6 +130,11 @@ def create_user(user: UserCreated, db: Session = Depends(get_db)):
     db.commit()
     db.refresh(new_user)
     return new_user
+
+@app.get('/user/data/all', response_model=List[UserResponse])
+def get_all_user_data(db: Session = Depends(get_db)):
+    all_users = db.query(User).filter(User.role != UserRole.admin).all()
+    return all_users
 
 @app.get("/user/data/{id}", response_model=UserResponse)
 def get_profile_data(id: int, db: Session = Depends(get_db)):
@@ -322,20 +329,82 @@ def cancel_reserve(id: int, db: Session = Depends(get_db)):
     return { "message": "Canceled reserve" }
 
 # Email Endpoint
-@app.post('/send_email', response_model=SuccessResponse)
-def send_email(email: EmailCreated):
-    msg = MIMEMultipart()
-    msg['From'] = f"SE KMITL"
-    msg['To'] = email.receiver_email
-    msg['Subject'] = email.subject
-    
-    msg.attach(MIMEText(email.message, 'plain'))
+@app.post('/send_invitation', response_model=SuccessResponse)
+def send_invitation(invitation: InvitationCreated, db: Session = Depends(get_db)):
+    token = secrets.token_urlsafe(32)
 
-    server = smtplib.SMTP("smtp.gmail.com", 587)
-    server.starttls()
-    server.login(email.sender_email, "bdirkzqhhcsoaocd")
+    expires_at = datetime.now(timezone.utc) + timedelta(hours=8)
+    new_invitation = Invitation(
+        sender_id=invitation.sender_id,
+        receiver_email=invitation.receiver_email,
+        token=token,
+        status='pending',
+        expires_at=expires_at
+    )
+    db.add(new_invitation)
+    db.commit()
+
+    msg = MIMEMultipart()
+    msg['From'] = "SE KMITL"
+    msg['To'] = invitation.receiver_email
+    msg['Subject'] = invitation.subject
+    link = f"http://localhost:3000/accept_invitation?token={token}"
+    html_content = f"""
+    <html>
+        <body>
+            <p>Hello,</p>
+            <p>You've been invited to use coworking space!</p>
+            <a href="{link}">Click this link to accept the invitation!</a>
+        </body>
+    </html>
+    """
+    msg.attach(MIMEText(html_content, 'html'))
     
-    server.sendmail(email.sender_email, email.receiver_email, msg.as_string())
-    server.quit()
+    try:
+        server = smtplib.SMTP("smtp.gmail.com", 587)
+        server.starttls()
+        server.login(invitation.sender_email, os.getenv("APP_PASSWORD"))
+        server.sendmail(invitation.sender_email, invitation.receiver_email, msg.as_string())
+        server.quit()
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Failed to send email: {str(e)}")
     
-    return { "message": "Email has been sent successfully"}
+    return {"message": "Invitation sent successfully"}
+
+@app.post('/accept_invitation', response_model=InvitationResponse)
+def accept_invitation(request: AcceptInvitationRequest, db: Session = Depends(get_db)):
+    token = request.token
+    invitation = db.query(Invitation).filter(Invitation.token == token).first()
+    if not invitation:
+        raise HTTPException(status_code=404, detail="Invitation not found")
+    if invitation.status != 'pending':
+        raise HTTPException(status_code=400, detail="Invitation already processed")
+    # Ensure `expires_at` is timezone aware
+    if invitation.expires_at.tzinfo is None:
+        invitation.expires_at = invitation.expires_at.replace(tzinfo=timezone.utc)
+
+    current_time = datetime.now(timezone.utc)
+    print(f"Invitation expires at: {invitation.expires_at}, Current time: {current_time}")
+
+    if invitation.expires_at < datetime.now(timezone.utc):
+        raise HTTPException(status_code=400, detail="Invitation has expired")
+    
+    invitation.status = "accepted"
+    db.commit()
+    
+    return invitation
+
+@app.get('/get_all_invitation', response_model=List[InvitationResponse])
+def get_all_invitation(db: Session = Depends(get_db)):
+    all_invitation = db.query(Invitation).all()
+    return all_invitation
+
+@app.delete('/delete_all_invitations', response_model=SuccessResponse)
+def delete_all_invitations(db: Session = Depends(get_db)):
+    try:
+        db.query(Invitation).delete()
+        db.commit()
+        return {"message": "Data deleted"}
+    except Exception as e:
+        db.rollback()  # Rollback in case of error
+        raise HTTPException(status_code=500, detail=str(e))
