@@ -54,6 +54,24 @@
   margin-top: 120px;
 }
 
+.invitationPending{
+  color: #fe9705;
+  font-size: 15px;
+  font-weight: bold;
+}
+
+.invitationAccept {
+  color: #3ac430;
+  font-size: 15px;
+  font-weight: bold;
+}
+
+.invitationDecline{
+  color: red;
+  font-size: 15px;
+  font-weight: bold;
+}
+
 @media screen and (max-width: 1900px) {
   .reservation-box {
     width: 450px;
