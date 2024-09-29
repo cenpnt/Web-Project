@@ -10,6 +10,7 @@ class UserRole(PyEnum):
 class User(Base):
     __tablename__ = 'users'
     id = Column(Integer, primary_key=True, index=True)
+    student_id = Column(String, unique=True, index=True)
     username = Column(String, unique=True, index=True)
     password = Column(String)
     role = Column(Enum(UserRole), default=UserRole.user)
@@ -50,6 +51,7 @@ class Reservation(Base):
     room_id = Column(Integer, index=True)
     date = Column(String)
     time = Column(String)
+    students = Column(JSON)
 
     user = relationship("User", back_populates="room_reservation")
 
