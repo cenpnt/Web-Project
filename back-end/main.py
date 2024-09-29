@@ -389,7 +389,7 @@ def accept_invitation(request: AcceptInvitationRequest, db: Session = Depends(ge
     if invitation.expires_at < datetime.now(timezone.utc):
         raise HTTPException(status_code=400, detail="Invitation has expired")
     
-    invitation.status = "accepted"
+    invitation.status = "Accepted"
     db.commit()
     
     return invitation
