@@ -28,8 +28,8 @@ function AcceptInvitation() {
         const token = queryParam.get('token');
         if(token) {
             await acceptInvitation(token);
+            setIsAccept(true);
         }
-        setIsAccept(true);
     }
 
     return (
