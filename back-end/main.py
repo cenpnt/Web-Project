@@ -125,7 +125,7 @@ def create_user(user: UserCreated, db: Session = Depends(get_db)):
         raise HTTPException(status_code=400, detail="Username already taken")
     
     hashed_password = pwd_context.hash(user.password)
-    new_user = User(username=user.username, password=hashed_password, role=user.role)
+    new_user = User(username=user.username, password=hashed_password, role=user.role, student_id=user.student_id)
     db.add(new_user)
     db.commit()
     db.refresh(new_user)
@@ -306,7 +306,8 @@ def create_reserve(reserve: ReservationCreated, db: Session = Depends(get_db)):
         user_id = reserve.user_id,
         room_id = reserve.room_id,
         date = reserve.date,
-        time =  reserve.time
+        time =  reserve.time,
+        students = reserve.students
     )
     db.add(new_reserve)
     db.commit()
@@ -371,10 +372,9 @@ def send_invitation(invitation: InvitationCreated, db: Session = Depends(get_db)
     
     return {"message": "Invitation sent successfully"}
 
-@app.post('/accept_invitation', response_model=InvitationResponse)
+@app.put('/accept_invitation', response_model=InvitationResponse)
 def accept_invitation(request: AcceptInvitationRequest, db: Session = Depends(get_db)):
-    token = request.token
-    invitation = db.query(Invitation).filter(Invitation.token == token).first()
+    invitation = db.query(Invitation).filter(Invitation.token == request.token).first()
     if not invitation:
         raise HTTPException(status_code=404, detail="Invitation not found")
     if invitation.status != 'pending':
@@ -383,13 +383,14 @@ def accept_invitation(request: AcceptInvitationRequest, db: Session = Depends(ge
     if invitation.expires_at.tzinfo is None:
         invitation.expires_at = invitation.expires_at.replace(tzinfo=timezone.utc)
 
-    current_time = datetime.now(timezone.utc)
-    print(f"Invitation expires at: {invitation.expires_at}, Current time: {current_time}")
-
     if invitation.expires_at < datetime.now(timezone.utc):
         raise HTTPException(status_code=400, detail="Invitation has expired")
+    print(request.isAccept)
+    if request.isAccept == True:
+        setattr(invitation, "status", "Accept")
+    else:
+        setattr(invitation, "status", "Decline")
     
-    invitation.status = "Accepted"
     db.commit()
     
     return invitation
