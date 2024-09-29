@@ -1,11 +1,12 @@
 from pydantic import BaseModel, field_validator
-from typing import Dict
+from typing import Dict, List
 from .models import UserRole
 from typing import Optional
 from datetime import datetime
 import pytz
 
 class UserBase(BaseModel):
+    student_id: str
     username: str
     role: UserRole = UserRole.user
 
@@ -17,6 +18,7 @@ class UserResponse(UserBase):
     username: str
     profile_pic: Optional[str] = None
     bio: Optional[str] = None
+    student_id: str
     class Config:
         from_attributes = True
 
@@ -65,6 +67,7 @@ class ReservationBase(BaseModel):
     room_id: int
     date: str
     time: str
+    students: List[str]
 
 class ReservationCreated(ReservationBase):
     pass
@@ -74,6 +77,7 @@ class ReservationResponse(ReservationBase):
     date: str
     time: str
     room_id : int
+    students: List[str]
     class Config:
         from_attributes = True
 
@@ -112,3 +116,4 @@ class InvitationResponse(BaseModel):
 
 class AcceptInvitationRequest(BaseModel):
     token: str
+    isAccept: bool
