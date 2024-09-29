@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import "./reserveBox.css";
 import { Button, Modal,
   ModalOverlay,
@@ -18,17 +18,16 @@ const getFormattedButtonDate = (date) => {
 };
 
 function ReservationBox({ roomName, roomImage, onCloseBox, amenities, members }) {
+  const [allInvitations, setAllInvitations] = useState([]);
   const [isReserving, setIsReserving] = useState(false);
   const [selectedDateIndex, setSelectedDateIndex] = useState(0);
   const [reserved, setReserved] = useState([]);
   const [allStudentData, setAllStudentData] = useState([]);
-  const [invitedMembers, setInvitedMembers] = useState([]);
+  const [invitedMembers, setInvitedMembers] = useState([]); // For checking duplicate only
   const [selectedStudent, setSelectedStudent] = useState(null);
   const {isOpen, onOpen, onClose } = useDisclosure();
   const [isError, setIsError] = useState(false)
   const [errorMessage, setErrorMessage] = useState('');
-  const [memberStatus, setMemberStatus] = useState({});
-  const [allInvitation, setAllInvitation] = useState([]);
   
   const today = new Date();
   const tomorrow = new Date(today);
@@ -37,13 +36,38 @@ function ReservationBox({ roomName, roomImage, onCloseBox, amenities, members })
   dayAftertomorrow.setDate(today.getDate() + 2);
   const threeDate = [today, tomorrow, dayAftertomorrow];
 
+  const extractUsername = (email) => {
+    return email.split('@')[0];
+  }
+
+  const fetchInvitations = useCallback(async () => {
+    try {
+      const response = await fetch('http://localhost:8000/get_all_invitation');
+      if (!response.ok) {
+        throw new Error("Failed to fetch");
+      }
+      const allInvitation = await response.json();
+      const newInvitation = allInvitation.map(invitation => ({
+        receiver_username: extractUsername(invitation.receiver_email),
+        status: invitation.status
+      }));
+      setAllInvitations(newInvitation);
+    } catch (error) {
+      console.error("Error fetching data: ", error);
+    }
+  }, []);
+
   useEffect(() => {
     fetchAllReservedData();
     fetchAllStudent();
-    fetchInvitation();
-  }, []);
+    fetchInvitations();
 
-  console.log(allInvitation);
+    const intervalId = setInterval(() => {
+      fetchInvitations();
+    }, 5000); // Fetch every 5 seconds
+
+    return () => clearInterval(intervalId);
+  }, [fetchInvitations]);
 
   const getCurrentTimeFormatted = () => {
     const now = new Date();
@@ -125,35 +149,31 @@ function ReservationBox({ roomName, roomImage, onCloseBox, amenities, members })
     }
   }
 
-  const fetchInvitation = async () => {
-    try {
-      const response = await fetch('http://localhost:8000/get_all_invitation')
-      if(!response.ok) {
-        throw new Error("Failed to fetch")
-      }
-      const allInvitation = await response.json();
-      const newInvitation = allInvitation.map(invitation => ({
-        status: invitation.status
-      }));
-      setAllInvitation(newInvitation);
-    } catch (error) {
-      console.error("Error fetching data: ", error);
-    }
-  }
+  const formatToUTCPlus7 = (date) => {
+    const padZero = (num) => (num < 10 ? '0' + num : num); // Helper to pad single-digit numbers
+    const year = date.getFullYear();
+    const month = padZero(date.getMonth() + 1); // getMonth is zero-indexed
+    const day = padZero(date.getDate());
+    const hours = padZero(date.getHours());
+    const minutes = padZero(date.getMinutes());
+    const seconds = padZero(date.getSeconds());
+    const milliseconds = String(date.getMilliseconds()).padStart(3, '0');
+  
+    return `${year}-${month}-${day}T${hours}:${minutes}:${seconds}.${milliseconds}+07:00`;
+  };
 
   const sendInvitation = async (receiver_email) => {
     const senderID = localStorage.getItem('userID');
     const now = new Date();
-    now.setHours(now.getHours() + 1);
-    const expiresAt = new Date(now.toISOString());
-    expiresAt.setHours(expiresAt.getHours() + 7);
+    now.setHours(now.getHours() + 1); // Adds 1 hour for invitation expiration
+    const expiresAt = formatToUTCPlus7(now);
 
     const emailData = {
       sender_email: "softwareengineeringkmitl@gmail.com",
       sender_id: senderID,
       receiver_email : receiver_email,
       subject: "Test",
-      expires_at: expiresAt.toISOString()
+      expires_at: expiresAt
     }
     try {
       const response = await fetch('http://localhost:8000/send_invitation', {
@@ -164,6 +184,7 @@ function ReservationBox({ roomName, roomImage, onCloseBox, amenities, members })
       if(!response.ok) {
         throw new Error("Error sending email");
       }
+      await fetchInvitations();
     } catch (error) {
       console.error("Error sending email: ", error);
     }
@@ -193,7 +214,7 @@ function ReservationBox({ roomName, roomImage, onCloseBox, amenities, members })
     }
     if (selectedStudent) {
       const isalreadyInvited = invitedMembers.some(member => member.username === selectedStudent.username);
-      if (invitedMembers.length >= maxInvitation) {
+      if (allInvitations.length >= maxInvitation) {
         setIsError(true);
         setErrorMessage(`You can only invite up to ${maxInvitation} members for ${roomName}`);
         return;
@@ -204,7 +225,6 @@ function ReservationBox({ roomName, roomImage, onCloseBox, amenities, members })
       } else {
         setIsError(false);
         setInvitedMembers(prev => [...prev, selectedStudent]);
-        setMemberStatus(prev => ({...prev, [selectedStudent.username]: 'Pending'}));
         setSelectedStudent(null); // Clear the selection after adding
         onClose();
         await sendInvitation(selectedStudent.username + "@kmitl.ac.th");
@@ -217,7 +237,7 @@ function ReservationBox({ roomName, roomImage, onCloseBox, amenities, members })
   
  const resetState = () => {
     setIsReserving(false);
-    setInvitedMembers([]);
+    // setInvitedMembers([]);
     setSelectedStudent(null);
     setIsError(false);
     setErrorMessage('');
@@ -277,13 +297,18 @@ function ReservationBox({ roomName, roomImage, onCloseBox, amenities, members })
             <div className="member-box">
               <label>Invite Member <span>*require at least {members} members</span></label>
               <div>
-                {invitedMembers.map((member, index) => (
-                  <div key={index} style={{ display: "flex",alignItems: "center" }}>
-                    <Avatar src={member.profile_pic} style={{ margin: "5px 10px" }} />
-                    {/* Display status next to each member */}
-                    <div>{memberStatus[member.username]}</div>
+              {allInvitations.map((member, index) => {
+                const invited = allStudentData.find(inv => inv.username === member.receiver_username);
+                console.log(invited)
+                return (
+                  <div key={index} style={{ display: "flex", alignItems: "center" }}>
+                    {invited && (
+                      <Avatar src={invited.profile_pic} style={{ margin: "5px 10px" }} />
+                    )}
+                    <div>{member.status}</div>
                   </div>
-                ))}
+                );
+              })}
                 <Button
                   width="50px"
                   height="50px"
