@@ -21,6 +21,7 @@ function ReservationBox({ roomName, roomImage, onCloseBox, amenities, members })
   const [allInvitations, setAllInvitations] = useState([]);
   const [isReserving, setIsReserving] = useState(false);
   const [selectedDateIndex, setSelectedDateIndex] = useState(0);
+  const [selectedTime, setSelectedTime] = useState(null);
   const [reserved, setReserved] = useState([]);
   const [allStudentData, setAllStudentData] = useState([]);
   const [invitedMembers, setInvitedMembers] = useState([]); // For checking duplicate only
@@ -106,6 +107,7 @@ function ReservationBox({ roomName, roomImage, onCloseBox, amenities, members })
     const date = new Date();
     date.setDate(date.getDate() + selectedDateIndex)
     const user_id = localStorage.getItem('userID');
+    const studentsArr = allInvitations.map(invitation => invitation.receiver_username);
     try {
       const response = await fetch('http://localhost:8000/reserve', {
         method: "POST",
@@ -114,7 +116,8 @@ function ReservationBox({ roomName, roomImage, onCloseBox, amenities, members })
           user_id,
           room_id,
           date: getCustomFormattedDate(date),
-          time
+          time,
+          students: studentsArr
         })
       })
       if(!response.ok) {
@@ -127,10 +130,13 @@ function ReservationBox({ roomName, roomImage, onCloseBox, amenities, members })
         room_id: data.room_id
       }
       setReserved(prev => [...prev, newReservation]);
+      setSelectedTime(null);
     } catch (error) {
       console.error("Error reserving room: ", error);
     }
   }
+
+
 
   const fetchAllStudent = async () => {
     try {
@@ -140,10 +146,11 @@ function ReservationBox({ roomName, roomImage, onCloseBox, amenities, members })
       }
       const allUserData = await response.json();
       const newUserData = allUserData.map(user => ({
+        student_id: user.student_id,
         username: user.username,
         profile_pic: user.profile_pic
       }))
-      setAllStudentData(newUserData);
+      setAllStudentData(newUserData)
     } catch(error) {
       console.log(error);
     }
@@ -190,21 +197,6 @@ function ReservationBox({ roomName, roomImage, onCloseBox, amenities, members })
     }
   }
 
-  const formattedStudentData = allStudentData.sort((a,b) => parseInt(a.username) - parseInt(b.username)).map((student) => ({
-    
-    value: {username: student.username, profile_pic: student.profile_pic === null ? 'http://localhost:8000/uploads/anonymous_dark.png': student.profile_pic },
-    label: (
-      <div style={{display: "flex", alignItems: 'center'}}>
-        <img
-          src={student.profile_pic === null ? 'http://localhost:8000/uploads/anonymous_dark.png': student.profile_pic} 
-          alt={student.username} 
-          style={{ width: '30px',height: '30px' ,marginRight: '10px', borderRadius: '50%', objectFit: 'cover' }}
-        />
-        {student.username}
-      </div>
-    )
-  }));
-
   const handleAddMember = async () => {
     let maxInvitation = 0;
     if(roomName === "Room 1" || roomName === "Room 2"){
@@ -243,6 +235,21 @@ function ReservationBox({ roomName, roomImage, onCloseBox, amenities, members })
     setErrorMessage('');
   };
 
+  const formattedStudentData = allStudentData.sort((a,b) => parseInt(a.student_id) - parseInt(b.student_id)).map((student) => ({
+    
+    value: {username: student.student_id, profile_pic: student.profile_pic === null ? 'http://localhost:8000/uploads/anonymous_dark.png': student.profile_pic },
+    label: (
+      <div style={{display: "flex", alignItems: 'center'}}>
+        <img
+          src={student.profile_pic === null ? 'http://localhost:8000/uploads/anonymous_dark.png': student.profile_pic} 
+          alt={student.username} 
+          style={{ width: '30px',height: '30px' ,marginRight: '10px', borderRadius: '50%', objectFit: 'cover' }}
+        />
+        {student.student_id}
+      </div>
+    )
+  }));
+
   return (
     <div className="reservation-box">
       {isReserving ? (
@@ -254,7 +261,7 @@ function ReservationBox({ roomName, roomImage, onCloseBox, amenities, members })
               {threeDate.map((date, index) => (
                 <Button
                   key={date.toString()}
-                  onClick={() => setSelectedDateIndex(index)}
+                  onClick={() => {setSelectedDateIndex(index); setSelectedTime(null)}}
                   variant={"outline"}
                   color={selectedDateIndex === index ? "black" : "hsl(35, 100%, 50%)"}
                   bgColor={selectedDateIndex === index ? "hsl(35, 100%, 70%)" : "transparent"}
@@ -276,7 +283,8 @@ function ReservationBox({ roomName, roomImage, onCloseBox, amenities, members })
               <Button 
               key={time} 
               onClick={() => {
-                reserveRoom(roomName.match(/\d+/)[0], time);
+                // reserveRoom(roomName.match(/\d+/)[0], time);
+                setSelectedTime(time);
               }} 
               isDisabled={
                 (selectedDateIndex === 0 && getCurrentTimeFormatted() > time) || 
@@ -289,6 +297,10 @@ function ReservationBox({ roomName, roomImage, onCloseBox, amenities, members })
                   );
                 })
               }
+              color={selectedTime === time ? "black" : undefined}
+              bgColor={selectedTime === time ? "hsl(35, 100%, 70%)" : undefined}
+              _hover={selectedTime === time ? "hsl(35, 100%, 70%)" : undefined}
+
               >
               {time}
             </Button>
@@ -298,14 +310,23 @@ function ReservationBox({ roomName, roomImage, onCloseBox, amenities, members })
               <label>Invite Member <span>*require at least {members} members</span></label>
               <div>
               {allInvitations.map((member, index) => {
-                const invited = allStudentData.find(inv => inv.username === member.receiver_username);
-                console.log(invited)
+                const invited = allStudentData.find(inv => inv.student_id === member.receiver_username);
+                
+                let invitationstate = 'invitationPending';
+                if(member.status === 'Accept'){
+                  invitationstate = 'invitationAccept';
+                } else if (member.status === 'Decline') {
+                  invitationstate = 'invitationDecline';
+                } else if (member.status === 'pending'){
+                  member.status = 'Pending';
+                }
+
                 return (
-                  <div key={index} style={{ display: "flex", alignItems: "center" }}>
+                  <div key={index} style={{ display: "flex", alignItems: "center"}}>
                     {invited && (
                       <Avatar src={invited.profile_pic} style={{ margin: "5px 10px" }} />
                     )}
-                    <div>{member.status}</div>
+                    <div className={invitationstate}>{member.status}</div>
                   </div>
                 );
               })}
@@ -329,7 +350,8 @@ function ReservationBox({ roomName, roomImage, onCloseBox, amenities, members })
               </div>
             </div>
             <div className="form-buttons">
-              <Button type="button" colorScheme="blue" mr="10px">
+              <Button type="button" colorScheme="blue" mr="10px" onClick={() => reserveRoom(roomName.match(/\d+/)[0], selectedTime)} 
+              isDisabled={selectedTime === null || ((roomName === "Room 1" || roomName === "Room 2") && allInvitations.length < 3) || (roomName === 'Room 3' && allInvitations.length < 5)}>
                 Confirm Reservation
               </Button>
               <Button
