@@ -59,7 +59,7 @@ class Invitation(Base):
     sender_id = Column(Integer, ForeignKey('users.id'), nullable=False)
     receiver_email = Column(String, nullable=False)
     token = Column(String, nullable=False, unique=True, index=True)
-    status = Column(String, nullable=False, default="pending")
+    status = Column(String, nullable=False, default="Pending")
     expires_at = Column(DateTime)
 
     user = relationship("User", back_populates="invitations")
