@@ -1,4 +1,4 @@
-from fastapi import FastAPI, Depends, HTTPException, status, UploadFile, File
+from fastapi import FastAPI, Depends, HTTPException, status, UploadFile, File, BackgroundTasks
 from uuid import uuid4
 from fastapi.responses import JSONResponse
 from fastapi.staticfiles import StaticFiles
@@ -12,12 +12,14 @@ import jwt
 import os
 import smtplib
 import secrets
+import asyncio
+import pytz
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 from dotenv import load_dotenv
 from .models import User, Problem, UserRole, SolvedProblem, Reservation, Invitation
 from .database import Base, engine, get_db
-from .schema import UserResponse, UserCreated, ProblemResponse, ProblemCreated, Token, SolvedProblemCreated, SolvedProblemResponse, EditProfileBase, SuccessResponse, CheckPasswordBase, ReservationCreated, ReservationResponse, InvitationCreated, InvitationResponse, AcceptInvitationRequest
+from .schema import UserResponse, UserCreated, ProblemResponse, ProblemCreated, Token, SolvedProblemCreated, SolvedProblemResponse, EditProfileBase, SuccessResponse, CheckPasswordBase, ReservationCreated, ReservationResponse, InvitationCreated, InvitationResponse, AcceptInvitationRequest, CancelReservation
 load_dotenv()
 
 app = FastAPI()
@@ -114,7 +116,6 @@ def login_for_access_token(form_data: OAuth2PasswordRequestForm = Depends(), db:
     access_token_expires = timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
     access_token, expire = create_access_token(userData, expires_delta=access_token_expires)
     expires_in = int((expire - datetime.now(timezone.utc)).total_seconds())
-    print(expires_in)
     return {"access_token": access_token, "token_type": "bearer", "expires_in": expires_in}
 
 # User Endpoints
@@ -314,33 +315,113 @@ def create_reserve(reserve: ReservationCreated, db: Session = Depends(get_db)):
     db.refresh(new_reserve)
     return new_reserve
 
-@app.get("/all_reserve/", response_model=List[ReservationResponse])
+@app.get("/all_reservation/", response_model=List[ReservationResponse])
 def get_all_reservation(db: Session = Depends(get_db)):
     all_reservation = db.query(Reservation).all()
     return all_reservation
 
-@app.delete("/cancel_reserve/{id}", response_model=SuccessResponse)
-def cancel_reserve(id: int, db: Session = Depends(get_db)):
-    reserve_id = db.query(Reservation).filter(Reservation.id == id).first()
-    if reserve_id is None:
-        raise HTTPException(status_code=404, detail="Reserve not found")
+@app.delete("/cancel_reservation", response_model=SuccessResponse)
+def cancel_reservation(request: CancelReservation, db: Session = Depends(get_db)):
+    reserved = db.query(Reservation).filter(Reservation.room_id == request.room_id, Reservation.date == request.date, Reservation.time == request.time).first()
+    if reserved is None:
+        raise HTTPException(status_code=404, detail="Reservation not found")
     
-    db.delete(reserve_id)
+    db.delete(reserved)
     db.commit()
-    return { "message": "Canceled reserve" }
+    return { "message": "Reservation has been canceled" }    
 
-# Email Endpoint
+async def send_delayed_email(sender_email: str, receiver_email: str, date: str, time: str, room_id: int, db: Session):
+    print(f"send_delayed_email called for date: {date}, time: {time}, room_id: {room_id}")
+    
+    try:
+        parsed_date = datetime.strptime(date, "%d/%m/%y")
+        formatted_date = parsed_date.strftime("%Y-%m-%d")
+
+        # Create a timezone object for UTC+7
+        thailand_tz = pytz.timezone("Asia/Bangkok")
+
+        # Create reservation datetime in UTC+7
+        reservation_datetime = thailand_tz.localize(datetime.strptime(f"{formatted_date} {time}", "%Y-%m-%d %H:%M"))
+
+        # Calculate send time (15 minutes before reservation)
+        send_time = reservation_datetime - timedelta(minutes=15)
+
+        # Get current time in UTC+7
+        now = datetime.now(thailand_tz)
+
+        # Calculate delay
+        delay_seconds = (send_time - now).total_seconds()
+
+        if delay_seconds > 0:
+            print(f"Waiting for {delay_seconds} seconds before attempting to send email...")
+            await asyncio.sleep(delay_seconds)
+        else:
+            print("It's past the scheduled time for sending the email; sending immediately.")
+
+        reservation = db.query(Reservation).filter(
+            Reservation.date == date, 
+            Reservation.time == time, 
+            Reservation.room_id == room_id
+        ).first()
+
+        if not reservation:
+            print(f"Reservation not found for date: {date}, time: {time}, room_id: {room_id}")
+            return
+        
+        msg = MIMEMultipart()
+        msg['From'] = "SE KMITL"
+        msg['To'] = receiver_email
+        msg['Subject'] = f"Upcoming Reservation Reminder: Room {reservation.room_id} Reservation on {reservation.date} at {reservation.time}"
+        link = f"http://localhost:3000/cancel_reservation?room_id={reservation.room_id}&date={reservation.date}&time={reservation.time}"
+        html_content = f"""
+        <html>
+            <body>
+                <p>Dear Student,</p>
+                <p>This is a reminder that you have an upcoming room reservation scheduled as follows:</p>
+                <h3>Reservation Details:</h3>
+                <ul>
+                    <li><strong>Room ID:</strong> {reservation.room_id}</li>
+                    <li><strong>Date:</strong> {reservation.date}</li>
+                    <li><strong>Time:</strong> {reservation.time}</li>
+                </ul>
+                <p>If you would like to cancel your reservation, please click the link below:</p>
+                <p>
+                    <a href="{link}">
+                        Cancel Reservation
+                    </a>
+                </p>
+                <p>If you have any questions or need assistance, feel free to reply to this email.</p>
+                <p>Thank you!</p>
+                <p>Best regards,<br>Software Engineering KMITL</p>
+            </body>
+        </html>
+        """
+        msg.attach(MIMEText(html_content, 'html'))
+
+        server = smtplib.SMTP("smtp.gmail.com", 587)
+        server.starttls()
+        server.login(sender_email, os.getenv("APP_PASSWORD"))
+        server.sendmail(sender_email, receiver_email, msg.as_string())
+        server.quit()
+        print(f"Reminder email sent successfully for reservation on {date} at {time}")
+
+    except Exception as e:
+        print(f"Error in send_delayed_email: {str(e)}")
+
+# Invitation Endpoint
 @app.post('/send_invitation', response_model=SuccessResponse)
-def send_invitation(invitation: InvitationCreated, db: Session = Depends(get_db)):
+def send_invitation(invitation: InvitationCreated, background_tasks: BackgroundTasks, db: Session = Depends(get_db)):
     token = secrets.token_urlsafe(32)
-
     expires_at = datetime.now(timezone.utc) + timedelta(hours=8)
     new_invitation = Invitation(
         sender_id=invitation.sender_id,
         receiver_email=invitation.receiver_email,
         token=token,
-        status='pending',
-        expires_at=expires_at
+        status='Pending',
+        expires_at=expires_at,
+        room_id=invitation.room_id,
+        date=invitation.date,
+        time=invitation.time
     )
     db.add(new_invitation)
     db.commit()
@@ -353,9 +434,14 @@ def send_invitation(invitation: InvitationCreated, db: Session = Depends(get_db)
     html_content = f"""
     <html>
         <body>
-            <p>Hello,</p>
-            <p>You've been invited to use coworking space!</p>
-            <a href="{link}">Click this link to accept the invitation!</a>
+            <p>Dear Student,</p>
+            <p>We are pleased to inform you that you have been invited to utilize the coworking space.</p>
+            <p>To accept this invitation, please click the link below:</p>
+            <p>
+                <a href="{link}">Accept Invitation</a>
+            </p>
+            <p>Thank you, and we look forward to welcoming you!</p>
+            <p>Best regards,<br>Software Engineering KMITL</p>
         </body>
     </html>
     """
@@ -369,6 +455,7 @@ def send_invitation(invitation: InvitationCreated, db: Session = Depends(get_db)
         server.quit()
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Failed to send email: {str(e)}")
+    background_tasks.add_task(send_delayed_email, invitation.sender_email, invitation.receiver_email, invitation.date, invitation.time, invitation.room_id, db)
     
     return {"message": "Invitation sent successfully"}
 
@@ -377,7 +464,7 @@ def accept_invitation(request: AcceptInvitationRequest, db: Session = Depends(ge
     invitation = db.query(Invitation).filter(Invitation.token == request.token).first()
     if not invitation:
         raise HTTPException(status_code=404, detail="Invitation not found")
-    if invitation.status != 'pending':
+    if invitation.status != 'Pending':
         raise HTTPException(status_code=400, detail="Invitation already processed")
     # Ensure `expires_at` is timezone aware
     if invitation.expires_at.tzinfo is None:
@@ -385,7 +472,6 @@ def accept_invitation(request: AcceptInvitationRequest, db: Session = Depends(ge
 
     if invitation.expires_at < datetime.now(timezone.utc):
         raise HTTPException(status_code=400, detail="Invitation has expired")
-    print(request.isAccept)
     if request.isAccept == True:
         setattr(invitation, "status", "Accept")
     else:
