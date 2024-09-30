@@ -136,8 +136,6 @@ function ReservationBox({ roomName, roomImage, onCloseBox, amenities, members })
     }
   }
 
-
-
   const fetchAllStudent = async () => {
     try {
       const response = await fetch('http://localhost:8000/user/data/all');
@@ -179,7 +177,7 @@ function ReservationBox({ roomName, roomImage, onCloseBox, amenities, members })
       sender_email: "softwareengineeringkmitl@gmail.com",
       sender_id: senderID,
       receiver_email : receiver_email,
-      subject: "Test",
+      subject: "Co-Working Space Invitation",
       expires_at: expiresAt
     }
     try {
@@ -194,6 +192,21 @@ function ReservationBox({ roomName, roomImage, onCloseBox, amenities, members })
       await fetchInvitations();
     } catch (error) {
       console.error("Error sending email: ", error);
+    }
+  }
+
+  const deleteAllInvitations = async () => {
+    try {
+      const response = await fetch('http://localhost:8000/delete_all_invitations', {
+        method: "DELETE",
+        headers: {"Content-Type": "application/json"},
+      })
+      if(!response.ok) {
+        throw new Error("Error deleteing data");
+      }
+      setAllInvitations([])
+    } catch (error) {
+      console.error("Error cancelling all invitation: ", error);
     }
   }
 
@@ -317,9 +330,9 @@ function ReservationBox({ roomName, roomImage, onCloseBox, amenities, members })
                   invitationstate = 'invitationAccept';
                 } else if (member.status === 'Decline') {
                   invitationstate = 'invitationDecline';
-                } else if (member.status === 'pending'){
-                  member.status = 'Pending';
-                }
+                } // else if (member.status === 'pending'){
+                //   member.status = 'Pending';
+                // }
 
                 return (
                   <div key={index} style={{ display: "flex", alignItems: "center"}}>
@@ -350,14 +363,14 @@ function ReservationBox({ roomName, roomImage, onCloseBox, amenities, members })
               </div>
             </div>
             <div className="form-buttons">
-              <Button type="button" colorScheme="blue" mr="10px" onClick={() => reserveRoom(roomName.match(/\d+/)[0], selectedTime)} 
-              isDisabled={selectedTime === null || ((roomName === "Room 1" || roomName === "Room 2") && allInvitations.length < 3) || (roomName === 'Room 3' && allInvitations.length < 5)}>
+              <Button type="button" colorScheme="blue" mr="10px" onClick={() => {reserveRoom(roomName.match(/\d+/)[0], selectedTime); deleteAllInvitations()}} 
+              isDisabled={selectedTime === null}>
                 Confirm Reservation
               </Button>
               <Button
                 type="button"
                 colorScheme="red"
-                onClick={() => {setIsReserving(false); resetState()}}
+                onClick={() => {setIsReserving(false); resetState();}}
               >
                 Cancel
               </Button>
