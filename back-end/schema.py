@@ -93,6 +93,8 @@ class InvitationBase(BaseModel):
     subject: str
     expires_at: datetime
     room_id: int
+    date: str
+    time: str
 
     @field_validator('expires_at', mode='before')
     def validate_expires_at(cls, value):
@@ -118,6 +120,8 @@ class InvitationResponse(BaseModel):
     status: str
     expires_at: datetime
     room_id: int
+    date: str
+    time: str
     class Config:
         from_attributes = True
 
