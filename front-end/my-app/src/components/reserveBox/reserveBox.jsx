@@ -87,7 +87,7 @@ function ReservationBox({ roomName, roomImage, onCloseBox, amenities, members })
 
   const fetchAllReservedData = async () => {
     try {
-      const response = await fetch('http://localhost:8000/all_reserve');
+      const response = await fetch('http://localhost:8000/all_reservation');
       if(!response.ok) {
         throw new Error("Problem while fetching all reserved data");
       }
@@ -131,6 +131,7 @@ function ReservationBox({ roomName, roomImage, onCloseBox, amenities, members })
       }
       setReserved(prev => [...prev, newReservation]);
       setSelectedTime(null);
+      setInvitedMembers([])
     } catch (error) {
       console.error("Error reserving room: ", error);
     }
@@ -172,13 +173,18 @@ function ReservationBox({ roomName, roomImage, onCloseBox, amenities, members })
     const now = new Date();
     now.setHours(now.getHours() + 1); // Adds 1 hour for invitation expiration
     const expiresAt = formatToUTCPlus7(now);
+    const date = new Date();
+    date.setDate(date.getDate() + selectedDateIndex)
 
     const emailData = {
       sender_email: "softwareengineeringkmitl@gmail.com",
       sender_id: senderID,
       receiver_email : receiver_email,
       subject: "Co-Working Space Invitation",
-      expires_at: expiresAt
+      expires_at: expiresAt,
+      room_id: roomName.match(/\d+/)[0],
+      time: selectedTime,
+      date: getCustomFormattedDate(date),
     }
     try {
       const response = await fetch('http://localhost:8000/send_invitation', {
