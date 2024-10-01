@@ -2,11 +2,13 @@ import React, { useState, useEffect } from "react";
 import ProfileMenu from "../profileMenu/ProfileMenu";
 import "./ProfileIcon.css";
 import { useLocation } from "react-router-dom";
+import { useAuth } from "../../context/AuthContext";
 
 function ProfileIcon() {
   const [showSignOut, setShowSignOut] = useState(false);
   const [profilePic, setProfilePic] = useState(null);
   const location = useLocation();
+  const { internetIPAddress } = useAuth();
 
   // Toggle function to show/hide the Sign Out button
   const toggleSignOut = () => {
@@ -17,7 +19,7 @@ function ProfileIcon() {
     const fetchProfilePicture = async () => {
       const userID = localStorage.getItem('userID');
       try {
-        const response = await fetch(`http://localhost:8000/user/data/${userID}`);
+        const response = await fetch(`${internetIPAddress}user/data/${userID}`);
         if (!response.ok) {
           throw new Error("Network response was not ok");
         }
@@ -45,7 +47,7 @@ function ProfileIcon() {
         {profilePic ? (
           <img src={profilePic} width={50} alt="Profile Icon" />
         ) : (
-          <img src="http://localhost:8000/uploads/anonymous.png" width="50" alt="Default Profile Icon" />
+          <img src={`${internetIPAddress}uploads/anonymous.png`} width="50" alt="Default Profile Icon" />
         )}
       </button>
 
