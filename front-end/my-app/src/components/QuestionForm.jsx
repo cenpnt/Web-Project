@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { Box, Button, Input, Textarea, FormControl, FormLabel } from "@chakra-ui/react";
+import { useAuth } from "../context/AuthContext";
 
 const AddQuestionForm = ({ onCancel, onSuccess }) => {
   const [title, setTitle] = useState("");
@@ -7,6 +8,7 @@ const AddQuestionForm = ({ onCancel, onSuccess }) => {
   const [inputExample, setInputExample] = useState("");
   const [outputExample, setOutputExample] = useState("");
   const [note, setNote] = useState("");
+  const { internetIPAddress } = useAuth();
 
   const token = localStorage.getItem("access_token");
 
@@ -22,7 +24,7 @@ const AddQuestionForm = ({ onCancel, onSuccess }) => {
       note
     };
     try {
-        const response = await fetch("http://localhost:8000/create_problems", {
+        const response = await fetch(`${internetIPAddress}create_problems`, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
