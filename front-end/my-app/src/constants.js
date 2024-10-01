@@ -1,3 +1,5 @@
+const internetIPAddress = "http://192.168.1.39:8000/"
+
 export const LANGUAGE_VERSIONS = {
   javascript: "18.15.0",
   python: "3.10.0",
@@ -265,7 +267,7 @@ export const card4 = {
 
   export const room1 = {
     roomName: "Room 1",
-    roomImage: "http://localhost:8000/uploads/anonymous.png", 
+    roomImage: `${internetIPAddress}uploads/anonymous.png`, 
     amenities: ['Capacity of 5','Wi-Fi', 'Table', 'Smart-TV (Interactive Display Writing Board)'], 
     members: "3"
   };
@@ -279,7 +281,7 @@ export const card4 = {
 
   export const room3 = {
     roomName: "Room 3",
-    roomImage: "http://localhost:8000/uploads/co-room3.jpg",
+    roomImage: `${internetIPAddress}uploads/co-room3.jpg`,
     amenities: ['Capacity of 10','Wi-fi', 'Smart-TV (Interactive Display Writing Board)', 'Meeting desk'],
     members: "5"
   }
