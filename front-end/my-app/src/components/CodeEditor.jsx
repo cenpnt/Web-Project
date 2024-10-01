@@ -7,6 +7,7 @@ import { CODE_SNIPPETS } from "../constants";
 import Output from "./Output";
 import Icon from "./icon/Icon";
 import AddQuestionForm from "./QuestionForm";
+import { useAuth } from '../context/AuthContext';
 
 const CodeEditor = () => {
   const editorRef = useRef();
@@ -20,6 +21,7 @@ const CodeEditor = () => {
   const [solvedStatus, setSolvedStatus] = useState([]);   // Solved status for each problem in problems arr
   const isAdmin = localStorage.getItem('isAdmin') === 'true';
   const token = localStorage.getItem('access_token');
+  const { internetIPAddress } = useAuth();
 
   useEffect(() => {
     const fetchData = async () => {
@@ -58,7 +60,7 @@ const CodeEditor = () => {
     }
   
     try {
-      const response = await fetch(`http://localhost:8000/problems/${problem_id}`);
+      const response = await fetch(`${internetIPAddress}problems/${problem_id}`);
       if (!response.ok) {
         throw new Error('Cannot fetch the problem');
       }
@@ -72,7 +74,7 @@ const CodeEditor = () => {
 
   const fetchProblems = async () => {
     try {
-      const response = await fetch("http://localhost:8000/problems");
+      const response = await fetch(`${internetIPAddress}problems`);
       if (!response.ok) {
         throw new Error('Cannot fetch the problems');
       }
@@ -87,7 +89,7 @@ const CodeEditor = () => {
   const fetchSolvedProblems = async () => {
     const user_id = localStorage.getItem('userID');
     try {
-      const response = await fetch("http://localhost:8000/all_solved_problem");
+      const response = await fetch(`${internetIPAddress}all_solved_problem`);
       if(!response.ok) {
         throw new Error('Cannot fetch solved problems');
       }
@@ -124,7 +126,7 @@ const CodeEditor = () => {
 
   const deleteQuestion = async (problem_id) => {
     try {
-      const response = await fetch(`http://localhost:8000/problems/${problem_id}`, {
+      const response = await fetch(`${internetIPAddress}problems/${problem_id}`, {
         method: "DELETE",
         headers: {
           "Content-Type": "application/json",
@@ -159,7 +161,7 @@ const CodeEditor = () => {
     }
 
     try {
-      const response = await fetch('http://localhost:8000/solved_problem', {
+      const response = await fetch(`${internetIPAddress}solved_problem`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json"
