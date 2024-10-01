@@ -33,7 +33,8 @@ app.add_middleware(
 )
 # Configuration
 UPLOAD_DIR = "uploads"
-BASE_URL = "http://localhost:8000"
+BASE_URL_BACKEND = "http://192.168.1.39:8000"
+BASE_URL_FRONTEND = "http://192.168.1.39:3000"
 
 # Ensure upload directory exists
 os.makedirs(UPLOAD_DIR, exist_ok=True)
@@ -268,7 +269,7 @@ def upload_profile_pic(id: int, file: UploadFile = File(...), db: Session = Depe
         file_object.write(file.file.read())
 
     # Generate the file URL
-    file_url = f"{BASE_URL}/uploads/{unique_filename}"
+    file_url = f"{BASE_URL_BACKEND}/uploads/{unique_filename}"
     
     # Update the user's profile_pic field with the file URL
     user.profile_pic = file_url
@@ -294,7 +295,7 @@ async def upload_image(file: UploadFile = File(...)):
     file_location = os.path.join(UPLOAD_DIR, file.filename)
     with open(file_location, "wb") as f:
         f.write(await file.read())
-    return JSONResponse(content={"filename": file.filename, "url": f"http://localhost:8000/uploads/{file.filename}"})
+    return JSONResponse(content={"filename": file.filename, "url": f"{BASE_URL_BACKEND}/uploads/{file.filename}"})
 
 # Room Reservation Endpoints
 @app.post("/reserve", response_model=ReservationResponse)
@@ -372,7 +373,7 @@ async def send_delayed_email(sender_email: str, receiver_email: str, date: str, 
         msg['From'] = "SE KMITL"
         msg['To'] = receiver_email
         msg['Subject'] = f"Upcoming Reservation Reminder: Room {reservation.room_id} Reservation on {reservation.date} at {reservation.time}"
-        link = f"http://localhost:3000/cancel_reservation?room_id={reservation.room_id}&date={reservation.date}&time={reservation.time}"
+        link = f"{BASE_URL_FRONTEND}/cancel_reservation?room_id={reservation.room_id}&date={reservation.date}&time={reservation.time}"
         html_content = f"""
         <html>
             <body>
@@ -430,7 +431,7 @@ def send_invitation(invitation: InvitationCreated, background_tasks: BackgroundT
     msg['From'] = "SE KMITL"
     msg['To'] = invitation.receiver_email
     msg['Subject'] = invitation.subject
-    link = f"http://localhost:3000/accept_invitation?token={token}"
+    link = f"{BASE_URL_FRONTEND}/accept_invitation?token={token}"
     html_content = f"""
     <html>
         <body>
