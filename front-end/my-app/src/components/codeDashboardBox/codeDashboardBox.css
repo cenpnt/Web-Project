@@ -1,19 +1,21 @@
-.cardBody{
-    display: flex;
-    justify-content: center;
+.cardBody {
+  display: flex;
+  justify-content: center;
 }
 
 .continueButtonContainer Button {
-    background-color: rgb(49, 75, 205);
-    color: white;
-    font-weight: 500;
+  background-color: rgb(49, 75, 205);
+  color: white;
+  font-weight: 500;
 }
 
-.continueButtonContainer:hover Button {
-    background-color: rgb(95, 102, 136);
+.continueButtonContainer Button:hover {
+  background-color: rgb(117, 132, 207);
+  color: white;
+  font-weight: 500;
 }
 
 .codeBoxHeader {
-    font-weight: bold;
-    font-size: 27px;
+  font-weight: bold;
+  font-size: 27px;
 }

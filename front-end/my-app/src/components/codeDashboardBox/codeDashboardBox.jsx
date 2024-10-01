@@ -1,5 +1,5 @@
 import './codeDashboardBox.css';
-import { Card, CardHeader, CardBody, CardFooter, Heading } from '@chakra-ui/react';
+import { Card, CardHeader, CardBody, CardFooter } from '@chakra-ui/react';
 import { CircularProgress, CircularProgressLabel } from '@chakra-ui/react';
 import Button from '../button/Button';
 
@@ -17,7 +17,7 @@ function CodeDashboardBox({codeTopic}) {
             </CardBody>
             <CardFooter>
                 <div className='continueButtonContainer'>
-                    <Button text={'continue'} className={'continueButton'}/>
+                    <Button text={'Continue'} className={'continueButton'}/>
                 </div>
             </CardFooter>
         </Card>
