@@ -6,11 +6,15 @@ import { useState } from 'react';
 import Carousel from 'react-multi-carousel';
 import 'react-multi-carousel/lib/styles.css';
 import Button from '../../components/button/Button';
+import { useAuth } from '../../context/AuthContext';
+
 
 function UStudent() {
     
     const [username, setUsername] = useState('');
     const [currentDate, setCurrentDate] = useState('');
+    const {internetIPAddress} = useAuth();
+    const pics = `${internetIPAddress}uploads/co-room3.png`
 
     const responsive = {
         superLargeDesktop: {
@@ -35,7 +39,7 @@ function UStudent() {
     const fetchUser = async () => {
         const userID = localStorage.getItem('userID');
             try {
-                const response = await fetch(`http://localhost:8000/user/data/${userID}`);
+                const response = await fetch(`${internetIPAddress}user/data/${userID}`);
                 if (!response.ok) {
                     throw new Error("Network response was not ok");
                   }
@@ -93,7 +97,7 @@ function UStudent() {
                         <h4>Your Reservation</h4>
                     </div>
                     <div className='coWorkingSpace2'>
-                        <img src="http://localhost:8000/uploads/co-room3.png" alt="" />
+                        <img src={pics} alt="" />
                         <h4>Book Your room now!</h4>
                         <Button text={'Reserve'} path={'/coworkingspace'}/>
                     </div>
@@ -106,4 +110,4 @@ function UStudent() {
     );
 }
 
-export default UStudent
+export default UStudent;
