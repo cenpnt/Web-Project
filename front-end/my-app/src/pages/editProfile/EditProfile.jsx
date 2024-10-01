@@ -6,11 +6,13 @@ import { ArrowBackIcon, CheckIcon, CloseIcon } from '@chakra-ui/icons';
 import { Modal, ModalOverlay, ModalContent, ModalHeader, ModalFooter, ModalBody, ModalCloseButton, Button as ChakraButton, useToast } from '@chakra-ui/react';
 import { useDisclosure } from '@chakra-ui/hooks';
 import Button from "../../components/button/Button";
+import { useAuth } from '../../context/AuthContext';
 import "./EditProfile.css";
 
 function EditProfile() {
+    const {internetIPAddress} = useAuth();
     const [formData, setFormData] = useState({ username: 'name', bio: '', password: '', profile: '' });
-    const [selectedImage, setSelectedImage] = useState('http://localhost:8000/uploads/anonymous_dark.png');
+    const [selectedImage, setSelectedImage] = useState(`${internetIPAddress}uploads/anonymous_dark.png`);
     const [isEditing, setIsEditing] = useState({ username: false, bio: false, password: false });
     const [fieldSaved, setFieldSaved] = useState({ username: false, bio: false, password: false });
     const [errorMessage, setErrorMessage] = useState('');
@@ -66,7 +68,7 @@ function EditProfile() {
         const fetchData = async () => {
             const userID = localStorage.getItem('userID');
             try {
-                const response = await fetch(`http://localhost:8000/user/data/${userID}`);
+                const response = await fetch(`${internetIPAddress}user/data/${userID}`);
                 const data = await response.json();
                 setFormData((prevData) => ({ 
                     ...prevData,
@@ -103,7 +105,7 @@ function EditProfile() {
         formData.append('file', imageData);
     
         try {
-            const response = await fetch(`http://localhost:8000/upload_profile_pic/${userID}`, {
+            const response = await fetch(`${internetIPAddress}upload_profile_pic/${userID}`, {
                 method: 'PUT',
                 body: formData,
             });
@@ -212,7 +214,7 @@ function EditProfile() {
         }
         const userID = localStorage.getItem('userID');
         try {
-            const response = await fetch(`http://localhost:8000/edit_profile/${userID}`, {
+            const response = await fetch(`${internetIPAddress}edit_profile/${userID}`, {
                 method: 'PUT',
                 body: JSON.stringify({ 
                     fieldName: fieldName,
@@ -288,7 +290,7 @@ function EditProfile() {
         console.log(currentPassword);
         const userID = localStorage.getItem("userID");
         try {
-            const response = await fetch(`http://localhost:8000/edit_profile/check_password/${userID}`, {
+            const response = await fetch(`${internetIPAddress}edit_profile/check_password/${userID}`, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({
