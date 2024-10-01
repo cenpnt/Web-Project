@@ -63,5 +63,8 @@ class Invitation(Base):
     token = Column(String, nullable=False, unique=True, index=True)
     status = Column(String, nullable=False, default="Pending")
     expires_at = Column(DateTime)
+    room_id = Column(Integer, index=True)
+    date = Column(String)
+    time = Column(String)
 
     user = relationship("User", back_populates="invitations")

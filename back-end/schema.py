@@ -81,12 +81,20 @@ class ReservationResponse(ReservationBase):
     class Config:
         from_attributes = True
 
+class CancelReservation(BaseModel):
+    room_id : int
+    date: str
+    time: str
+
 class InvitationBase(BaseModel):
     sender_email: str
     sender_id: int
     receiver_email: str
     subject: str
     expires_at: datetime
+    room_id: int
+    date: str
+    time: str
 
     @field_validator('expires_at', mode='before')
     def validate_expires_at(cls, value):
@@ -111,6 +119,9 @@ class InvitationResponse(BaseModel):
     receiver_email: str
     status: str
     expires_at: datetime
+    room_id: int
+    date: str
+    time: str
     class Config:
         from_attributes = True
 

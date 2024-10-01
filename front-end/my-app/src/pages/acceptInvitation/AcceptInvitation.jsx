@@ -15,8 +15,9 @@ function AcceptInvitation() {
                 headers: { "Content-Type" : "application/json"},
                 body: JSON.stringify({ token, isAccept: acceptStatus })
             })
-            if(!response.ok) {
-                throw new Error("Error changing staus");
+            if (!response.ok) {
+                const errorResponse = await response.json(); // Get the error response body
+                throw new Error(`Error changing status: ${errorResponse.detail}`);
             }
         } catch (error) {
             console.error("Error changing status from pending to accept: ", error);
