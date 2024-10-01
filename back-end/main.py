@@ -1,4 +1,4 @@
-from fastapi import FastAPI, Depends, HTTPException, status, UploadFile, File
+from fastapi import FastAPI, Depends, HTTPException, status, UploadFile, File, BackgroundTasks
 from uuid import uuid4
 from fastapi.responses import JSONResponse
 from fastapi.staticfiles import StaticFiles
@@ -10,24 +10,30 @@ from datetime import datetime, timedelta, timezone
 from typing import List, Optional
 import jwt
 import os
+import smtplib
+import secrets
+import asyncio
+import pytz
+from email.mime.text import MIMEText
+from email.mime.multipart import MIMEMultipart
 from dotenv import load_dotenv
-from .models import User, Problem, UserRole, SolvedProblem
+from .models import User, Problem, UserRole, SolvedProblem, Reservation, Invitation
 from .database import Base, engine, get_db
-from .schema import UserResponse, UserCreated, ProblemResponse, ProblemCreated, Token, SolvedProblemCreated, SolvedProblemResponse, EditProfileBase, SuccessResponse, CheckPasswordBase
+from .schema import UserResponse, UserCreated, ProblemResponse, ProblemCreated, Token, SolvedProblemCreated, SolvedProblemResponse, EditProfileBase, SuccessResponse, CheckPasswordBase, ReservationCreated, ReservationResponse, InvitationCreated, InvitationResponse, AcceptInvitationRequest, CancelReservation
 load_dotenv()
 
 app = FastAPI()
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:3000"],
+    allow_origins=["*"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"], 
 )
 # Configuration
 UPLOAD_DIR = "uploads"
-BASE_URL = "http://localhost:8000"  # Adjust this to your server's base URL
+BASE_URL = "http://localhost:8000"
 
 # Ensure upload directory exists
 os.makedirs(UPLOAD_DIR, exist_ok=True)
@@ -120,11 +126,16 @@ def create_user(user: UserCreated, db: Session = Depends(get_db)):
         raise HTTPException(status_code=400, detail="Username already taken")
     
     hashed_password = pwd_context.hash(user.password)
-    new_user = User(username=user.username, password=hashed_password, role=user.role)
+    new_user = User(username=user.username, password=hashed_password, role=user.role, student_id=user.student_id)
     db.add(new_user)
     db.commit()
     db.refresh(new_user)
     return new_user
+
+@app.get('/user/data/all', response_model=List[UserResponse])
+def get_all_user_data(db: Session = Depends(get_db)):
+    all_users = db.query(User).filter(User.role != UserRole.admin).all()
+    return all_users
 
 @app.get("/user/data/{id}", response_model=UserResponse)
 def get_profile_data(id: int, db: Session = Depends(get_db)):
@@ -284,3 +295,203 @@ async def upload_image(file: UploadFile = File(...)):
     with open(file_location, "wb") as f:
         f.write(await file.read())
     return JSONResponse(content={"filename": file.filename, "url": f"http://localhost:8000/uploads/{file.filename}"})
+
+# Room Reservation Endpoints
+@app.post("/reserve", response_model=ReservationResponse)
+def create_reserve(reserve: ReservationCreated, db: Session = Depends(get_db)):
+    existing_reserve = db.query(Reservation).filter(Reservation.room_id == reserve.room_id, Reservation.time == reserve.time, Reservation.date == reserve.date).first()
+    if existing_reserve:
+        raise HTTPException(status_code=400, detail="Room has already been reserved")
+    
+    new_reserve = Reservation(
+        user_id = reserve.user_id,
+        room_id = reserve.room_id,
+        date = reserve.date,
+        time =  reserve.time,
+        students = reserve.students
+    )
+    db.add(new_reserve)
+    db.commit()
+    db.refresh(new_reserve)
+    return new_reserve
+
+@app.get("/all_reservation/", response_model=List[ReservationResponse])
+def get_all_reservation(db: Session = Depends(get_db)):
+    all_reservation = db.query(Reservation).all()
+    return all_reservation
+
+@app.delete("/cancel_reservation", response_model=SuccessResponse)
+def cancel_reservation(request: CancelReservation, db: Session = Depends(get_db)):
+    reserved = db.query(Reservation).filter(Reservation.room_id == request.room_id, Reservation.date == request.date, Reservation.time == request.time).first()
+    if reserved is None:
+        raise HTTPException(status_code=404, detail="Reservation not found")
+    
+    db.delete(reserved)
+    db.commit()
+    return { "message": "Reservation has been canceled" }    
+
+async def send_delayed_email(sender_email: str, receiver_email: str, date: str, time: str, room_id: int, db: Session):
+    print(f"send_delayed_email called for date: {date}, time: {time}, room_id: {room_id}")
+    
+    try:
+        parsed_date = datetime.strptime(date, "%d/%m/%y")
+        formatted_date = parsed_date.strftime("%Y-%m-%d")
+
+        # Create a timezone object for UTC+7
+        thailand_tz = pytz.timezone("Asia/Bangkok")
+
+        # Create reservation datetime in UTC+7
+        reservation_datetime = thailand_tz.localize(datetime.strptime(f"{formatted_date} {time}", "%Y-%m-%d %H:%M"))
+
+        # Calculate send time (15 minutes before reservation)
+        send_time = reservation_datetime - timedelta(minutes=15)
+
+        # Get current time in UTC+7
+        now = datetime.now(thailand_tz)
+
+        # Calculate delay
+        delay_seconds = (send_time - now).total_seconds()
+
+        if delay_seconds > 0:
+            print(f"Waiting for {delay_seconds} seconds before attempting to send email...")
+            await asyncio.sleep(delay_seconds)
+        else:
+            print("It's past the scheduled time for sending the email; sending immediately.")
+
+        reservation = db.query(Reservation).filter(
+            Reservation.date == date, 
+            Reservation.time == time, 
+            Reservation.room_id == room_id
+        ).first()
+
+        if not reservation:
+            print(f"Reservation not found for date: {date}, time: {time}, room_id: {room_id}")
+            return
+        
+        msg = MIMEMultipart()
+        msg['From'] = "SE KMITL"
+        msg['To'] = receiver_email
+        msg['Subject'] = f"Upcoming Reservation Reminder: Room {reservation.room_id} Reservation on {reservation.date} at {reservation.time}"
+        link = f"http://localhost:3000/cancel_reservation?room_id={reservation.room_id}&date={reservation.date}&time={reservation.time}"
+        html_content = f"""
+        <html>
+            <body>
+                <p>Dear Student,</p>
+                <p>This is a reminder that you have an upcoming room reservation scheduled as follows:</p>
+                <h3>Reservation Details:</h3>
+                <ul>
+                    <li><strong>Room ID:</strong> {reservation.room_id}</li>
+                    <li><strong>Date:</strong> {reservation.date}</li>
+                    <li><strong>Time:</strong> {reservation.time}</li>
+                </ul>
+                <p>If you would like to cancel your reservation, please click the link below:</p>
+                <p>
+                    <a href="{link}">
+                        Cancel Reservation
+                    </a>
+                </p>
+                <p>If you have any questions or need assistance, feel free to reply to this email.</p>
+                <p>Thank you!</p>
+                <p>Best regards,<br>Software Engineering KMITL</p>
+            </body>
+        </html>
+        """
+        msg.attach(MIMEText(html_content, 'html'))
+
+        server = smtplib.SMTP("smtp.gmail.com", 587)
+        server.starttls()
+        server.login(sender_email, os.getenv("APP_PASSWORD"))
+        server.sendmail(sender_email, receiver_email, msg.as_string())
+        server.quit()
+        print(f"Reminder email sent successfully for reservation on {date} at {time}")
+
+    except Exception as e:
+        print(f"Error in send_delayed_email: {str(e)}")
+
+# Invitation Endpoint
+@app.post('/send_invitation', response_model=SuccessResponse)
+def send_invitation(invitation: InvitationCreated, background_tasks: BackgroundTasks, db: Session = Depends(get_db)):
+    token = secrets.token_urlsafe(32)
+    expires_at = datetime.now(timezone.utc) + timedelta(hours=8)
+    new_invitation = Invitation(
+        sender_id=invitation.sender_id,
+        receiver_email=invitation.receiver_email,
+        token=token,
+        status='Pending',
+        expires_at=expires_at,
+        room_id=invitation.room_id,
+        date=invitation.date,
+        time=invitation.time
+    )
+    db.add(new_invitation)
+    db.commit()
+
+    msg = MIMEMultipart()
+    msg['From'] = "SE KMITL"
+    msg['To'] = invitation.receiver_email
+    msg['Subject'] = invitation.subject
+    link = f"http://localhost:3000/accept_invitation?token={token}"
+    html_content = f"""
+    <html>
+        <body>
+            <p>Dear Student,</p>
+            <p>We are pleased to inform you that you have been invited to utilize the coworking space.</p>
+            <p>To accept this invitation, please click the link below:</p>
+            <p>
+                <a href="{link}">Accept Invitation</a>
+            </p>
+            <p>Thank you, and we look forward to welcoming you!</p>
+            <p>Best regards,<br>Software Engineering KMITL</p>
+        </body>
+    </html>
+    """
+    msg.attach(MIMEText(html_content, 'html'))
+    
+    try:
+        server = smtplib.SMTP("smtp.gmail.com", 587)
+        server.starttls()
+        server.login(invitation.sender_email, os.getenv("APP_PASSWORD"))
+        server.sendmail(invitation.sender_email, invitation.receiver_email, msg.as_string())
+        server.quit()
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Failed to send email: {str(e)}")
+    background_tasks.add_task(send_delayed_email, invitation.sender_email, invitation.receiver_email, invitation.date, invitation.time, invitation.room_id, db)
+    
+    return {"message": "Invitation sent successfully"}
+
+@app.put('/accept_invitation', response_model=InvitationResponse)
+def accept_invitation(request: AcceptInvitationRequest, db: Session = Depends(get_db)):
+    invitation = db.query(Invitation).filter(Invitation.token == request.token).first()
+    if not invitation:
+        raise HTTPException(status_code=404, detail="Invitation not found")
+    if invitation.status != 'Pending':
+        raise HTTPException(status_code=400, detail="Invitation already processed")
+    # Ensure `expires_at` is timezone aware
+    if invitation.expires_at.tzinfo is None:
+        invitation.expires_at = invitation.expires_at.replace(tzinfo=timezone.utc)
+
+    if invitation.expires_at < datetime.now(timezone.utc):
+        raise HTTPException(status_code=400, detail="Invitation has expired")
+    if request.isAccept == True:
+        setattr(invitation, "status", "Accept")
+    else:
+        setattr(invitation, "status", "Decline")
+    
+    db.commit()
+    
+    return invitation
+
+@app.get('/get_all_invitation', response_model=List[InvitationResponse])
+def get_all_invitation(db: Session = Depends(get_db)):
+    all_invitation = db.query(Invitation).all()
+    return all_invitation
+
+@app.delete('/delete_all_invitations', response_model=SuccessResponse)
+def delete_all_invitations(db: Session = Depends(get_db)):
+    try:
+        db.query(Invitation).delete()
+        db.commit()
+        return {"message": "Data deleted"}
+    except Exception as e:
+        db.rollback()  # Rollback in case of error
+        raise HTTPException(status_code=500, detail=str(e))

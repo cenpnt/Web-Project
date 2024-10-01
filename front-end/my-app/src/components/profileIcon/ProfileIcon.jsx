@@ -1,10 +1,12 @@
 import React, { useState, useEffect } from "react";
 import ProfileMenu from "../profileMenu/ProfileMenu";
 import "./ProfileIcon.css";
+import { useLocation } from "react-router-dom";
 
-function ProfileIcon({ onSignOut }) {
-  const [showSignOut, setShowSignOut] = useState(false); // State to control the visibility of the Sign Out button
+function ProfileIcon() {
+  const [showSignOut, setShowSignOut] = useState(false);
   const [profilePic, setProfilePic] = useState(null);
+  const location = useLocation();
 
   // Toggle function to show/hide the Sign Out button
   const toggleSignOut = () => {
@@ -34,10 +36,10 @@ function ProfileIcon({ onSignOut }) {
     };
 
     fetchProfilePicture();
-  }, []);
+  }, [location.pathname]); // Rerun the effect whenever the location changes
 
   return (
-    <div className="profile-container">
+    <div className="profile-container"> 
       {/* Profile Icon */}
       <button className={"ProfileIcon"} onClick={toggleSignOut}>
         {profilePic ? (

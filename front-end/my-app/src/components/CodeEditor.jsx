@@ -6,7 +6,7 @@ import LanguageSelector from "./LanguageSelector";
 import { CODE_SNIPPETS } from "../constants";
 import Output from "./Output";
 import Icon from "./icon/Icon";
-import AddQuestionForm from "./form/QuestionForm";
+import AddQuestionForm from "./QuestionForm";
 
 const CodeEditor = () => {
   const editorRef = useRef();

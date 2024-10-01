@@ -101,7 +101,7 @@ function EditProfile() {
         const userID = localStorage.getItem('userID');
         const formData = new FormData();
         formData.append('file', imageData);
-
+    
         try {
             const response = await fetch(`http://localhost:8000/upload_profile_pic/${userID}`, {
                 method: 'PUT',
@@ -115,7 +115,7 @@ function EditProfile() {
                     isClosable: true,
                     position: 'top',
                     containerStyle: {
-                        marginTop: '170px', // Adjust this value to move it closer to the center
+                        marginTop: '170px',
                     }
                 });
             } else {
@@ -130,7 +130,7 @@ function EditProfile() {
                 isClosable: true,
                 position: 'top',
                 containerStyle: {
-                    marginTop: '170px', // Adjust this value to move it closer to the center
+                    marginTop: '170px',
                 }
             });
         }

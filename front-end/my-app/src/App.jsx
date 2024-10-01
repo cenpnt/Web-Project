@@ -16,26 +16,30 @@ import SEAcademy from './pages/SEAcademy';
 import Coworkingspace from './pages/coworkingspace/Coworkingspace';
 import theme from './components/theme';
 import EditProfile from './pages/editProfile/EditProfile';
+import AcceptInvitation from './pages/acceptInvitation/AcceptInvitation';
+import CancelReservation from './pages/cancelReservation/CancelReservation';
 
 function App() {
   return (
     <Router>
       <AuthProvider>
-        <ChakraProvider theme={theme}>
-          <ScrollToTop>
-            <Routes>
-              <Route path="/" element={<AuthHeader theme='dark'><Home /></AuthHeader>} />
-              <Route path="/login" element={<Login />} />
-              <Route path="/u_student" element={<AuthHeader theme='dark'><UStudent /></AuthHeader>} />
-              <Route path="/glasgow-doubledegree" element={<AuthHeader theme='dark'><Glasgow /></AuthHeader>} />
-              <Route path="/queensland-doubledegree" element={<AuthHeader theme='dark'><Queensland /></AuthHeader>} />
-              <Route path="/contact" element={<AuthHeader theme='dark'><Contact /></AuthHeader>}/>
-              <Route path="/se_academy" element={<AuthHeader theme='dark'><SEAcademy /></AuthHeader>}/>
-              <Route path="/coworkingspace" element={<AuthHeader theme='dark'><Coworkingspace /></AuthHeader>} />
-              <Route path="/editprofile" element={<EditProfile/>}/>
-            </Routes>
-          </ScrollToTop>
-        </ChakraProvider>
+          <ChakraProvider theme={theme}>
+            <ScrollToTop>
+              <Routes>
+                <Route path="/" element={<AuthHeader theme='dark'><Home /></AuthHeader>} />
+                <Route path="/login" element={<Login />} />
+                <Route path="/u_student" element={<AuthHeader theme='dark'><UStudent /></AuthHeader>} />
+                <Route path="/glasgow-doubledegree" element={<AuthHeader theme='dark'><Glasgow /></AuthHeader>} />
+                <Route path="/queensland-doubledegree" element={<AuthHeader theme='dark'><Queensland /></AuthHeader>} />
+                <Route path="/contact" element={<AuthHeader theme='dark'><Contact /></AuthHeader>}/>
+                <Route path="/se_academy" element={<AuthHeader theme='dark'><SEAcademy /></AuthHeader>}/>
+                <Route path="/coworkingspace" element={<AuthHeader theme='dark'><Coworkingspace /></AuthHeader>} />
+                <Route path="/editprofile" element={<EditProfile/>}/>
+                <Route path="/accept_invitation" element={<AcceptInvitation />}/>
+                <Route path="/cancel_reservation" element={<CancelReservation />}/>
+              </Routes>
+            </ScrollToTop>
+          </ChakraProvider>
       </AuthProvider>
     </Router>
   );
