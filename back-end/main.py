@@ -316,7 +316,7 @@ def create_reserve(reserve: ReservationCreated, db: Session = Depends(get_db)):
     db.refresh(new_reserve)
     return new_reserve
 
-@app.get("/all_reservation/", response_model=List[ReservationResponse])
+@app.get("/all_reservation", response_model=List[ReservationResponse])
 def get_all_reservation(db: Session = Depends(get_db)):
     all_reservation = db.query(Reservation).all()
     return all_reservation
