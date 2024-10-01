@@ -1,84 +1,106 @@
 .ustudent-container {
-    background-color: white;
+  background-color: white;
 }
 
 .welcomeBackContainer {
-    margin: 20px;
-    background: #bdc3c7;  /* fallback for old browsers */
-    background: -webkit-linear-gradient(to right, #2c3e50, #bdc3c7);  /* Chrome 10-25, Safari 5.1-6 */
-    background: linear-gradient(to right, #2c3e50, #bdc3c7); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+  margin: 20px;
+  background: #bdc3c7; /* fallback for old browsers */
+  background: -webkit-linear-gradient(
+    to right,
+    #2c3e50,
+    #bdc3c7
+  ); /* Chrome 10-25, Safari 5.1-6 */
+  background: linear-gradient(
+    to right,
+    #2c3e50,
+    #bdc3c7
+  ); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
 
-    padding: 50px;
-    color: #fff;
-    border-radius: 20px;
-    height: 300px;
+  padding: 50px;
+  color: #fff;
+  border-radius: 20px;
+  height: 300px;
 }
 
 .welcomeBackContainer h1 {
-    font-weight: bold;
-    font-size: 50px;
+  font-weight: bold;
+  font-size: 50px;
 }
 
 .displayDate {
-    margin-bottom: 40px;
+  margin-bottom: 40px;
 }
 
 .displayQuote {
-    margin-top: 10px;
+  margin-top: 10px;
 }
 
 .codeDashboardContainer {
-    display: flex;
-    justify-content: center;
-    gap: 40px;  
+  display: flex;
+  justify-content: center;
+  gap: 40px;
 }
 
 .codeEditorSection {
-    display: flex;
-    flex-direction: column;
-    margin: 40px;
+  display: flex;
+  flex-direction: column;
+  margin: 40px;
 }
 
 .ustudent-container h3 {
-    padding-bottom: 10px;
-    font-weight: bold;
-    margin-left: 30px;
+  padding-bottom: 10px;
+  font-weight: bold;
+  margin-left: 30px;
 }
 
 .carousel-container {
-    padding: 20px;
+  padding: 20px;
 }
 
 .react-multi-carousel-item {
-    width: 200px;
+  width: 200px;
 }
 
 .coWorkingSpaceSection {
-    display: flex;
-    flex-direction: column;
-    margin: 40px;
-    
+  display: flex;
+  flex-direction: column;
+  margin: 40px;
 }
 
 .coWorkingSpaceBox {
-    margin-top: 20px;
-    display: flex;
-    flex-direction: row;
-    justify-content: center;
-    gap: 100px;
-    
+  margin-top: 20px;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  gap: 100px;
 }
 
+.coWorkingSpace1,
+.coWorkingSpace2 {
+  width: 500px;
+  border-radius: 10px;
+  border: 1px solid rgb(222, 222, 222);
+  background-color: #ffffff;
+  padding: 20px;
+}
 
-.coWorkingSpace1, .coWorkingSpace2 {
-    width: 500px;
-    border-radius: 10px;
-    border: 1px solid rgb(222, 222, 222) ;
-    background-color: #ffffff;
-    padding: 20px;
+.coWorkingSpace1 h4,
+.coWorkingSpace2 h4 {
+  margin-bottom: 20px;
+  font-weight: bold;
 }
 
 .coWorkingSpace2 Button {
-    background-color: rgb(49, 75, 205);
-    color: #fff;
+  background-color: rgb(49, 75, 205);
+  color: #fff;
+}
+
+.coWorkingSpace2 Button:hover {
+  background-color: rgb(117, 132, 207);
+  color: #fff;
+}
+
+.coWorkingSpace2 img {
+  margin-bottom: 20px;
+  border-radius: 10px;
 }
