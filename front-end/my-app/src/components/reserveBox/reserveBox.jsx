@@ -266,13 +266,16 @@ function ReservationBox({
     }
   };
 
-  const resetState = () => {
+  const resetState = async () => {
     setIsReserving(false);
-    // setInvitedMembers([]);
+    setInvitedMembers([]);
     setSelectedStudent(null);
     setIsError(false);
     setErrorMessage("");
+    await deleteAllInvitations();
   };
+
+  console.log(allInvitations)
 
   const formattedStudentData = allStudentData
     .sort((a, b) => parseInt(a.student_id) - parseInt(b.student_id))
@@ -409,9 +412,7 @@ function ReservationBox({
                     invitationstate = "invitationAccept";
                   } else if (member.status === "Decline") {
                     invitationstate = "invitationDecline";
-                  } // else if (member.status === 'pending'){
-                  //   member.status = 'Pending';
-                  // }
+                  }
 
                   return (
                     <div
@@ -456,10 +457,18 @@ function ReservationBox({
                   reserveRoom(roomName.match(/\d+/)[0], selectedTime);
                   deleteAllInvitations();
                 }}
-                isDisabled={selectedTime === null}
+                isDisabled={
+                  selectedTime === null || 
+                  ((roomName === "Room 1" || roomName === "Room 2") && allInvitations.length < 3) || 
+                  (roomName === "Room 3" && allInvitations.length < 5) || 
+                  allInvitations.some(invitation => 
+                    invitation.status === "Decline" || invitation.status === "Pending"
+                  )
+                }
               >
                 Confirm Reservation
               </Button>
+              
               <Button
                 type="button"
                 colorScheme="red"
