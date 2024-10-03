@@ -24,13 +24,10 @@ function ProfileIcon() {
           throw new Error("Network response was not ok");
         }
         const data = await response.json();
-        console.log("Fetched Profile Picture:", data.profile_pic);
-
-        // Only update state if profile_pic has a valid URL
         if (data.profile_pic && data.profile_pic !== 'None') {
           setProfilePic(data.profile_pic);
         } else {
-          setProfilePic(null); // Explicitly set to null if no valid URL
+          setProfilePic(null);
         }
       } catch (error) {
         console.error("Error fetching profile picture: ", error);
