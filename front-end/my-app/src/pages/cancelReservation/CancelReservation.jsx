@@ -42,7 +42,7 @@ function CancelReservation() {
     return (
         <div className='cancelContainer'>
             <div className='cancelBox'>
-                <img src="uploads/selogo-dark.png" alt="se-dark-logo" />
+                <img src={`${internetIPAddress}uploads/selogo-dark.png`} alt="se-dark-logo" />
                 {!isCancel ? 
                 <>
                     <h3>Cancel Reservation</h3>
