@@ -27,6 +27,7 @@ class ProblemBase(BaseModel):
     description: str
     example: Dict[str, str]
     note: str
+    level: str
 
 class ProblemCreated(ProblemBase):
     pass
