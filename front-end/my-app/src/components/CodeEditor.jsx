@@ -25,6 +25,7 @@ const CodeEditor = () => {
   const isAdmin = localStorage.getItem('isAdmin') === 'true';
   const token = localStorage.getItem('access_token');
   const [filteredProblems, setFilteredProblems] = useState([]);
+  const [filteredSolvedProblem, setFilteredSolvedProblem] = useState([]);
   const { internetIPAddress } = useAuth();
 
   useEffect(() => {
@@ -52,7 +53,7 @@ const CodeEditor = () => {
   };
 
   const onSelectProblem = async (index) => {
-    if (index < 0 || index >= problems.length) {
+    if (index < 0 || index >= filteredProblems.length) {
       console.error("Index out of bounds");
       return;
     }
@@ -196,6 +197,8 @@ const CodeEditor = () => {
   const changePage = (level) => {
     const filtered = problems.filter(problem => problem.level === level);
     setFilteredProblems(filtered);
+    // const filteredSolved = allSolvedProblems.filter(problem => problem.level === level);
+    // setFilteredSolvedProblem(filteredSolved);
     setSelectedLevel(true);
   }
 
