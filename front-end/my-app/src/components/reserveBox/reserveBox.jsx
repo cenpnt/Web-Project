@@ -164,7 +164,7 @@ function ReservationBox({
       }));
       setAllStudentData(newUserData);
     } catch (error) {
-      console.log(error);
+      console.error(error);
     }
   };
 
@@ -274,8 +274,6 @@ function ReservationBox({
     setErrorMessage("");
     await deleteAllInvitations();
   };
-
-  console.log(allInvitations)
 
   const formattedStudentData = allStudentData
     .sort((a, b) => parseInt(a.student_id) - parseInt(b.student_id))
