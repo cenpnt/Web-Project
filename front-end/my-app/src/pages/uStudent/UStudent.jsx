@@ -86,7 +86,7 @@ function UStudent() {
     fetchAllReservation();
   }, []);
 
-  const Ispassing = (reservation) => {
+  const compareDate = (reservation) => {
     const curDate = new Date();
     const reserveDate = getReservationDateTime(reservation);
     return curDate < reserveDate; 
@@ -147,7 +147,7 @@ function UStudent() {
             <h4>Your Reservation</h4>
             {userReservations.length > 0 ? (
               userReservations
-              .filter((reservation) => Ispassing(reservation))
+              .filter((reservation) => compareDate(reservation))
               .sort((a, b) => getReservationDateTime(a) - getReservationDateTime(b))  
               .map((reservation, index) => (
                 <div key={index} className="reservationDetails">
