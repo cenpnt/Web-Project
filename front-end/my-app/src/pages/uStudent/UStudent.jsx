@@ -86,6 +86,25 @@ function UStudent() {
     fetchAllReservation();
   }, []);
 
+  const Ispassing = (reservation) => {
+    const curDate = new Date();
+    const reserveDate = getReservationDateTime(reservation);
+    return curDate < reserveDate; 
+  };
+
+  const getReservationDateTime = (reservation) => {
+    const reserveDateStr = reservation.date;
+    const reserveTimeStr = reservation.time;
+  
+    const day = reserveDateStr.slice(0, 2);
+    const month = reserveDateStr.slice(3, 5);
+    const year = '20' + reserveDateStr.slice(6, 8);
+    const hours = reserveTimeStr.slice(0, 2);
+    const minutes = reserveTimeStr.slice(3, 5);
+  
+    return new Date(year, month - 1, day, hours, minutes);
+  };
+
   const topic = { header: "Array", percent: 40 };
 
   return (
@@ -127,7 +146,10 @@ function UStudent() {
           <div className="coWorkingSpace1">
             <h4>Your Reservation</h4>
             {userReservations.length > 0 ? (
-              userReservations.map((reservation, index) => (
+              userReservations
+              .filter((reservation) => Ispassing(reservation))
+              .sort((a, b) => getReservationDateTime(a) - getReservationDateTime(b))  
+              .map((reservation, index) => (
                 <div key={index} className="reservationDetails">
                   <h5>
                     Date: {reservation.date} | Time: {reservation.time} | Room:{" "}
