@@ -179,7 +179,8 @@ def create_problem(problem: ProblemCreated, db: Session = Depends(get_db)):
         title=problem.title,
         description=problem.description,
         example=problem.example,
-        note=problem.note
+        note=problem.note,
+        level=problem.level
     )
     db.add(new_problem)
     db.commit()
