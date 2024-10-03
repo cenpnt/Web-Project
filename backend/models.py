@@ -25,6 +25,7 @@ class User(Base):
 class Problem(Base):
     __tablename__ = 'problems'
     id = Column(Integer, primary_key=True, index=True)
+    topics = Column(String, index=True)
     title = Column(String, index=True)
     description = Column(String)
     output = Column(String)
