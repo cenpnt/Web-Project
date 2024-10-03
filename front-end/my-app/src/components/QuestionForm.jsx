@@ -8,6 +8,7 @@ const AddQuestionForm = ({ onCancel, onSuccess }) => {
   const [inputExample, setInputExample] = useState("");
   const [outputExample, setOutputExample] = useState("");
   const [note, setNote] = useState("");
+  const [level, setLevel] = useState("");
   const { internetIPAddress } = useAuth();
 
   const token = localStorage.getItem("access_token");
@@ -21,7 +22,8 @@ const AddQuestionForm = ({ onCancel, onSuccess }) => {
         input: inputExample,
         output: outputExample
       },
-      note
+      note,
+      level
     };
     try {
         const response = await fetch(`${internetIPAddress}create_problems`, {
@@ -105,6 +107,17 @@ const AddQuestionForm = ({ onCancel, onSuccess }) => {
             value={note}
             onChange={(e) => setNote(e.target.value)}
             placeholder="Enter any additional notes"
+            bg="gray.700"
+            color="white"
+          />
+        </FormControl>
+        <FormControl mb={4}>
+          <FormLabel htmlFor="level" color="white">Level</FormLabel>
+          <Textarea
+            id="level"
+            value={level}
+            onChange={(e) => setLevel(e.target.value)}
+            placeholder="Enter level"
             bg="gray.700"
             color="white"
           />
