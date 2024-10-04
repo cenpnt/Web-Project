@@ -1,4 +1,4 @@
-const internetIPAddress = "http://10.66.13.185:8000/"
+const internetIPAddress = "http://192.168.1.35:8000/"
 
 export const LANGUAGE_VERSIONS = {
   javascript: "18.15.0",
