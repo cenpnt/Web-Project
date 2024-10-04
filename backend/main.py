@@ -33,8 +33,8 @@ app.add_middleware(
 )
 # Configuration
 UPLOAD_DIR = "uploads"
-BASE_URL_BACKEND = "http://10.66.13.185:8000"
-BASE_URL_FRONTEND = "http://10.66.13.185:3000"
+BASE_URL_BACKEND = "http://192.168.1.35:8000"
+BASE_URL_FRONTEND = "http://192.168.1.35:3000"
 
 # Ensure upload directory exists
 os.makedirs(UPLOAD_DIR, exist_ok=True)
@@ -203,7 +203,7 @@ def create_solved_problem(problem: SolvedProblemCreated, db: Session = Depends(g
     if existing_problem:
         raise HTTPException(status_code=400, detail="User has already solved this problem")
     
-    new_solved_problem = SolvedProblem(user_id = problem.user_id, problem_id = problem.problem_id)
+    new_solved_problem = SolvedProblem(user_id = problem.user_id, problem_id = problem.problem_id, level = problem.level)
     db.add(new_solved_problem)
     db.commit()
     db.refresh(new_solved_problem)
