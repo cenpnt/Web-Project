@@ -40,6 +40,7 @@ class SolvedProblem(Base):
     id = Column(Integer, primary_key=True, index=True)
     user_id = Column(Integer, ForeignKey('users.id'))
     problem_id = Column(Integer, ForeignKey('problems.id'))
+    level = Column(String, index=True)
     
     # Relationships
     user = relationship("User", back_populates="solved_problems")
