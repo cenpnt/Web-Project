@@ -1,3 +1,6 @@
 .DS_Store
 alembic.ini
-alembic/
+alembic/__pycache__
+alembic/script.py.mako
+alembic/README
+alembic/versions/__pycache__
