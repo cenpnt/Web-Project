@@ -1,6 +1,6 @@
 import React from 'react';
 import { useEffect, useRef, useState } from "react";
-import { Box, HStack, VStack, Button, Text, Grid, filter } from "@chakra-ui/react";
+import { Box, HStack, VStack, Button, Text, Grid, Modal, ModalOverlay, ModalContent, ModalBody, useDisclosure } from "@chakra-ui/react";
 import { Editor } from "@monaco-editor/react";
 import LanguageSelector from "./LanguageSelector";
 import { CODE_SNIPPETS } from "../constants";
@@ -21,12 +21,13 @@ const CodeEditor = () => {
   const [problems, setProblems] = useState([]);   // Collect all problems inside an array for index access
   const [solvedStatus, setSolvedStatus] = useState([]);   // Solved status for each problem in problems arr
   const [levels, setLevels] = useState([]);
-  const [selectedLevel, setSelectedLevel] = useState(null);
+  const [isLevelSelected, setIsLevelSelected] = useState(null);
+  const [currentLevel, setCurrentLevel] = useState("");
   const isAdmin = localStorage.getItem('isAdmin') === 'true';
   const token = localStorage.getItem('access_token');
   const [filteredProblems, setFilteredProblems] = useState([]);
-  const [filteredSolvedProblem, setFilteredSolvedProblem] = useState([]);
   const { internetIPAddress } = useAuth();
+  const { isOpen, onOpen, onClose } = useDisclosure();
 
   useEffect(() => {
     const fetchData = async () => {
@@ -102,9 +103,10 @@ const CodeEditor = () => {
         throw new Error('Cannot fetch solved problems');
       }
       const allSolvedProblems = await response.json();
+      const filterAllsolvedProblems = allSolvedProblems.filter(solvedProblem => solvedProblem.level === currentLevel);
       setSolvedStatus(
-        problems.map(problem =>
-          allSolvedProblems.some(solved => solved.problem_id === problem.id && solved.user_id === parseInt(user_id))
+        filteredProblems.map(problem =>
+          filterAllsolvedProblems.some(solved => solved.problem_id === problem.id && solved.user_id === parseInt(user_id))
         )
       );
     } catch (error) {
@@ -125,11 +127,11 @@ const CodeEditor = () => {
   }
 
   const addQuestion = () => {
-    setShowForm(true);
+    onOpen();
   };
 
   const cancelAddQuestion = () => {
-    setShowForm(false);
+    onClose();
   }
 
   const deleteQuestion = async (problem_id) => {
@@ -144,8 +146,12 @@ const CodeEditor = () => {
       if(!response.ok) {
         throw new Error('Failed to delete the problem')
       }
-      // Update state after successful deletion
-      setProblems(prevProblems => prevProblems.filter(problem => problem.id !== problem_id));
+      // Update both problems and filteredProblems states
+      setProblems(prevProblems => {
+        const updatedProblems = prevProblems.filter(problem => problem.id !== problem_id);
+        setFilteredProblems(updatedProblems.filter(problem => problem.level === currentLevel));
+        return updatedProblems;
+      });
       // Reset the selected problem if it was deleted
       if (selectedProblem && selectedProblem.id === problem_id) {
         setSelectedProblem(null);
@@ -154,12 +160,21 @@ const CodeEditor = () => {
     } catch (error) {
       console.error("Error deleting problem", error);
     }
-  }
+  };
 
-  const newQuestionAdded = () => {   // Update state when new question added
-    fetchProblems();
-  }
-
+  const newQuestionAdded = (newQuestion) => {
+    setProblems(prevProblems => [...prevProblems, newQuestion]);
+    if (currentLevel === newQuestion.level) {
+      setFilteredProblems(prevFiltered => [...prevFiltered, newQuestion]);
+    }
+    setTotalQuestion(prev => prev + 1);
+    if (currentLevel) {
+      const filtered = [...problems, newQuestion].filter(problem => problem.level === currentLevel);
+      setFilteredProblems(filtered);
+    }
+    onClose();
+  };
+  
   const onDoneButtonClick = async (index) => {
     const user_id = localStorage.getItem('userID');
     const problem_id = problems[index]?.id;
@@ -176,7 +191,8 @@ const CodeEditor = () => {
         },
         body: JSON.stringify({
           user_id,
-          problem_id
+          problem_id,
+          level: currentLevel
         })
       })
 
@@ -188,22 +204,21 @@ const CodeEditor = () => {
         newStatus[index] = true;
         return newStatus
       });
-
     } catch (error) {
       console.error("Error marking problem as solved ", error);
     }
   }
 
-  const changePage = (level) => {
+  const changePage = async (level) => {
     const filtered = problems.filter(problem => problem.level === level);
+    setCurrentLevel(level);
     setFilteredProblems(filtered);
-    // const filteredSolved = allSolvedProblems.filter(problem => problem.level === level);
-    // setFilteredSolvedProblem(filteredSolved);
-    setSelectedLevel(true);
+    setIsLevelSelected(true);
+    await fetchProblems();
   }
-
+  
   const pageSelection = () => {
-    if (selectedProblem && selectedLevel) {
+    if (selectedProblem && isLevelSelected) {
       return (<>
         <Box display="flex" alignItems="center" justifyContent="space-around" w="100%" h="5%" bg="hsl(0, 0%, 20%)" borderTopRightRadius={10} borderTopLeftRadius={10}>
           <Button variant="unstyledButton" onClick={prevButton}>
@@ -246,28 +261,28 @@ const CodeEditor = () => {
           <Box fontSize="25px" color="gray.300" mt="2">{selectedProblem.note}</Box>
         </Box>
         </>);
-    } else if (selectedLevel) {
+    } else if (isLevelSelected) {
         return(<>
           <Box mt={5} ml={3} fontSize="35px" fontWeight={"bold"} display="flex">
             <Box mr={3} display="flex" alignItems="center">
-                <Button onClick={() => setSelectedLevel(false)} bg="#1e1e1e" color="white" _hover={{}} _active={{}}>
+                <Button onClick={() => setIsLevelSelected(false)} bg="#1e1e1e" color="white" _hover={{}} _active={{}}>
                   <ArrowBackIcon w={8} h={8}/>
                 </Button>
             </Box>
             <Box color="white">Problem List</Box>
           </Box>
           <Box><hr style={{ backgroundColor: "white",  height: "2px", width: "100%" }} /></Box>
-          <Grid templateColumns="repeat(3, 1fr)" gap={4} mt={5} ml={5} mr={8}>
+          <Grid templateColumns="repeat(3, 1fr)" gap={4} mt={5} ml={5} mr={8} key={filteredProblems.length}>
             {filteredProblems.map((problem, index) => (
-              <React.Fragment key={index}>
+              <React.Fragment key={problem.id}>
                 <Box display="flex" alignItems="center" justifyContent="start">
                   <Button variant="unstyledButton" onClick={() => onSelectProblem(index)}>
                     <Text fontSize={20} color={solvedStatus[index] ? "hsl(149, 50%, 50%)" : "white"}>{index + 1}. {problem.title}</Text>
                   </Button>
                 </Box>
-                  <Box display="flex" alignItems="center" justifyContent="center">
-                    { isAdmin && (<Button variant="unstyledButton" onClick={() => deleteQuestion(problem.id)} textAlign="center" color="#e1403f" _hover={{ color: "hsl(0, 73%, 45%)" }}><Box>- Delete Question</Box></Button>)}
-                  </Box>
+                <Box display="flex" alignItems="center" justifyContent="center">
+                  { isAdmin && (<Button variant="unstyledButton" onClick={() => deleteQuestion(problem.id)} textAlign="center" color="#e1403f" _hover={{ color: "hsl(0, 73%, 45%)" }}><Box>- Delete Question</Box></Button>)}
+                </Box>
                 <Box display="flex" alignItems="center" justifyContent="center">
                   { !solvedStatus[index] && <Button onClick={() => onDoneButtonClick(index)}>Done</Button> }
                 </Box>
@@ -285,7 +300,10 @@ const CodeEditor = () => {
             <Box color={"white"} ml={8}>Difficulty Level</Box>
           </Box>
           <Box display="flex" flexDirection="column" alignItems="center" mt={5}>
-            {levels.map((level) => (
+            {levels.sort((a,b) => {
+              const order = ["Easy", "Medium", "Hard"];
+              return order.indexOf(a) - order.indexOf(b);
+            }).map((level) => (
               <Box key={level} display="flex" flexDirection={"column"} justifyContent="center" alignItems="center" mb={4}>
                 <Button  
                   onClick={() => changePage(level)} 
@@ -313,12 +331,19 @@ const CodeEditor = () => {
   }
 
   return (
-    <Box bg="black">
-      <HStack spacing={4} height="100vh">
+    <Box bg="black" h={"100vh"} w="100vw" overflow="auto">
+      <HStack spacing={4} height="100vh"  w="100%" >
         {/* Left side */}
         <Box w="50%" h="100%" bg="#1e1e1e" borderRadius={10}>
               {pageSelection()}
-              {showForm && <AddQuestionForm onCancel={cancelAddQuestion} onSuccess={newQuestionAdded}/>}
+              <Modal isOpen={isOpen} onClose={onClose}>
+                <ModalOverlay />
+                <ModalContent maxW="90%" bg="#1e1e1e">
+                  <ModalBody>
+                    <AddQuestionForm onCancel={cancelAddQuestion} onSuccess={newQuestionAdded} currentLevel={currentLevel} />
+                  </ModalBody>
+                </ModalContent>
+              </Modal>
         </Box>
 
         {/* Right side with two sections */}
