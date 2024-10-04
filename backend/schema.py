@@ -44,6 +44,7 @@ class Token(BaseModel):
 class SolvedProblemBase(BaseModel):
     user_id: int
     problem_id: int
+    level: str
 
 class SolvedProblemCreated(SolvedProblemBase):
     pass
