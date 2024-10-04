@@ -2,13 +2,13 @@ import { useState } from "react";
 import { Box, Button, Input, Textarea, FormControl, FormLabel } from "@chakra-ui/react";
 import { useAuth } from "../context/AuthContext";
 
-const AddQuestionForm = ({ onCancel, onSuccess }) => {
+const AddQuestionForm = ({ onCancel, onSuccess, currentLevel }) => {
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [inputExample, setInputExample] = useState("");
   const [outputExample, setOutputExample] = useState("");
   const [note, setNote] = useState("");
-  const [level, setLevel] = useState("");
+  const [level, setLevel] = useState(currentLevel || "");
   const { internetIPAddress } = useAuth();
 
   const token = localStorage.getItem("access_token");
@@ -37,14 +37,16 @@ const AddQuestionForm = ({ onCancel, onSuccess }) => {
         if(!response.ok) {
             throw new Error('Failed to create the problem');
         }
+        const createdQuestion = await response.json();
+        if(onSuccess) {
+          onSuccess(createdQuestion);
+        }
         setTitle("");
         setDescription("");
         setInputExample("");
         setOutputExample("");
         setNote("");
-        if(onSuccess) {
-          onSuccess();
-        }
+        setLevel(currentLevel || "");
         if(onCancel) {
           onCancel();
         }
@@ -54,7 +56,7 @@ const AddQuestionForm = ({ onCancel, onSuccess }) => {
   };
 
   return (
-    <Box p={5} bg="#2d2d2d" borderRadius="md" boxShadow="md" color="white">
+    <Box p={5}  borderRadius="md" boxShadow="md" color="white">
       <form onSubmit={handleSubmit}>
         <FormControl mb={4}>
           <FormLabel htmlFor="title" color="white">Title</FormLabel>
@@ -89,7 +91,7 @@ const AddQuestionForm = ({ onCancel, onSuccess }) => {
             color="white"
           />
         </FormControl>
-        <FormControl mb={4}>
+        <FormControl mb={2}>
           <FormLabel htmlFor="outputExample" color="white">Example Output</FormLabel>
           <Input
             id="outputExample"
