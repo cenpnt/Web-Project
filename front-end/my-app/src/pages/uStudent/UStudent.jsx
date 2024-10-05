@@ -3,7 +3,6 @@ import CodeDashboardBox from "../../components/codeDashboardBox/codeDashboardBox
 import Footer from "../../components/footer/Footer";
 import React, { useEffect } from "react";
 import { useState } from "react";
-import Carousel from "react-multi-carousel";
 import "react-multi-carousel/lib/styles.css";
 import Button from "../../components/button/Button";
 import { useAuth } from "../../context/AuthContext";
@@ -14,27 +13,17 @@ function UStudent() {
   const { internetIPAddress } = useAuth();
   const [allReservation, setAllReservation] = useState([]);
   const [studentID, setStudentID] = useState("");
+  const [allEasyProblems, setAllEasyProblems] = useState({all: 0, solved: 0});
+  const [allMediumProblems, setAllMediumProblems] = useState({all: 0, solved: 0});
+  const [allHardProblems, setAllHardProblems] = useState({all: 0, solved: 0});
   const pics = `${internetIPAddress}uploads/co-room3.jpg`;
 
-  const responsive = {
-    superLargeDesktop: {
-      // the naming can be any, depends on you.
-      breakpoint: { max: 4000, min: 3000 },
-      items: 5,
-    },
-    desktop: {
-      breakpoint: { max: 3000, min: 1024 },
-      items: 3,
-    },
-    tablet: {
-      breakpoint: { max: 1024, min: 464 },
-      items: 2,
-    },
-    mobile: {
-      breakpoint: { max: 464, min: 0 },
-      items: 1,
-    },
-  };
+  useEffect(() => {
+    fetchUser();
+    setCurrentDate(getCurrentDate());
+    fetchAllReservation();
+    fetchQuestionAndSolvedQuestion();
+  }, []);
 
   const fetchAllReservation = async () => {
     try {
@@ -54,6 +43,45 @@ function UStudent() {
       console.error("Error fetching data", error);
     }
   };
+
+  const fetchQuestionAndSolvedQuestion = async () => {
+    const userID = localStorage.getItem("userID");
+      try {
+        const problemResponse = await fetch(`${internetIPAddress}problems`);
+        const solvedProblemResponse = await fetch(`${internetIPAddress}all_solved_problem`);
+        if (!problemResponse.ok || !solvedProblemResponse.ok) {
+          throw new Error('Cannot fetch the problems');
+        }
+        const allProblems = await problemResponse.json();
+        const EasyProblem = allProblems.filter(problem => problem.level === 'Easy');
+        const MediumProblem = allProblems.filter(problem => problem.level === 'Medium');
+        const HardProblem = allProblems.filter(problem => problem.level === 'Hard');
+
+        const allSolvedProblems = await solvedProblemResponse.json();
+        const solvedEasyProblem = allSolvedProblems.filter(problem => problem.level === 'Easy' && problem.user_id === parseInt(userID));
+        const solvedMediumProblem = allSolvedProblems.filter(problem => problem.level === 'Medium' && problem.user_id === parseInt(userID));
+        const solvedHardProblem = allSolvedProblems.filter(problem => problem.level === 'Hard' && problem.user_id === parseInt(userID));
+  
+        setAllEasyProblems((prev) => ({
+          ...prev,
+          all: EasyProblem.length,
+          solved: solvedEasyProblem.length
+        }));
+        setAllMediumProblems((prev) => ({
+          ...prev,
+          all: MediumProblem.length,
+          solved: solvedMediumProblem.length
+        }));
+        setAllHardProblems((prev) => ({
+          ...prev,
+          all: HardProblem.length,
+          solved: solvedHardProblem.length
+        }));
+  
+      } catch (error) {
+        console.error('Error fetching the problems:', error);
+      }
+  }
 
   const fetchUser = async () => {
     const userID = localStorage.getItem("userID");
@@ -80,12 +108,6 @@ function UStudent() {
     reservation.students.includes(studentID)
   );
 
-  useEffect(() => {
-    fetchUser();
-    setCurrentDate(getCurrentDate());
-    fetchAllReservation();
-  }, []);
-
   const compareDate = (reservation) => {
     const curDate = new Date();
     const reserveDate = getReservationDateTime(reservation);
@@ -105,7 +127,10 @@ function UStudent() {
     return new Date(year, month - 1, day, hours, minutes);
   };
 
-  const topic = { header: "Array", percent: 40 };
+  const Easy = { header: "Easy", percent: ((allEasyProblems.solved / allEasyProblems.all ) * 100 ).toFixed(2), solved: allEasyProblems.solved, all: allEasyProblems.all };
+  const Medium = { header: "Medium", percent: ((allMediumProblems.solved / allMediumProblems.all ) * 100 ).toFixed(2), solved: allMediumProblems.solved, all: allMediumProblems.all };
+  const Hard = { header: "Hard", percent: ((allHardProblems.solved / allHardProblems.all ) * 100 ).toFixed(2), solved: allHardProblems.solved, all: allHardProblems.all };
+
 
   return (
     <div className="ustudent-container">
@@ -116,29 +141,14 @@ function UStudent() {
           Always stay updated in your student dashboard
         </div>
       </div>
+      <h3>Code Editor</h3>
       <div className="codeEditorSection">
-        <h3>Code Editor</h3>
-        <Carousel
-          responsive={responsive}
-          swipeable={true}
-          infinite={true}
-          itemClass="carousel-item-padding"
-          containerClass="carousel-container"
-          centerMode={true}
-        >
-          <div style={{ margin: "0 0px" }}>
-            <CodeDashboardBox codeTopic={topic} />
-          </div>
-          <div style={{ margin: "0 0px" }}>
-            <CodeDashboardBox codeTopic={topic} />
-          </div>
-          <div style={{ margin: "0 0px" }}>
-            <CodeDashboardBox codeTopic={topic} />
-          </div>
-          <div style={{ margin: "0 0px" }}>
-            <CodeDashboardBox codeTopic={topic} />
-          </div>
-        </Carousel>
+        
+        <div style={{display: "flex", justifyContent: "center", padding: "20px", marginLeft: "auto", marginRight: "auto", gap: "50px"}}>
+              <CodeDashboardBox codeTopic={Easy} />
+              <CodeDashboardBox codeTopic={Medium} />
+              <CodeDashboardBox codeTopic={Hard} />
+        </div>
       </div>
       <div className="coWorkingSpaceSection">
         <h3>Co-Working Space</h3>
