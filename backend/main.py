@@ -199,7 +199,7 @@ async def delete_problem(problem_id: int, db: Session = Depends(get_db)):
 # SolvedProblem Endpoint
 @app.post("/solved_problem", response_model=SolvedProblemResponse)
 def create_solved_problem(problem: SolvedProblemCreated, db: Session = Depends(get_db)):
-    existing_problem = db.query(SolvedProblem).filter(SolvedProblem.problem_id == problem.problem_id, SolvedProblem.user_id == problem.user_id).first()
+    existing_problem = db.query(SolvedProblem).filter(SolvedProblem.problem_id == problem.problem_id, SolvedProblem.user_id == problem.user_id, SolvedProblem.level == problem.level).first()
     if existing_problem:
         raise HTTPException(status_code=400, detail="User has already solved this problem")
     
