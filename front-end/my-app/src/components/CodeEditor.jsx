@@ -7,9 +7,11 @@ import { CODE_SNIPPETS } from "../constants";
 import Output from "./Output";
 import Icon from "./icon/Icon";
 import AddQuestionForm from "./QuestionForm";
-import { ArrowBackIcon} from '@chakra-ui/icons';
+import { ArrowBackIcon, DeleteIcon, CheckIcon, CloseIcon} from '@chakra-ui/icons';
 import { useAuth } from '../context/AuthContext';
+import { RiCloseLine } from "react-icons/ri";
 import { FaStar } from "react-icons/fa6";
+import { IoIosAddCircle } from "react-icons/io";
 import { useLocation } from 'react-router-dom';
 
 const CodeEditor = () => {
@@ -292,26 +294,47 @@ const CodeEditor = () => {
             <Box color="white">Problem List</Box>
           </Box>
           <Box><hr style={{ backgroundColor: "white",  height: "2px", width: "100%" }} /></Box>
-          <Grid templateColumns="repeat(3, 1fr)" gap={4} mt={5} ml={5} mr={8} key={filteredProblems.length}>
-            
+          <Grid templateColumns="repeat(3, 1fr)" mt={8} key={filteredProblems.length}>
             {filteredProblems.map((problem, index) => (
               <React.Fragment key={problem.id}>
-                <Box display="flex" alignItems="center" justifyContent="start">
+                <Box 
+                  display="flex" 
+                  alignItems="center" 
+                  justifyContent="start" 
+                  bg={index % 2 === 0 ? "#2f2f2f" : "transparent"}
+                  padding={2}
+                  paddingLeft={4}
+                >
                   <Button variant="unstyledButton" onClick={() => onSelectProblem(index)}>
-                    <Text fontSize={20} color={solvedStatus[index] ? "hsl(149, 50%, 50%)" : "white"}>{index + 1}. {problem.title}</Text>
+                    <Box fontSize={20} color={solvedStatus[index] ? "hsl(149, 50%, 50%)" : "white"}>{index + 1}. {problem.title}</Box>
                   </Button>
                 </Box>
-                <Box display="flex" alignItems="center" justifyContent="center">
-                  { isAdmin && (<Button variant="unstyledButton" onClick={() => deleteQuestion(problem.id)} textAlign="center" color="#e1403f" _hover={{ color: "hsl(0, 73%, 45%)" }}><Box>- Delete Question</Box></Button>)}
+                <Box display="flex" alignItems="center" justifyContent="center" bg={index % 2 === 0 ? "#2f2f2f" : "transparent"}>
+                  {isAdmin && (
+                    <Button 
+                      variant="unstyledButton" 
+                      onClick={() => deleteQuestion(problem.id)} 
+                      textAlign="center" 
+                      color="#e1403f" 
+                      _hover={{ color: "hsl(0, 73%, 45%)" }}>
+                      <Box><DeleteIcon /></Box>
+                    </Button>
+                  )}
                 </Box>
-                <Box display="flex" alignItems="center" justifyContent="center">
-                  { !solvedStatus[index] && <Button onClick={() => onDoneButtonClick(index)}>Done</Button> }
+                <Box display="flex" alignItems="center" justifyContent="center" bg={index % 2 === 0 ? "#2f2f2f" : "transparent"}>
+                  <Button onClick={() => onDoneButtonClick(index)} bg={{}} _hover={{}} _active={{}}> 
+                    {solvedStatus[index] ? (
+                      <CheckIcon color={"white"} _hover={{}} />
+                    ) : (
+                      <RiCloseLine color="white" size={25} />
+                    )}
+                  </Button>
                 </Box>
               </React.Fragment>
             ))}
           </Grid>
-          <Box display={"flex"} justifyContent={"flex-start"} ml={8} mr={8}>
-            { isAdmin && (<Box><Button variant="unstyledButton" onClick={addQuestion} color="#36a16a" _hover={{ color: "hsl(149, 50%, 30%)" }}><Box>+ Add Question</Box></Button></Box>) }
+          <Box display={"flex"} justifyContent={"flex-start"} ml={2} mr={8} mt={5}>
+            { isAdmin && (<Box><Button variant="unstyledButton" onClick={addQuestion} color="#36a16a"  _hover={{ color: "hsl(149, 50%, 30%)" }}><Box display={"flex"} alignItems={"center"} gap={2.5}> <IoIosAddCircle size={30}/> Add Question</Box></Button></Box>) }
           </Box>
         </>);
     } else {
@@ -321,61 +344,48 @@ const CodeEditor = () => {
             <Box color={"white"} ml={8}>Difficulty Level</Box>
           </Box>
           <Box display="flex" flexDirection="row" justifyContent="center" alignItems="center" gap={5} mt={5}>
-  {levels
-    .sort((a, b) => {
-      const order = ["Easy", "Medium", "Hard"];
-      return order.indexOf(a) - order.indexOf(b);
-    })
-    .map((level) => {
-      // Determine the number of images based on the level
-      const imageCount = level === "Easy" ? 1 : level === "Medium" ? 2 : 3;
-
-      return (
-        <Button
-          key={level}
-          onClick={() => changePage(level)}
-          display="flex"
-          flexDirection="column"
-          justifyContent="center"
-          alignItems="center"
-          width="250px"
-          height="400px"
-          border="1px solid"
-          borderColor={level === "Medium" ? "#EAB740" : level === "Hard" ? "red" : "hsl(149, 50%, 30%)"}
-          borderRadius="15px"
-          padding={5}
-          boxShadow="0 4px 10px rgba(0, 0, 0, 0.1)"
-          bg="white"
-          transition="all 0.3s ease"
-          _hover={{backgroundColor: "#F2F3F2", boxShadow: "0 6px 12px rgba(0, 0, 0, 0.2)", cursor: "pointer" }}
-          variant="unstyled"
-        >
-            <Box
-              fontSize="20px"
-              color={level === "Medium" ? "#EAB740" : level === "Hard" ? "red" : "hsl(149, 50%, 30%)"}
-            
-              fontWeight="bold"
-            >
-              {level}
-            </Box>
-          {/* </Box> */}
-
-          {/* Render the correct number of images */}
-          <Box display="flex" justifyContent="center" alignItems="center" gap={2} mt={7}>
-            {[...Array(imageCount)].map((_, index) => (
-              <FaStar color='#FED000' />
-            ))}
+            {levels
+              .sort((a, b) => {
+                const order = ["Easy", "Medium", "Hard"];
+                return order.indexOf(a) - order.indexOf(b);
+              })
+              .map((level) => {
+                const imageCount = level === "Easy" ? 1 : level === "Medium" ? 2 : 3;
+                return (
+                  <Button
+                    key={level}
+                    onClick={() => changePage(level)}
+                    display="flex"
+                    flexDirection="column"
+                    justifyContent="center"
+                    alignItems="center"
+                    width="250px"
+                    height="400px"
+                    border="1px solid"
+                    borderColor={level === "Medium" ? "#EAB740" : level === "Hard" ? "red" : "hsl(149, 50%, 30%)"}
+                    borderRadius="15px"
+                    padding={5}
+                    boxShadow="0 4px 10px rgba(0, 0, 0, 0.1)"
+                    bg="white"
+                    transition="all 0.3s ease"
+                    _hover={{backgroundColor: "#F2F3F2", boxShadow: "0 6px 12px rgba(0, 0, 0, 0.2)", cursor: "pointer" }}
+                    variant="unstyled">
+                    <Box
+                      fontSize="20px"
+                      color={level === "Medium" ? "#EAB740" : level === "Hard" ? "red" : "hsl(149, 50%, 30%)"}
+                      fontWeight="bold">
+                      {level}
+                    </Box>
+                    {/* Render the correct number of images */}
+                    <Box display="flex" justifyContent="center" alignItems="center" gap={2} mt={7}>
+                      {[...Array(imageCount)].map((_, index) => (
+                        <FaStar color='#FED000' />
+                      ))}
+                    </Box>
+                  </Button>
+                );
+              })}
           </Box>
-{/* 
-          <Box textAlign="center" mt={4} color="gray.500">
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-          </Box> */}
-        </Button>
-      );
-    })}
-</Box>
-
-
         </>
       );
     }
