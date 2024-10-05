@@ -8,11 +8,11 @@ function CodeDashboardBox({codeTopic}) {
         <Card width='230px'>
             <CardHeader>
                 <h4 className='codeBoxHeader'>{codeTopic.header}</h4>
-                <h4>16/40</h4>
+                <h4>{codeTopic.solved}/{codeTopic.all}</h4>
             </CardHeader>
             <CardBody className='cardBody'>
                 <CircularProgress value={codeTopic.percent} color='green.400' size='150px'>
-                    <CircularProgressLabel>{codeTopic.percent}%</CircularProgressLabel>
+                    <CircularProgressLabel fontSize='25px'>{codeTopic.percent}%</CircularProgressLabel>
                 </CircularProgress>
             </CardBody>
             <CardFooter>
