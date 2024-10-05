@@ -117,12 +117,16 @@ const CodeEditor = () => {
   const prevButton = () => {
     if (currentProblemIndex > 0) {
       onSelectProblem(currentProblemIndex - 1);
+      setValue(CODE_SNIPPETS[language]);
+      setLanguage(language);
     }
   }
 
   const nextButton = () => {
     if (currentProblemIndex < totalQuestion - 1) {
       onSelectProblem(currentProblemIndex + 1);
+      setValue(CODE_SNIPPETS[language]);
+      setLanguage(language);
     }
   }
 
