@@ -7,8 +7,10 @@ import { CODE_SNIPPETS } from "../constants";
 import Output from "./Output";
 import Icon from "./icon/Icon";
 import AddQuestionForm from "./QuestionForm";
-import { ArrowBackIcon} from '@chakra-ui/icons'
+import { ArrowBackIcon} from '@chakra-ui/icons';
 import { useAuth } from '../context/AuthContext';
+import { FaStar } from "react-icons/fa6";
+import { useLocation } from 'react-router-dom';
 
 const CodeEditor = () => {
   const editorRef = useRef();
@@ -17,7 +19,6 @@ const CodeEditor = () => {
   const [selectedProblem, setSelectedProblem] = useState(null);   // When select a problem it will render that problem (title, description, ...)
   const [currentProblemIndex, setCurrentProblemIndex] = useState(null);  // Keep track of the current problem to check whether user can go to the next question or prev question
   const [totalQuestion, setTotalQuestion] = useState(0);
-  const [showForm, setShowForm] = useState(false);
   const [problems, setProblems] = useState([]);   // Collect all problems inside an array for index access
   const [solvedStatus, setSolvedStatus] = useState([]);   // Solved status for each problem in problems arr
   const [levels, setLevels] = useState([]);
@@ -28,7 +29,16 @@ const CodeEditor = () => {
   const [filteredProblems, setFilteredProblems] = useState([]);
   const { internetIPAddress } = useAuth();
   const { isOpen, onOpen, onClose } = useDisclosure();
-
+  const location = useLocation();
+  
+  const checkLevelQuery = () => {
+    const queryParam = new URLSearchParams(location.search)
+    const levelFromQuery = queryParam.get('level');
+    if(levelFromQuery) {
+      changePage(levelFromQuery);
+    }
+  }
+  
   useEffect(() => {
     const fetchData = async () => {
       await fetchProblems();
@@ -42,6 +52,12 @@ const CodeEditor = () => {
       fetchSolvedProblems();
     }
   }, [problems]);
+
+  useEffect(() => {
+    if (problems.length > 0) {
+      checkLevelQuery();
+    }
+  }, [JSON.stringify(problems)]);
 
   const onMount = (editor) => {
     editorRef.current = editor;
@@ -181,7 +197,7 @@ const CodeEditor = () => {
   
   const onDoneButtonClick = async (index) => {
     const user_id = localStorage.getItem('userID');
-    const problem_id = problems[index]?.id;
+    const problem_id = filteredProblems[index]?.id;
     if(!user_id || !problem_id) {
       console.error("User ID or Problem ID is undefined");
       return;
@@ -277,6 +293,7 @@ const CodeEditor = () => {
           </Box>
           <Box><hr style={{ backgroundColor: "white",  height: "2px", width: "100%" }} /></Box>
           <Grid templateColumns="repeat(3, 1fr)" gap={4} mt={5} ml={5} mr={8} key={filteredProblems.length}>
+            
             {filteredProblems.map((problem, index) => (
               <React.Fragment key={problem.id}>
                 <Box display="flex" alignItems="center" justifyContent="start">
@@ -303,32 +320,62 @@ const CodeEditor = () => {
           <Box mt={5} fontSize="40px" fontWeight={"bold"}>
             <Box color={"white"} ml={8}>Difficulty Level</Box>
           </Box>
-          <Box display="flex" flexDirection="column" alignItems="center" mt={5}>
-            {levels.sort((a,b) => {
-              const order = ["Easy", "Medium", "Hard"];
-              return order.indexOf(a) - order.indexOf(b);
-            }).map((level) => (
-              <Box key={level} display="flex" flexDirection={"column"} justifyContent="center" alignItems="center" mb={4}>
-                <Button  
-                  onClick={() => changePage(level)} 
-                  width={"500px"} 
-                  bg="#1e1e1e" 
-                  border={level === "Medium" ? "1px solid #EAB740" : level === "Hard" ? "1px solid red" : "1px solid hsl(149, 50%, 30%)"}
-                  borderRadius={"10px"} 
-                  p={5}
-                  _hover={{ 
-                    bg: "#2b2b2b", 
-                  }}
-                  transition="all 0.2s ease-in-out"
-                  padding={10}
-                >
-                  <Box color={level === "Medium" ? "#EAB740" : level === "Hard" ? "red" : "hsl(149, 50%, 30%)"} fontSize={"30px"}>
-                    {level}
-                  </Box>
-                </Button>
-              </Box>
+          <Box display="flex" flexDirection="row" justifyContent="center" alignItems="center" gap={5} mt={5}>
+  {levels
+    .sort((a, b) => {
+      const order = ["Easy", "Medium", "Hard"];
+      return order.indexOf(a) - order.indexOf(b);
+    })
+    .map((level) => {
+      // Determine the number of images based on the level
+      const imageCount = level === "Easy" ? 1 : level === "Medium" ? 2 : 3;
+
+      return (
+        <Button
+          key={level}
+          onClick={() => changePage(level)}
+          display="flex"
+          flexDirection="column"
+          justifyContent="center"
+          alignItems="center"
+          width="250px"
+          height="400px"
+          border="1px solid"
+          borderColor={level === "Medium" ? "#EAB740" : level === "Hard" ? "red" : "hsl(149, 50%, 30%)"}
+          borderRadius="15px"
+          padding={5}
+          boxShadow="0 4px 10px rgba(0, 0, 0, 0.1)"
+          bg="white"
+          transition="all 0.3s ease"
+          _hover={{backgroundColor: "#F2F3F2", boxShadow: "0 6px 12px rgba(0, 0, 0, 0.2)", cursor: "pointer" }}
+          variant="unstyled"
+        >
+            <Box
+              fontSize="20px"
+              color={level === "Medium" ? "#EAB740" : level === "Hard" ? "red" : "hsl(149, 50%, 30%)"}
+            
+              fontWeight="bold"
+            >
+              {level}
+            </Box>
+          {/* </Box> */}
+
+          {/* Render the correct number of images */}
+          <Box display="flex" justifyContent="center" alignItems="center" gap={2} mt={7}>
+            {[...Array(imageCount)].map((_, index) => (
+              <FaStar color='#FED000' />
             ))}
           </Box>
+{/* 
+          <Box textAlign="center" mt={4} color="gray.500">
+            Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+          </Box> */}
+        </Button>
+      );
+    })}
+</Box>
+
+
         </>
       );
     }
