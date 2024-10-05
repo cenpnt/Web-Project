@@ -17,7 +17,7 @@ function CodeDashboardBox({codeTopic}) {
             </CardBody>
             <CardFooter>
                 <div className='continueButtonContainer'>
-                    <Button text={'Continue'} className={'continueButton'}/>
+                    <Button text={'Continue'} className={'continueButton'} path={`/se_academy?level=${codeTopic.header}`} override />
                 </div>
             </CardFooter>
         </Card>
