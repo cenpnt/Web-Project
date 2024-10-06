@@ -9,8 +9,8 @@
 }
 
 .btn:hover {
-    color: rgb(216, 154, 37);
-    border-color: rgb(216, 154, 37);
+    color: var(--btn-color-hover);
+    border-color: var(--btn-border-color-hover);
     transition: opacity 0.3s ease;
     cursor: pointer;
 }
@@ -21,13 +21,19 @@
 
 .btn.dark {
     --btn-border: 1px solid white;
+    --btn-color-hover: rgb(216, 154, 37);
+    --btn-border-color-hover: rgb(216, 154, 37);
 }
 
 .btn.light {
     --btn-border: 1px solid black;
     --btn-color: black;
+    --btn-color-hover: rgb(216, 154, 37);
+    --btn-border-color-hover: rgb(216, 154, 37);
 }
 
-.btn.glasgow {
+.btn.transparent {
     --btn-border: 1px solid white;
+    --btn-color-hover: black;
+    --btn-border-color-hover: black;
 }
