@@ -7,3 +7,15 @@
     text-align: center;
     color: rgb(0, 0, 0);
 }
+
+@media (max-width: 1800px) {
+    .model-viewer {
+        width: 70%;
+    }
+  }
+
+  @media (max-width: 1400px) {
+    .model-viewer {
+        width: 50%;
+    }
+  }
