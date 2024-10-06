@@ -1,13 +1,13 @@
 import React from 'react';
 import { useEffect, useRef, useState } from "react";
-import { Box, HStack, VStack, Button, Text, Grid, Modal, ModalOverlay, ModalContent, ModalBody, useDisclosure } from "@chakra-ui/react";
+import { Box, HStack, VStack, Button, Grid, Modal, ModalOverlay, ModalContent, ModalBody, useDisclosure } from "@chakra-ui/react";
 import { Editor } from "@monaco-editor/react";
 import LanguageSelector from "./LanguageSelector";
 import { CODE_SNIPPETS } from "../constants";
 import Output from "./Output";
 import Icon from "./icon/Icon";
 import AddQuestionForm from "./QuestionForm";
-import { ArrowBackIcon, DeleteIcon, CheckIcon, CloseIcon} from '@chakra-ui/icons';
+import { ArrowBackIcon, DeleteIcon, CheckIcon} from '@chakra-ui/icons';
 import { useAuth } from '../context/AuthContext';
 import { RiCloseLine } from "react-icons/ri";
 import { FaStar } from "react-icons/fa6";
@@ -242,7 +242,7 @@ const CodeEditor = () => {
   const pageSelection = () => {
     if (selectedProblem && isLevelSelected) {
       return (<>
-        <Box display="flex" alignItems="center" justifyContent="space-around" w="100%" h="5%" bg="hsl(0, 0%, 20%)" borderTopRightRadius={10} borderTopLeftRadius={10}>
+        <Box display="flex" alignItems="center" justifyContent="space-around" w="100%" h="5%" bg="hsl(0, 0%, 20%)" borderTopRightRadius={10} borderTopLeftRadius={10} >
           <Button variant="unstyledButton" onClick={prevButton}>
             <Icon
               dark={'https://cdn-icons-png.flaticon.com/128/2722/2722991.png'}
@@ -392,7 +392,7 @@ const CodeEditor = () => {
   }
 
   return (
-    <Box bg="black" h={"100vh"} w="100vw" overflow="auto">
+    <Box bg="black" h={"100vh"} w="100vw" overflow="auto" >
       <HStack spacing={4} height="100vh"  w="100%" >
         {/* Left side */}
         <Box w="50%" h="100%" bg="#1e1e1e" borderRadius={10}>
@@ -408,7 +408,7 @@ const CodeEditor = () => {
         </Box>
 
         {/* Right side with two sections */}
-        <VStack spacing={5} w="50%" h="100%">
+        <VStack spacing={5} w="46%" h="100%">
           {/* Upper box (Editor) with 50% height */}
           <Box w="100%" h="70%" backgroundColor={'#1e1e1e'} overflow="hidden" borderRadius={10}>
             <LanguageSelector language={language} onSelect={onSelect} />
