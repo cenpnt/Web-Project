@@ -15,7 +15,7 @@ function Header({ theme, menuItems }) {
             <div className="top-bar">
                 <div className="top-bar-left">
                     <div className='logoContainer'>
-                        <a href={isLoggedIn ? "/u_student" : "/"}><Logo src={`${internetIPAddress}uploads/se_white.png`} alt="SE-logo" width="150"/></a>
+                        <a href={isLoggedIn ? "/u_student" : "/"}><Logo src={ theme === "transparent" ? `${internetIPAddress}uploads/selogo-dark.png` : `${internetIPAddress}uploads/se_white.png`} alt="SE-logo" width="150"/></a>
                     </div>
                 </div>
                 <div className="top-bar-right">
