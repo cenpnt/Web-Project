@@ -2,7 +2,6 @@
   padding: 20px;
   display: flex;
   border-radius: 10px;
-  border: 1px solid black;
   flex-direction: column;
   background-color: white;
   margin: 20px;
@@ -41,7 +40,7 @@
 }
 
 .cardContainer:hover {
-  background-color: hsl(0, 0%, 80%);
+  background-color: hsl(0, 0%, 90%);
   cursor: pointer;
 }
 
