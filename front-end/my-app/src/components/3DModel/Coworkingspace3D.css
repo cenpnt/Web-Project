@@ -1,0 +1,16 @@
+@media (max-width: 1800px) {
+  
+    .reservation-box {
+      width: 92%; /* Make the reservation box smaller */
+      margin-left: 50px; /* Move the reservation box to the left */
+    }
+  }
+  
+  @media (max-width: 1400px) {
+
+    .reservation-box {
+      width: 100%;
+      margin-left: 40px;
+    }
+  }
+  
