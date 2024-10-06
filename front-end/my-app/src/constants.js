@@ -277,3 +277,31 @@ export const card4 = {
     amenities: ['Capacity of 10','Wi-fi', 'Smart-TV (Interactive Display Writing Board)', 'Meeting desk'],
     members: "5"
   }
+
+  export const edubackground = {
+    header: "",
+    description: "The applicant must satisfy at least one of the following requirements:",
+    coreCourses: ["Graduated from or currently studying in Matthayom 6 (Thailand's Education System).","Graduated with qualifications equivalent to Matthayom 6, as recognized by the Ministry of Education.(Note that Applicants with this education background are requested to contact the SIIE office for further information.)","Graduated from or currently enrolled in an accredited college or higher education institution in Thailand or abroad."]
+  }
+
+  export const academicrecord = {
+    header: "",
+    description: "",
+    coreCourses: [" SAT or GSAT Math score of 600 or above","or ACT Math score of 23 or above","or IB Diploma score for a subject in Mathematics with a score of 5 or above"," or AP test for a subject in Mathematics with a score of 4 or above","or A-Level or AS-Level for a subject in Mathematics with grade B or above","or A-Level Mathematics 1 (TCAS) with a score of 30 or above","or Cumulative GPA of all Math subjects in high school at least 3 out of 4 (or equivalent)","or National Standardized Test Score in Mathematic Subject of 75% or above"]
+  }
+  
+  export const Languagerequirement = {
+    header: "",
+    description: "",
+    coreCourses: ["TOEFL (Paper-based) with minimum score of 550", "TOEFL (Computer-based) with minimum score of 213", "TOEFL (Internet-based) with minimum score of 79", "IELTS with minimum score of 6.0","Cambridge English Exams FCE or CAE or CPE with minimum score of 170","IB – English A1 or A2 with minimum score of 4","IB – English B (HL) with minimum score of 5","KMITL-TEP with minimum score of B2","CU-TEP with minimum score of 90","Pearson PTE with minimum score of 55","Duolingo with minimum score of 110"]
+  } 
+
+  export const admissionschedule = {
+    header: "",
+    description: "",
+    coreCourses: [" Application filing and Application Fee Payment Period : Now – November 11, 2024"," Interview Candidate Notification : November 18, 2024","Candidate Interview Date : November 23, 2024","Interview Result Announcement : November 29, 2024","TCAS Clearing House (for Thai Nationality only) : February 5 - 6, 2025","Announcement of admitted candidates with the details of how to make advanced payment of tuition fees : February 13, 2025","Enrolment confirmation and tuition fee payment : February 18 - 24, 2025"]
+  }
+  export const arr4 = [edubackground]
+  export const arr5 = [academicrecord]
+  export const arr6 = [Languagerequirement]
+  export const arr7 = [admissionschedule]
