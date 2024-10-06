@@ -10,7 +10,7 @@ function Cards() {
     <div className="cards-container">
       <Fade cascade damping={0.1}>
         <a href="/contact"><Card card={card1}/></a>
-        <a href="/contact"><Card card={card2}/></a>
+        <a href="/admission"><Card card={card2}/></a>
         <a href="/contact"><Card card={card3}/></a>
         <a href="/contact"><Card card={card4}/></a>
       </Fade>
