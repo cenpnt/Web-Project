@@ -18,6 +18,7 @@ import theme from './components/theme';
 import EditProfile from './pages/editProfile/EditProfile';
 import AcceptInvitation from './pages/acceptInvitation/AcceptInvitation';
 import CancelReservation from './pages/cancelReservation/CancelReservation';
+import Admission from './pages/admission/Admission';
 
 function App() {
   return (
@@ -37,6 +38,7 @@ function App() {
                 <Route path="/editprofile" element={<EditProfile/>}/>
                 <Route path="/accept_invitation" element={<AcceptInvitation />}/>
                 <Route path="/cancel_reservation" element={<CancelReservation />}/>
+                <Route path="/admission" element={<AuthHeader theme='dark'><Admission /></AuthHeader>}/>
               </Routes>
             </ScrollToTop>
           </ChakraProvider>
