@@ -29,81 +29,36 @@
 
 .section1 {
   display: flex;
-  justify-content: flex-start;
-  margin-left: 5%;
-  margin-top: 5%;
-  margin-top: -1px; /* fix bug */
-}
-
-.spinImg {
-  animation: spin 90s linear infinite;
-}
-
-@keyframes spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
-}
-
-.left-section1 {
-  display: flex;
-  flex-direction: column;
   justify-content: center;
-  padding: 5px;
-  height: 700px;
+  align-items: center;
+  margin-top: 5%;
+  margin-top: -1px;
+  background-image: 
+    linear-gradient(to bottom, rgba(0, 0, 0, 0) 70%, #0d1017),
+    url("https://cdn.discordapp.com/attachments/1280538997944225846/1292475533854244948/75625360_2708828382511763_3205029120262012928_n.png?ex=6703df24&is=67028da4&hm=c16391368c02a5a40c03b29d94e94d549d65004ba61c4531f8587eda7205a905&");
+  background-repeat: no-repeat;
+  background-size: 100%;
+  text-align: center;
 }
 
-.right-section1 {
+.main-section1{
+  padding-top: 150px;
   margin: 25px 100px 0 50px;
 }
 
-.bulletPoint2 {
-  color: white;
-  opacity: 0.7;
-  font-size: 1.7rem;
-  text-align: left;
-  padding-top: 10px;
-  line-height: 35px;
-}
-
-.bulletPointerContainer {
-  margin-top: 120px;
-  max-width: 900px;
-  text-align: left;
+.card-container {
+  margin-top: 100px;
+  margin-bottom: 200px;
 }
 
 @media (max-width: 1800px) {
   .homebody1-title {
     font-size: 6rem !important;
   }
-
-  .right-section1 {
-    margin: 25px 70px 0 50px !important;
-  }
-
-  .bulletPoint2 {
-    font-size: 1.5rem;
-  }
-
 }
 
 @media (max-width: 1600px) {
   .homebody1-title {
     font-size: 5rem !important;
   }
-
-  .right-section1 {
-    margin: 25px 20px 0 50px !important;
-  }
-
- .bulletPoint2 {
-  font-size: 1.3rem;
- }
- 
- .bulletPointerContainer {
-  max-width: 650px;
- }
 }
