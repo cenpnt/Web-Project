@@ -23,6 +23,12 @@
   --header-backgroundColor: #f7f7f7;
 }
 
+.header.transparent {
+  --header-backgroundColor: transparent;
+  position: absolute;
+  width: 100%;
+}
+
 .header.dark {
   --header-backgroundColor: #0d1017;
 }
