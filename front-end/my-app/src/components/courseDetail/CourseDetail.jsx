@@ -12,7 +12,7 @@ function CourseDetail({ details }) {
         <Accordion allowToggle width={'103%'} mt={5}>
             {details.map((detail, index) => (
                 <AccordionItem key={index}>
-                    <h2>
+                    <h3>
                         <AccordionButton display={'flex'} justifyContent={'space-between'}>
                             <Box textAlign={'left'}>
                                 { detail.content.track && <Box style={{color : "orange", display: "block"}}>{detail.content.track}</Box>}
@@ -20,7 +20,7 @@ function CourseDetail({ details }) {
                             </Box>
                             <AccordionIcon />   
                         </AccordionButton>
-                    </h2>
+                    </h3>
                     <AccordionPanel pb={4}>
                         <Box><strong>Prerequisite</strong> : {detail.content.prerequisite}</Box>
                         <Box><strong>Program</strong> : {detail.content.program}</Box>
