@@ -24,11 +24,11 @@ function Contact() {
                 <h5>King Mongkut's Institute of Technology Ladkrabang</h5>
                 <div className='contact-tel'>
                     <Icon dark={'https://cdn-icons-png.flaticon.com/128/25/25453.png'} light={'https://cdn-icons-png.flaticon.com/128/25/25453.png'} theme={'light'} alt={'phone'} width={'25'}/>
-                    <a href="tel:02-329-8000"><p>02-329-8000</p></a>
+                    <a href="tel:+669 3474 7468"><p>+66 93 474 7468</p></a>
                 </div>
                 <div className='contact-tel'>
                     <Icon dark={'https://cdn-icons-png.flaticon.com/128/25/25453.png'} light={'https://cdn-icons-png.flaticon.com/128/25/25453.png'} theme={'light'} alt={'phone'} width={'25'}/>
-                    <a href="tel:02-329-8321"><p>02-329-8321</p></a>
+                    <a href="tel:+66 80 454 9990"><p>+66 80 454 9990</p></a>
                 </div>
                 <div className='contact-tel'>
                     <Icon dark={'https://cdn-icons-png.flaticon.com/128/542/542689.png'} light={'https://cdn-icons-png.flaticon.com/128/542/542689.png'} theme={'light'} alt={'mail'} width={'25'}></Icon>
@@ -36,11 +36,15 @@ function Contact() {
                 </div>
                 <div className='contact-tel'>
                     <Icon dark={'https://cdn-icons-png.flaticon.com/128/542/542689.png'} light={'https://cdn-icons-png.flaticon.com/128/542/542689.png'} theme={'light'} alt={'mail'} width={'25'}></Icon>
+                    <a href="mailto:siie-admission@kmitl.ac.th"><p>siie-admission@kmitl.ac.th</p></a>
+                </div>
+                <div className='contact-tel'>
+                    <Icon dark={'https://cdn-icons-png.flaticon.com/128/542/542689.png'} light={'https://cdn-icons-png.flaticon.com/128/542/542689.png'} theme={'light'} alt={'mail'} width={'25'}></Icon>
                     <a href="mailto:natthapong.ju@kmitl.ac.th"><p>natthapong.ju@kmitl.ac.th</p></a>
                 </div>
                 <div className='contact-tel'>
                     <Icon dark={'https://cdn-icons-png.flaticon.com/128/542/542689.png'} light={'https://cdn-icons-png.flaticon.com/128/542/542689.png'} theme={'light'} alt={'mail'} width={'25'}></Icon>
-                    <a href="mailto:ic@kmitl.ac.th"><p>ic@kmitl.ac.th</p></a>
+                    <a href="mailto:visit.hi@kmitl.ac.th"><p>visit.hi@kmitl.ac.th</p></a>
                 </div>
                 <div className='contact-tel'>
                     <Icon dark={'https://cdn-icons-png.flaticon.com/128/1231/1231223.png'} light={'https://cdn-icons-png.flaticon.com/128/1231/1231223.png'} theme={'light'} alt={'mail'} width={'25'}></Icon>
