@@ -18,6 +18,9 @@ import theme from './components/theme';
 import EditProfile from './pages/editProfile/EditProfile';
 import AcceptInvitation from './pages/acceptInvitation/AcceptInvitation';
 import CancelReservation from './pages/cancelReservation/CancelReservation';
+import Admission from './pages/admission/Admission';
+import Curriculum from './pages/curriculum/Curriculum';
+import About from './pages/about/About';
 
 function App() {
   return (
@@ -26,7 +29,7 @@ function App() {
           <ChakraProvider theme={theme}>
             <ScrollToTop>
               <Routes>
-                <Route path="/" element={<AuthHeader theme='dark'><Home /></AuthHeader>} />
+                <Route path="/" element={<Home />} />
                 <Route path="/login" element={<Login />} />
                 <Route path="/u_student" element={<AuthHeader theme='dark'><UStudent /></AuthHeader>} />
                 <Route path="/glasgow-doubledegree" element={<AuthHeader theme='dark'><Glasgow /></AuthHeader>} />
@@ -37,6 +40,9 @@ function App() {
                 <Route path="/editprofile" element={<EditProfile/>}/>
                 <Route path="/accept_invitation" element={<AcceptInvitation />}/>
                 <Route path="/cancel_reservation" element={<CancelReservation />}/>
+                <Route path="/admission" element={<AuthHeader theme='dark'><Admission /></AuthHeader>}/>
+                <Route path="/curriculum" element={<AuthHeader theme='dark'><Curriculum /></AuthHeader>}/>
+                <Route path="/about" element={<AuthHeader theme='dark'><About /></AuthHeader>} />
               </Routes>
             </ScrollToTop>
           </ChakraProvider>

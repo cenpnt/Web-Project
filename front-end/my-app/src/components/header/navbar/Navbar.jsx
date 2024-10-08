@@ -13,7 +13,7 @@ function Navbar({ theme = "dark", menuItems }) {
       <ul className="menu">
         {menuItems.map((menuItem, index) => (
           <li key={index}>
-            {menuItem.text}
+            {<a href={`${menuItem.path}`}>{menuItem.text}</a>}
             {menuItem.subItems && <SubMenu items={menuItem.subItems} />}
           </li>
         ))}

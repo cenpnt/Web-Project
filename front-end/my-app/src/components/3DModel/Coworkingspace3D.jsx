@@ -4,6 +4,7 @@ import { OrbitControls, Stage, useGLTF } from "@react-three/drei";
 import ReservationBox from "../reserveBox/reserveBox";
 import { room1, room2, room3 } from "../../constants";
 import { Box, Flex, Button, Image } from "@chakra-ui/react";
+import './Coworkingspace3D.css';
 
 function Model({ onRoomClick }) {
   const gltf = useGLTF("/models/coworking5.gltf");
@@ -76,7 +77,13 @@ export default function ModelViewer() {
   
   return (
     <Flex width="98%" height="80vh" padding="10px" justifyContent="center">
-      <Box width={selectedRoom ? "70%" : "100%"} transition="width 0.3s ease-in-out">
+      <Box width={selectedRoom ? "70%" : "100%"} transition="width 0.3s ease-in-out" sx={{
+          "@media (max-width: 1800px)": {
+            width: selectedRoom ? "70%" : "100%", /* Smaller width for 1800px */
+          },          "@media (max-width: 1400px)": {
+            width: selectedRoom ? "60%" : "100%", /* Smaller width for 1800px */
+          }
+        }}>
         <Box width="100%" height="70vh" borderRadius="10px" margin="20px" backgroundColor="#101010">
           <Canvas>
             <color attach="background" args={["#101010"]} />

@@ -11,7 +11,7 @@ function Login() {
   const [error, setError] = useState("");
   const [inputError, setInputError] = useState(false);
   const navigate = useNavigate();
-  const { login } = useAuth();
+  const { login, internetIPAddress } = useAuth();
   const inputRef = useRef(null);
 
   const focusInput = () => {
@@ -24,7 +24,7 @@ function Login() {
     e.preventDefault();
 
     try {
-      const response = await fetch("http://localhost:8000/token", {
+      const response = await fetch(`${internetIPAddress}token`, {
         method: "POST",
         headers: {
           "Content-Type": "application/x-www-form-urlencoded",

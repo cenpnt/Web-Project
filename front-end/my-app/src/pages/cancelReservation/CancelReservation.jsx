@@ -1,15 +1,17 @@
 import { Button } from '@chakra-ui/react';
 import { useState } from 'react';
 import { useLocation } from 'react-router-dom'
+import { useAuth } from '../../context/AuthContext';
 import './CancelReservation.css';
 
 function CancelReservation() {
+    const {internetIPAddress} = useAuth();
     const [isCancel, setIsCancel] = useState(false);
     const location = useLocation();
 
     const cancelReservation = async (room_id, date, time) => {
         try {
-            const response = await fetch('http://localhost:8000/cancel_reservation', {
+            const response = await fetch(`${internetIPAddress}cancel_reservation`, {
                 method: "DELETE",
                 headers: { "Content-Type" : "application/json" },
                 body: JSON.stringify({
@@ -40,7 +42,7 @@ function CancelReservation() {
     return (
         <div className='cancelContainer'>
             <div className='cancelBox'>
-                <img src="http://localhost:8000/uploads/selogo-dark.png" alt="se-dark-logo" />
+                <img src={`${internetIPAddress}uploads/selogo-dark.png`} alt="se-dark-logo" />
                 {!isCancel ? 
                 <>
                     <h3>Cancel Reservation</h3>

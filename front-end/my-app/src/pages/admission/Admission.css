@@ -1,0 +1,106 @@
+.application-period {
+    text-align: center;
+    margin-top: 30px;
+    font-weight: bold;
+    margin-bottom: 40px;
+    color: rgb(161, 37, 37);
+}
+
+.admission-container {
+    display: flex;
+    justify-content: center;
+    align-items: start;
+    gap: 30px;
+}
+
+.direct-admission {
+    height: 520px;
+}
+
+.direct-admission, .tcas {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    text-align: center;
+    border-radius: 20px;
+    padding: 20px;
+    box-shadow: 
+        -10px 0px 15px rgba(211, 113, 113, 0.2), /* Left shadow */
+        10px 0px 15px rgba(211, 113, 113, 0.2),  /* Right shadow */
+        0px 7px 10px rgba(239, 19, 19, 0.4);  /* Bottom shadow */
+}
+
+.direct-admission hr, .tcas hr{
+    border: 2px solid red;
+    margin-top: 5px;
+    margin-bottom: 5px;
+}
+
+.direct-admission h1, .tcas h1{
+    font-weight: bold;
+    font-size: 50px;
+}
+
+.direct-admission h2, .tcas h2, .admissionSeat {
+    color: rgb(161, 37, 37);
+}
+
+.direct-admission h4, .tcas h4 {
+    color: rgb(191, 17, 17);
+    font-size: 20px;
+}
+
+.tcas {
+    height: 440px;
+}
+
+.application-requirements, .admission-schedule, .application-submission, .tuition-fees, .scholarships {
+    padding: 50px ;
+    text-align: left;
+    width: 1000px;
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 100px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    background-color: hsl(0, 0%, 99%);
+}
+
+.application-requirements h1, .admission-schedule h1, .application-submission h1, .tuition-fees h1, .scholarships h1 {
+    font-weight: bold;
+    color: rgb(161, 37, 37);
+}
+
+.requirementDetail {
+    background-color: rgb(161, 37, 37);
+}
+
+.application-requirements {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.boldRedText {
+    font-weight: bold;
+    color: rgb(191, 17, 17);;
+}
+
+.personalStatement {
+    margin-bottom: 10px;
+}
+
+.application-submission a {
+    color: rgb(161, 37, 37);
+}
+
+.application-submission {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.scholarships {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}

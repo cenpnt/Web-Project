@@ -1,0 +1,81 @@
+
+.curriculumContainer {
+    width: 60%;
+    margin: 50px auto;
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    gap: 25px;
+}
+
+.program-overview h1{
+    font-weight: bold;
+    color: rgb(161, 37, 37);
+    margin-bottom: 15px;
+}
+
+.curriculum-overview {
+    padding: 30px;
+    border-radius: 20px;
+    box-shadow: 
+    -10px 0px 15px rgba(211, 113, 113, 0.2), /* Left shadow */
+    10px 0px 15px rgba(211, 113, 113, 0.2),  /* Right shadow */
+    0px 7px 10px rgba(239, 19, 19, 0.4);  /* Bottom shadow */
+    background-color: hsl(0, 0%, 99%);
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.curriculum-overview h2 {
+    color: rgb(161, 37, 37);
+}
+
+.curriculumYears {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.curriculumYears h2 {
+    font-weight: 400;
+}
+
+.curriculumYears p {
+    margin-left: 15;
+}
+
+.curriculumCourseDetail {
+    max-width: 84%;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.curriculumCourseDetail h2 {
+    color: rgb(161, 37, 37);
+}
+
+.courseDetailYear {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.courseDetailYear h2 {
+    font-weight: bold;
+}
+
+.courseDetailSemesterContainer {
+    display: flex;
+    flex-direction: row;
+    gap: 40px;
+}
+
+.courseDetailSemester {
+    width: 55%;
+    max-width: 500px;
+}

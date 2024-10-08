@@ -1,6 +1,7 @@
 import React from "react";
 import Box from "./box/Box";
 import { box1, box2 } from "../../constants";
+
 function HomeBody3() {
   
   return (

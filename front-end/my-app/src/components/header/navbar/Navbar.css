@@ -42,7 +42,7 @@
   --submenu-backgroundColor: #f7f7f7;
 }
 
-.navBar.glasgow {
+.navBar.transparent {
   --nav-text: white;
-  --submenu-backgroundColor: aliceblue;
+  --submenu-backgroundColor: white;
 }

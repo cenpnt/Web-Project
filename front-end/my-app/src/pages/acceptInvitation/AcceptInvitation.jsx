@@ -1,16 +1,19 @@
 import { Button } from '@chakra-ui/react'
 import { useLocation } from 'react-router-dom'
 import { useState } from 'react'
+import { useAuth } from '../../context/AuthContext'
 import './AcceptInvitation.css'
 
 function AcceptInvitation() {
     const [isAccept, setIsAccept] = useState(false);
     const [isChose, setIsChose] = useState(false);
     const location = useLocation();
+    const { internetIPAddress } = useAuth();
+    const pics = `${internetIPAddress}uploads/selogo-dark.png`
 
     const acceptInvitation = async (token, acceptStatus) => {
         try {
-            const response = await fetch('http://localhost:8000/accept_invitation', {
+            const response = await fetch(`${internetIPAddress}accept_invitation`, {
                 method: "PUT",
                 headers: { "Content-Type" : "application/json"},
                 body: JSON.stringify({ token, isAccept: acceptStatus })
@@ -47,7 +50,7 @@ function AcceptInvitation() {
     return (
         <div className='acceptContainer'>
             <div className='acceptedBox'>
-                <img src="http://localhost:8000/uploads/selogo-dark.png" alt="se-dark-logo" />
+                <img src={pics} alt="se-dark-logo" />
                 {!isChose ? 
                 <>
                 <h3>Invitation to Join a Coworking Space</h3>

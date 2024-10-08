@@ -2,17 +2,18 @@
   padding: 20px;
   display: flex;
   border-radius: 10px;
-  border: 1px solid black;
   flex-direction: column;
   background-color: white;
   margin: 20px;
   transition: 0.2s ease-in-out;
-  width: 100%; /* Adjust width to 100% for small devices */
-  max-width: 300px; /* Ensure it doesn't exceed the max width */
+  width: 100%;
+  max-width: 300px;
 }
 
 .topIconContainer {
   margin-bottom: 10px;
+  display: flex;
+  justify-content: center;
 }
 
 .cardTextContainer h2 {
@@ -41,7 +42,7 @@
 }
 
 .cardContainer:hover {
-  background-color: hsl(0, 0%, 80%);
+  background-color: hsl(0, 0%, 90%);
   cursor: pointer;
 }
 
@@ -54,34 +55,53 @@
   transform: translateX(15px);
 }
 
-/* Media Query for small devices */
-@media screen and (max-width: 768px) {
+@media screen and (max-width: 1550px) {
   .cardContainer {
+    align-items: center;
+    gap: 10px;
     padding: 15px;
-    margin: 10px;
-    width: 90%; /* Reduce width for smaller devices */
-    max-width: 100%; /* Ensure it doesn't exceed screen width */
+    margin: 15px;
+    width: 200px;
+    height: auto;
+    max-width: 200px;
+  }
+
+  .topIconContainer img {
+    width: 50px;
+    height: 50px;
   }
 
   .cardTextContainer h2 {
-    font-size: 1.2rem; /* Reduce heading size */
+    font-size: 1rem;
   }
 
-  .cardTextContainer p {
-    font-size: 0.9rem; /* Adjust text size for readability */
-  }
 
-  .topIconContainer img,
-  .buttomIconContainer img {
-    width: 40px; /* Reduce icon size */
+  .cardDescription, .buttomIconContainer {
+    display: none;
   }
+}
 
-  .buttomIconContainer {
-    margin-top: 10px; /* Adjust margins for better spacing */
-  }
-
-  /* Optional: Stack elements vertically in case flex doesn't fit */
+@media screen and (max-width: 1400px) {
   .cardContainer {
-    flex-direction: column;
+    padding: 10px;
+    margin: 10px;
+    width: 80px;
+    height: 80px;
+    max-width: 80px;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .topIconContainer {
+    margin-bottom: 0;
+  }
+
+  .topIconContainer img {
+    width: 40px;
+    height: 40px;
+  }
+
+  .cardContent {
+    display: none;
   }
 }

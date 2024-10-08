@@ -78,8 +78,15 @@
   }
 }
 
-@media screen and (max-width: 768px) {
+@media screen and (max-width: 1400px) {
   .reservation-box {
     width: 400px;
+  }
+  .time-selection {
+    grid-template-columns: repeat(4, 1fr);
+  }
+  .date-selection {
+    flex-direction: column;
+    gap: 9px;
   }
 }
