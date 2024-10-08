@@ -11,7 +11,7 @@ function Cards() {
       <Fade cascade damping={0.1}>
         <a href="/curriculum"><Card card={card1}/></a>
         <a href="/admission"><Card card={card2}/></a>
-        <a href="/contact"><Card card={card3}/></a>
+        <a href="/about"><Card card={card3}/></a>
         <a href="/contact"><Card card={card4}/></a>
       </Fade>
     </div>
