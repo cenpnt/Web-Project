@@ -184,6 +184,37 @@ const CodeEditor = () => {
     }
   };
 
+  const deleteSolvedQuestion = async (index) => {
+    const user_id = localStorage.getItem("userID");
+    const problem_id = filteredProblems[index]?.id;
+    if(!user_id || !problem_id) {
+      console.error("User ID or Problem ID is undefined");
+      return;
+    }
+
+    try {
+      const response = await fetch(`${internetIPAddress}delete_solve_problem`, {
+        method: "DELETE",
+        headers: { "Content-Type" : "application/json" },
+        body: JSON.stringify({
+          user_id,
+          problem_id,
+          level: currentLevel
+        })
+      })
+      if(!response.ok) {
+        throw new Error("Error canceling solved question");
+      }
+      setSolvedStatus(prev => {
+        const newStatus = [...prev];
+        newStatus[index] = false;
+        return newStatus
+      });
+    } catch (error) {
+      console.error("Error canceling solved question: ", error)
+    }
+  }
+
   const newQuestionAdded = (newQuestion) => {
     setProblems(prevProblems => [...prevProblems, newQuestion]);
     if (currentLevel === newQuestion.level) {
@@ -282,6 +313,11 @@ const CodeEditor = () => {
           </Box>
           <Box fontSize="25px" color="gray.300" mt="2">{selectedProblem.note}</Box>
         </Box>
+        <Box display={'flex'} justifyContent={'end'} mr={8} alignItems={'center'}>
+          <Button onClick={() => {solvedStatus[currentProblemIndex] ? deleteSolvedQuestion(currentProblemIndex) : onDoneButtonClick(currentProblemIndex)}}>
+            {solvedStatus[currentProblemIndex] ? <><RiCloseLine size={20} mr={3} />Mark as Incomplete</> : <><CheckIcon mr={2}/> Mark as Done</>}
+          </Button>
+        </Box>
         </>);
     } else if (isLevelSelected) {
         return(<>
@@ -322,7 +358,7 @@ const CodeEditor = () => {
                   )}
                 </Box>
                 <Box display="flex" alignItems="center" justifyContent="center" bg={index % 2 === 0 ? "#2f2f2f" : "transparent"}>
-                  <Button onClick={() => onDoneButtonClick(index)} bg={{}} _hover={{}} _active={{}}> 
+                  <Button onClick={() => {solvedStatus[index] ? deleteSolvedQuestion(index) : onDoneButtonClick(index)}} bg={{}} _hover={{}} _active={{}}>
                     {solvedStatus[index] ? (
                       <CheckIcon color={"white"} _hover={{}} />
                     ) : (
