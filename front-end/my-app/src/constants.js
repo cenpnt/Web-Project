@@ -197,15 +197,6 @@ export const card4 = {
         { text: "Curriculum", path: "/curriculum" },
         { text: "KMITL-Glasgow", path: "/glasgow-doubledegree" },
         { text: "KMITL-Queensland", path: "/queensland-doubledegree" },
-        { text: "Exchange-Study-Abroad", path: "/" },
-        { text: "Internships", path: "/" }
-      ]
-    },
-    { 
-      text: 'Student',
-      subItems: [
-        { text: "Alumni", path: "/", smalltext: "SE student alumni" },
-        { text: "Career Recommendation", path: "/", smalltext: "SE students' advisor" }
       ]
     },
     { 
@@ -234,8 +225,6 @@ export const card4 = {
     { 
       text: 'Student',
       subItems: [
-        { text: "Alumni", path: "/", smalltext: "SE student alumni" },
-        { text: "Career Recommendation", path: "/", smalltext: "SE students' advisor" },
         { text: 'Code Editor', path: '/se_academy' }
       ]
     },
