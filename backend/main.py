@@ -214,12 +214,12 @@ def get_all_solved_problem(db: Session = Depends(get_db)):
     problems = db.query(SolvedProblem).all()
     return problems
 
-@app.delete("/solve_problem/{id}", response_model=SuccessResponse, dependencies=[Depends(admin_only)])
-def delete_solved_problem(id: int, db: Session = Depends(get_db)):
-    problem = db.query(SolvedProblem).filter(SolvedProblem.id == id).first()
-    if problem is None:
+@app.delete("/delete_solve_problem", response_model=SuccessResponse)
+def delete_solved_problem(problem: SolvedProblemCreated, db: Session = Depends(get_db)):
+    existing_problem = db.query(SolvedProblem).filter(SolvedProblem.user_id == problem.user_id, SolvedProblem.problem_id == problem.problem_id, SolvedProblem.level == problem.level).first()
+    if existing_problem is None:
         raise HTTPException(status_code=404, detail="Problem not found")
-    db.delete(problem)
+    db.delete(existing_problem)
     db.commit()
     return { "message": "Problem deleted" }
 
