@@ -33,8 +33,8 @@ app.add_middleware(
 )
 # Configuration
 UPLOAD_DIR = "uploads"
-BASE_URL_BACKEND = "http://192.168.1.39:8000"
-BASE_URL_FRONTEND = "http://192.168.1.39:3000"
+BASE_URL_BACKEND = "http://192.168.1.38:8000"
+BASE_URL_FRONTEND = "http://192.168.1.38:3000"
 
 # Ensure upload directory exists
 os.makedirs(UPLOAD_DIR, exist_ok=True)
