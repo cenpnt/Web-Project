@@ -1,4 +1,4 @@
-const internetIPAddress = "http://192.168.1.39:8000/"
+const internetIPAddress = "http://192.168.1.38:8000/"
 
 export const LANGUAGE_VERSIONS = {
   javascript: "18.15.0",
@@ -189,7 +189,7 @@ export const card4 = {
   
 
  export const menuItems = [
-    { text: 'About', path: '/' },
+    { text: 'About', path: '/about' },
     { text: 'Admission', path: '/admission' },
     { 
       text: 'Program',
@@ -219,12 +219,12 @@ export const card4 = {
   ]; 
 
   export const loggedInMenuItems = [
-    { text: 'About', path: '/' },
+    { text: 'About', path: '/about' },
     { text: 'Admission', path: '/admission' },
     { 
       text: 'Program',
       subItems: [
-        { text: "Software-Engineering 2024", path: "/" },
+        { text: "Curriculum", path: "/curriculum" },
         { text: "KMITL-Glasgow", path: "/glasgow-doubledegree" },
         { text: "KMITL-Queensland", path: "/queensland-doubledegree" },
         { text: "Exchange-Study-Abroad", path: "/" },
