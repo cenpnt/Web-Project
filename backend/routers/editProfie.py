@@ -25,7 +25,6 @@ UPLOAD_DIR = "uploads"
 BASE_URL_BACKEND = "http://192.168.1.38:8000"
 BASE_URL_FRONTEND = "http://192.168.1.38:3000"
 
-
 @router.post("/edit_profile/check_password/{id}", response_model=SuccessResponse)
 def check_password(id: int, password_data: CheckPasswordBase, db: Session = Depends(get_db)):
     user = db.query(User).filter(User.id == id).first()

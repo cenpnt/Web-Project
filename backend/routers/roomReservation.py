@@ -1,4 +1,3 @@
-
 from fastapi import APIRouter, HTTPException, Depends
 import os
 from dotenv import load_dotenv
