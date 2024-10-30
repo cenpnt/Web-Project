@@ -4,7 +4,7 @@ from dotenv import load_dotenv
 from datetime import datetime, timedelta
 from typing import List
 from ..models import Reservation
-
+from ..main import BASE_URL_FRONTEND
 from ..schema import SuccessResponse, ReservationResponse, ReservationCreated, CancelReservation
 from sqlalchemy.orm import Session
 from ..database import *
@@ -22,10 +22,6 @@ router = APIRouter(
     prefix="/roomResevation",
     tags=["roomReservation"],
 )
-
-UPLOAD_DIR = "uploads"
-BASE_URL_BACKEND = "http://192.168.1.38:8000"
-BASE_URL_FRONTEND = "http://192.168.1.38:3000"
 
 @router.post("/reserve", response_model=ReservationResponse)
 def create_reserve(reserve: ReservationCreated, db: Session = Depends(get_db)):

@@ -9,6 +9,7 @@ from sqlalchemy.orm import Session
 from ..database import *
 from fastapi.responses import JSONResponse
 from .user import admin_only
+from ..main import BASE_URL_BACKEND, UPLOAD_DIR, pwd_context
 
 load_dotenv()
 
@@ -18,12 +19,6 @@ router = APIRouter(
     prefix="/editProfile",
     tags=["editProfile"],
 )
-
-pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
-
-UPLOAD_DIR = "uploads"
-BASE_URL_BACKEND = "http://192.168.1.38:8000"
-BASE_URL_FRONTEND = "http://192.168.1.38:3000"
 
 @router.post("/edit_profile/check_password/{id}", response_model=SuccessResponse)
 def check_password(id: int, password_data: CheckPasswordBase, db: Session = Depends(get_db)):

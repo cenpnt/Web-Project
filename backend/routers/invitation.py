@@ -12,6 +12,7 @@ from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 from .roomReservation import send_delayed_email
 import secrets
+from ..main import BASE_URL_FRONTEND
 
 load_dotenv()
 
@@ -21,11 +22,6 @@ router = APIRouter(
     prefix="/invitation",
     tags=["invitation"],
 )
-
-UPLOAD_DIR = "uploads"
-BASE_URL_BACKEND = "http://192.168.1.38:8000"
-BASE_URL_FRONTEND = "http://192.168.1.38:3000"
-
 
 @router.post('/send_invitation', response_model=SuccessResponse)
 def send_invitation(invitation: InvitationCreated, background_tasks: BackgroundTasks, db: Session = Depends(get_db)):
