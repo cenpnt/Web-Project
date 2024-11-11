@@ -1,9 +1,7 @@
 from fastapi import FastAPI
 from fastapi.staticfiles import StaticFiles
 from fastapi.middleware.cors import CORSMiddleware
-from passlib.context import CryptContext
 import os
-from dotenv import load_dotenv
 from .database import Base, engine
 from .routers import user, problems, solvedProblems, editProfie, roomReservation, invitation
 
