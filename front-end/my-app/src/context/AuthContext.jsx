@@ -8,7 +8,7 @@ export const AuthProvider = ({ children }) => {
     const [isLoggedIn, setIsLoggedIn] = useState(false);
     const [user, setUser] = useState(null);
     const navigate = useNavigate();
-    const internetIPAddress = "http://192.168.1.38:8000/"
+    const internetIPAddress = "http://192.168.1.34:8000/"
     
     useEffect(() => {
         const storedLoginStatus = localStorage.getItem('isLoggedIn') === 'true';
