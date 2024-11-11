@@ -7,9 +7,6 @@ from dotenv import load_dotenv
 from .database import Base, engine
 from .routers import user, problems, solvedProblems, editProfie, roomReservation, invitation
 
-
-load_dotenv()
-
 app = FastAPI()
 
 app.add_middleware(
@@ -30,8 +27,6 @@ app.include_router(invitation.router)
 
 # Configuration
 UPLOAD_DIR = "uploads"
-BASE_URL_BACKEND = "http://192.168.1.38:8000"
-BASE_URL_FRONTEND = "http://192.168.1.38:3000"
 
 # Ensure upload directory exists
 os.makedirs(UPLOAD_DIR, exist_ok=True)
@@ -41,6 +36,3 @@ app.mount("/uploads", StaticFiles(directory=UPLOAD_DIR), name="uploads")
 
 # DB initialization
 Base.metadata.create_all(bind=engine)
-
-# Password hashing
-pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
