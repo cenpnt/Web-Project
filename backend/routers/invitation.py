@@ -47,7 +47,7 @@ def send_invitation(invitation: InvitationCreated, background_tasks: BackgroundT
     html_content = f"""
     <html>
         <body style="display: flex; justify-content: center; align-items: center;">
-            <div style="display: flex; justify-content: center; align-items: center; height: 50vh; width: 50vh; background-color: #F94C46;">
+            <div style="display: flex; justify-content: center; align-items: center; height: 50vh; width: 50vh; background-color: #F94C46; padding: 20px;">
                 <div style="width: 400px; background-color: white; border-radius: 15px; padding: 40px; box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.1); font-family: Arial, sans-serif;">
                     <h2 style="text-align: center; font-size: 24px; color: #251B45;">You've been invited</h2>
                     <p style="color: #333; font-size: 16px;">Dear Student,</p>

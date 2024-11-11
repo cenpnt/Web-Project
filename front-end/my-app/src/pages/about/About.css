@@ -1,25 +1,70 @@
 .container {
     background-color: hsl(0, 0%, 99%);
-    padding: 50px;
-    padding-top: 40px;
+    padding: 40px;
+    padding-top: 30px;
     margin-top: 4%;
     margin-left: auto;
     margin-right: auto;
     display: flex;
     justify-content: center;
     flex-direction: column;
-    gap: 30px;
+    gap: 20px;
     border-radius: 10px;
     box-shadow: 
     -10px 0px 15px rgba(211, 113, 113, 0.2), /* Left shadow */
     10px 0px 15px rgba(211, 113, 113, 0.2),  /* Right shadow */
     0px 7px 10px rgba(239, 19, 19, 0.4);  /* Bottom shadow */
+    max-width: 80%; /* Restrict container width */
 }
 
 .container h2 {
     color: rgb(161, 37, 37);
+    font-size: 1.8rem; /* Adjust font size for better scaling */
+    text-align: left; /* Center text on smaller screens */
+}
+
+.paragraph-container p {
+    font-size: 1rem;
+    line-height: 1.6;
 }
 
 .paragraph-container span {
     color: rgb(255, 115, 0);
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .container {
+        padding: 20px;
+        gap: 15px;
+        margin-top: 2%;
+        max-width: 90%; /* Increase width on smaller screens */
+    }
+    
+    .container h2 {
+        font-size: 1.5rem; /* Smaller font size for headings */
+    }
+    
+    .paragraph-container p {
+        font-size: 0.9rem;
+    }
+    
+    .container ul {
+        padding-left: 20px;
+    }
+}
+
+@media (max-width: 480px) {
+    .container {
+        padding: 15px;
+        gap: 10px;
+    }
+    
+    .container h2 {
+        font-size: 1.2rem;
+    }
+    
+    .paragraph-container p {
+        font-size: 0.85rem;
+    }
 }

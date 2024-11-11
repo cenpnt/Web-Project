@@ -1,4 +1,4 @@
-const internetIPAddress = "http://192.168.1.34:8000/"
+const internetIPAddress = "192.168.56.1:8000"
 
 export const LANGUAGE_VERSIONS = {
   javascript: "18.15.0",
@@ -118,7 +118,7 @@ export const slides = [
 export const HomeBody2Slides = [
   {
     image:
-      `http://${internetIPAddress}:8000/uploads/AIHackaton.png`,
+      `http://${internetIPAddress}/uploads/AIHackaton.png`,
     alt: "AI Hackathon",
     title: "INTERNATIONAL AI HACKATHON 2024 <br/>SAVING THE WORLD WITH AI",
     description:
@@ -140,7 +140,7 @@ export const box1 = {
     alt: "picture of glassgow university",
     des: "The KMITL-Glasgow Double-Degree Program in Software Engineering is a collaboration between KMITL and the University of Glasgow, UK. The program enables qualified students who have completed Year 2 in the SE program at the International College to enter Years 3 and 4 of the Software Engineering program at the University of Glasgow's School of Computing Science. At Glasgow, the student will have an opportunity to study with world-renowned academics, as well as working on team projects with multi-national talents. This is an excellent opportunity for the students who wish to gain studying and living experience in the UK.",
     logo: {
-      src: `http://${internetIPAddress}:8000/uploads/UoG_white.png`,
+      src: `http://${internetIPAddress}/uploads/UoG_white.png`,
       alt: "Glasgow_logo",
       width: 250,
     },
@@ -152,7 +152,7 @@ export const box2 = {
     alt: "picture of glassgow university",
     des: "The KMITL-Queensland Double-Degree Program in Software Engineering is a collaboration between KMITL and the University of Queensland (UQ), Australia. The program enables qualified students who have completed Year 2 in the Software Engineering program at KMITL to enter Years 3 and 4 of the Software Engineering program at the University of Queensland in Australia, and, upon completion, be awarded with software engineering degrees from both KMITL and UQ. The collaborative program aims to equip its students with advanced knowledge and skills of software engineering to prepare them for careers in the international software industry, as well as for research and postgraduate study in all computing-related fields.",
     logo: {
-      src: `http://${internetIPAddress}:8000/uploads/UQ-post-white.png`,
+      src: `http://${internetIPAddress}/uploads/UQ-post-white.png`,
       alt: "Queensland_logo",
       width: 300,
     },
