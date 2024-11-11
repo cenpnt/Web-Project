@@ -46,16 +46,21 @@ def send_invitation(invitation: InvitationCreated, background_tasks: BackgroundT
     link = f"{BASE_URL_FRONTEND}/accept_invitation?token={token}"
     html_content = f"""
     <html>
-        <body>
-            <p>Dear Student,</p>
-            <p>We are pleased to inform you that you have been invited to utilize the coworking space.</p>
-            <p>To accept this invitation, please click the link below:</p>
-            <p>
-                <a href="{link}">Accept Invitation</a>
-            </p>
-            <p>Thank you, and we look forward to welcoming you!</p>
-            <p>Best regards,<br>Software Engineering KMITL</p>
-        </body>
+        <body style="display: flex; justify-content: center; align-items: center;">
+            <div style="display: flex; justify-content: center; align-items: center; height: 50vh; width: 50vh; background-color: #F94C46;">
+                <div style="width: 400px; background-color: white; border-radius: 15px; padding: 40px; box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.1); font-family: Arial, sans-serif;">
+                    <h2 style="text-align: center; font-size: 24px; color: #251B45;">You've been invited</h2>
+                    <p style="color: #333; font-size: 16px;">Dear Student,</p>
+                    <p style="color: #333; font-size: 16px;">We are pleased to inform you that you have been invited to utilize the coworking space.</p>
+                    <p style="color: #333; font-size: 16px;">To accept this invitation, please click the link below:</p>
+                    <div style="text-align: center; margin-top: 20px;">
+                        <a href="{link}" style="display: inline-block; padding: 12px 20px; background-color: #251B45; color: white; text-decoration: none; border-radius: 8px; font-size: 16px;">Accept Invitation</a>
+                    </div>
+                    <p style="color: #333; font-size: 16px; margin-top: 20px;">Thank you, and we look forward to welcoming you!</p>
+                    <p style="color: #333; font-size: 16px; margin-top: 20px;">Best regards,<br>Software Engineering KMITL</p>
+                </div>
+            </div>
+        </body>  
     </html>
     """
     msg.attach(MIMEText(html_content, 'html'))
