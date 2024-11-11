@@ -1,5 +1,4 @@
 from fastapi import APIRouter, HTTPException, Depends, status, UploadFile, File
-from passlib.context import CryptContext
 from uuid import uuid4
 import os
 from dotenv import load_dotenv
@@ -9,14 +8,13 @@ from sqlalchemy.orm import Session
 from ..database import *
 from fastapi.responses import JSONResponse
 from .user import admin_only
-from ..main import BASE_URL_BACKEND, UPLOAD_DIR, pwd_context
+from ..config import BASE_URL_BACKEND, UPLOAD_DIR, pwd_context
 
 load_dotenv()
 
 router = APIRouter()
 
 router = APIRouter(
-    prefix="/editProfile",
     tags=["editProfile"],
 )
 

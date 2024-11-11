@@ -10,7 +10,6 @@ load_dotenv()
 router = APIRouter()
 
 router = APIRouter(
-    prefix="/SolvedProblems",
     tags=["SolvedProblems"],
 )
 

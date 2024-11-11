@@ -12,14 +12,13 @@ from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 from .roomReservation import send_delayed_email
 import secrets
-from ..main import BASE_URL_FRONTEND
+from ..config import BASE_URL_FRONTEND
 
 load_dotenv()
 
 router = APIRouter()
 
 router = APIRouter(
-    prefix="/invitation",
     tags=["invitation"],
 )
 

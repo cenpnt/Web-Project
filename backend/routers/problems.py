@@ -9,7 +9,6 @@ from .user import admin_only
 router = APIRouter()
 
 router = APIRouter(
-    prefix="/problems",
     tags=["problems"],
 )
 

@@ -4,7 +4,7 @@ from dotenv import load_dotenv
 from datetime import datetime, timedelta
 from typing import List
 from ..models import Reservation
-from ..main import BASE_URL_FRONTEND
+from ..config import BASE_URL_FRONTEND
 from ..schema import SuccessResponse, ReservationResponse, ReservationCreated, CancelReservation
 from sqlalchemy.orm import Session
 from ..database import *
@@ -19,7 +19,6 @@ load_dotenv()
 router = APIRouter()
 
 router = APIRouter(
-    prefix="/roomResevation",
     tags=["roomReservation"],
 )
 

@@ -15,7 +15,6 @@ load_dotenv()
 router = APIRouter()
 
 router = APIRouter(
-    prefix="/users",
     tags=["users"],
 )
 
