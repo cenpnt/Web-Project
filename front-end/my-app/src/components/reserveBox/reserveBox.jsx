@@ -256,9 +256,9 @@ function ReservationBox({
       } else {
         setIsError(false);
         setInvitedMembers((prev) => [...prev, selectedStudent]);
+        onClose();
         await sendInvitation(selectedStudent.username + "@kmitl.ac.th");
         setSelectedStudent(null); // Clear the selection after adding
-        onClose();
       }
     } else {
       setIsError(true);
