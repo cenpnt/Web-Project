@@ -6,6 +6,8 @@ import LanguageSelector from "./LanguageSelector";
 import { CODE_SNIPPETS } from "../constants";
 import Output from "./Output";
 import Icon from "./icon/Icon";
+import { FaArrowLeft } from "react-icons/fa";
+import { FaArrowRight } from "react-icons/fa";
 import AddQuestionForm from "./QuestionForm";
 import { ArrowBackIcon, DeleteIcon, CheckIcon} from '@chakra-ui/icons';
 import { useAuth } from '../context/AuthContext';
@@ -275,23 +277,11 @@ const CodeEditor = () => {
       return (<>
         <Box display="flex" alignItems="center" justifyContent="space-around" w="100%" h="5%" bg="hsl(0, 0%, 20%)" borderTopRightRadius={10} borderTopLeftRadius={10} >
           <Button variant="unstyledButton" onClick={prevButton}>
-            <Icon
-              dark={'https://cdn-icons-png.flaticon.com/128/2722/2722991.png'}
-              light={'https://instagram.fbkk22-1.fna.fbcdn.net/v/t1.15752-9/459072403_8229239210527017_8671075335160380401_n.png?_nc_cat=100&ccb=1-7&_nc_sid=0024fc&_nc_ohc=5y5tpm86bX0Q7kNvgGUn3zg&_nc_ht=instagram.fbkk22-1.fna&oh=03_Q7cD1QFPpegxFfGIrFYaZCA-4dB_dHmTjozt9oXfjop7-BHkeA&oe=670E596B'}
-              theme={'light'}
-              alt={'problems'}
-              width="20px"
-            />
+            <FaArrowLeft />
           </Button>
           <Button variant="unstyledButton" onClick={() => setSelectedProblem(null)}>Problems</Button>
           <Button variant="unstyledButton" onClick={nextButton}>
-            <Icon
-              dark={'https://cdn-icons-png.flaticon.com/128/2989/2989988.png'}
-              light={'https://scontent.xx.fbcdn.net/v/t1.15752-9/458395190_546695704699073_3255304959079640479_n.png?_nc_cat=109&ccb=1-7&_nc_sid=0024fc&_nc_ohc=Y75QnAJ35a4Q7kNvgEeyQlC&_nc_ad=z-m&_nc_cid=0&_nc_ht=scontent.xx&_nc_gid=AcIJnu4fkpFtlDTEW80YkOT&oh=03_Q7cD1QFMf4JVcfl8_gpuzwjay0-M5P2KU2MocE4Ibrz5QIcRsw&oe=670E6E3E'}
-              theme={'light'}
-              alt={'next question'}
-              width="20px"
-            />
+            <FaArrowRight />
           </Button>
         </Box>
         <Box mt={5} ml={8} mr={8}>

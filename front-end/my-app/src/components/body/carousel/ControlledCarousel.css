@@ -51,14 +51,36 @@
   .carousel-content {
     flex-direction: row;
     align-items: center;
+    width: 90%;
+    margin-left: 60px;
+  }
+
+  .carousel-image-container img {
+    height: 80%;
   }
 
   .carousel-inner {
     margin-left: 0;
   }
+
+  .carousel-indicators {
+    position: absolute;
+    bottom: 40px;
+  }
+
+  .carousel-control-prev {
+    margin-right: 60px;
+  }
+
+  .carousel-control-next {
+    margin-left: 60px;
+  }
+  .custom-carousel .carousel .slide {
+    
+  }
 }
 
-@media (max-width: 1800px) {
+/* @media (max-width: 1800px) {
   .carousel-control-prev {
     left: -70px;
   }
@@ -70,7 +92,7 @@
   .carousel {
     margin-bottom: 125px;
   }
-}
+} */
 
 @media (max-width: 1500px) {
   .carousel-content {

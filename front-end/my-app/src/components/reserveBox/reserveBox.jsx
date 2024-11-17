@@ -121,6 +121,7 @@ function ReservationBox({
     const studentsArr = allInvitations.map(
       (invitation) => invitation.receiver_username
     );
+    studentsArr.push(localStorage.getItem('user'));
     try {
       const response = await fetch(`${internetIPAddress}reserve`, {
         method: "POST",
@@ -157,16 +158,23 @@ function ReservationBox({
         throw new Error("Failed to fetch");
       }
       const allUserData = await response.json();
-      const newUserData = allUserData.map((user) => ({
-        student_id: user.student_id,
-        username: user.username,
-        profile_pic: user.profile_pic,
-      }));
+      const currentUserId = localStorage.getItem('user');
+      const newUserData = allUserData
+        .filter(user => {
+          const sanitizedStudentId = user.student_id.toString().trim();
+          const sanitizedCurrentUserId = currentUserId.toString().trim(); // Ensure both are strings        
+          return sanitizedStudentId !== sanitizedCurrentUserId;
+        })
+        .map((user) => ({
+          student_id: user.student_id,
+          username: user.username,
+          profile_pic: user.profile_pic || `${internetIPAddress}uploads/anonymous_dark.png`,
+        }));
       setAllStudentData(newUserData);
     } catch (error) {
-      console.error(error);
+      console.error("Error in fetchAllStudent:", error);
     }
-  };
+  }
 
   const formatToUTCPlus7 = (date) => {
     const padZero = (num) => (num < 10 ? "0" + num : num); // Helper to pad single-digit numbers
@@ -256,9 +264,9 @@ function ReservationBox({
       } else {
         setIsError(false);
         setInvitedMembers((prev) => [...prev, selectedStudent]);
+        onClose();
         await sendInvitation(selectedStudent.username + "@kmitl.ac.th");
         setSelectedStudent(null); // Clear the selection after adding
-        onClose();
       }
     } else {
       setIsError(true);
@@ -366,7 +374,6 @@ function ReservationBox({
                 <Button
                   key={time}
                   onClick={() => {
-                    // reserveRoom(roomName.match(/\d+/)[0], time);
                     setSelectedTime(time);
                   }}
                   isDisabled={
@@ -397,7 +404,7 @@ function ReservationBox({
             </div>
             <div className="member-box">
               <label>
-                Invite Member <span>*require at least {members} members</span>
+                Invite Member <span>*invite at least {members} members</span>
               </label>
               <div>
                 {allInvitations.map((member, index) => {
@@ -457,8 +464,8 @@ function ReservationBox({
                 }}
                 isDisabled={
                   selectedTime === null || 
-                  ((roomName === "Room 1" || roomName === "Room 2") && allInvitations.length < 3) || 
-                  (roomName === "Room 3" && allInvitations.length < 5) || 
+                  ((roomName === "Room 1" || roomName === "Room 2") && allInvitations.length < 2) || 
+                  (roomName === "Room 3" && allInvitations.length < 4) ||
                   allInvitations.some(invitation => 
                     invitation.status === "Decline" || invitation.status === "Pending"
                   )
@@ -508,55 +515,56 @@ function ReservationBox({
         </>
       )}
       <Modal
-        isOpen={isOpen}
-        onClose={() => {
-          onClose();
-          setIsError(false);
-        }}
-        isCentered
-      >
-        <ModalOverlay />
-        <ModalContent>
-          <ModalHeader>Invite Member</ModalHeader>
-          <ModalCloseButton />
-          <ModalBody>
-            <Select
-              options={formattedStudentData}
-              onChange={(selectedOption) =>
-                setSelectedStudent(selectedOption.value)
-              }
-            />
-            {/* {errorMessage} */}
-            {isError && (
-              <div
-                style={{
-                  color: "red",
-                  fontSize: "12px",
-                  marginTop: "10px",
-                  textAlign: "center  ",
-                }}
-              >
-                {errorMessage}
-              </div>
+      isOpen={isOpen}
+      onClose={() => {
+        onClose();
+        setIsError(false);
+      }}
+      isCentered
+    >
+      <ModalOverlay />
+      <ModalContent>
+        <ModalHeader>Invite Member</ModalHeader>
+        <ModalCloseButton />
+        <ModalBody>
+          <Select
+            options={formattedStudentData}
+            onChange={(selectedOption) => setSelectedStudent(selectedOption.value)}
+            value={formattedStudentData.find(
+              option => option.value.username === selectedStudent?.username
             )}
-          </ModalBody>
-
-          <ModalFooter>
-            <Button colorScheme="blue" mr={3} onClick={handleAddMember}>
-              Add
-            </Button>
-            <Button
-              colorScheme="red"
-              onClick={() => {
-                onClose();
-                setIsError(false);
+            isSearchable
+            placeholder="Select a member to invite..."
+          />
+          {isError && (
+            <div
+              style={{
+                color: "red",
+                fontSize: "12px",
+                marginTop: "10px",
+                textAlign: "center"
               }}
             >
-              Close
-            </Button>
-          </ModalFooter>
-        </ModalContent>
-      </Modal>
+              {errorMessage}
+            </div>
+          )}
+        </ModalBody>
+        <ModalFooter>
+          <Button colorScheme="blue" mr={3} onClick={handleAddMember}>
+            Add
+          </Button>
+          <Button
+            colorScheme="red"
+            onClick={() => {
+              onClose();
+              setIsError(false);
+            }}
+          >
+            Close
+          </Button>
+        </ModalFooter>
+      </ModalContent>
+    </Modal>
     </div>
   );
 }
