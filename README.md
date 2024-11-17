@@ -58,7 +58,7 @@ The **SE Website Project** is a comprehensive platform designed to enhance the s
 2. Install dependencies:
    - **Front-end**
      ```bash
-     cd frontend
+     cd front-end/my-app
      npm install
    - **Back-end**
      ```bash
