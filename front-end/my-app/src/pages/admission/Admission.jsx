@@ -44,7 +44,7 @@ function Admission() {
                     <h2>TCAS 2</h2>
                     <h4>Quota</h4>
                     <h1>1 - 15</h1>
-                    <h4>Mar 2024</h4>
+                    <h4>Mar 2025</h4>
                     <hr />
                     <h5>Admission Quota</h5>
                     <h1 className="admissionSeat">5</h1>
@@ -54,7 +54,7 @@ function Admission() {
                     <h2>TCAS 3</h2>
                     <h4>Admission</h4>
                     <h1>7 - 13</h1>
-                    <h4>May 2024</h4>
+                    <h4>May 2025</h4>
                     <hr />
                     <h5>Admission Quota</h5>
                     <h1 className="admissionSeat">5</h1>

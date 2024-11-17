@@ -199,14 +199,7 @@ export const card4 = {
         { text: "KMITL-Queensland", path: "/queensland-doubledegree" },
       ]
     },
-    { 
-      text: 'Facility',
-      subItems: [
-        { text: "Laboratory", path: "/" },
-        { text: "Lecture Room", path: "/" },
-        { text: "Co-working Space", path: "/" }
-      ]
-    }
+    {text: 'Contact', path: '/contact'}
   ]; 
 
   export const loggedInMenuItems = [
@@ -218,8 +211,6 @@ export const card4 = {
         { text: "Curriculum", path: "/curriculum" },
         { text: "KMITL-Glasgow", path: "/glasgow-doubledegree" },
         { text: "KMITL-Queensland", path: "/queensland-doubledegree" },
-        { text: "Exchange-Study-Abroad", path: "/" },
-        { text: "Internships", path: "/" }
       ]
     },
     { 
@@ -231,11 +222,10 @@ export const card4 = {
     { 
       text: 'Facility',
       subItems: [
-        { text: "Laboratory", path: "/" },
-        { text: "Lecture Room", path: "/" },
         { text: 'Co-Working Space Booking System', path: '/coworkingspace' }
       ]
-    }
+    },
+    {text: 'Contact', path: '/contact'}
     
   ]; 
 
