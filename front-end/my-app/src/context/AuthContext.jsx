@@ -8,7 +8,7 @@ export const AuthProvider = ({ children }) => {
     const [isLoggedIn, setIsLoggedIn] = useState(false);
     const [user, setUser] = useState(null);
     const navigate = useNavigate();
-    const internetIPAddress = "http://192.168.56.1:8000/"
+    const internetIPAddress = "http://192.168.1.36:8000/"
     
     useEffect(() => {
         const storedLoginStatus = localStorage.getItem('isLoggedIn') === 'true';
@@ -44,7 +44,7 @@ export const AuthProvider = ({ children }) => {
         localStorage.setItem('access_token', data);  // Store JWT in localStorage
         localStorage.setItem('token_expiration', expirationTime); // Store token expiration time
         localStorage.setItem('isLoggedIn', 'true');
-        localStorage.setItem('user', JSON.stringify(decodedToken.sub));
+        localStorage.setItem('user', decodedToken.sub);  // No need to stringify
         localStorage.setItem('userID', decodedToken.userID);
         if(decodedToken.role === 'admin') {
             localStorage.setItem('isAdmin', 'true');    
