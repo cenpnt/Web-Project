@@ -222,6 +222,34 @@ function ReservationBox({
     }
   };
 
+  const sendNotification = async () => {
+    const senderID = localStorage.getItem("userID");
+    const currentUser = localStorage.getItem("user");
+    const date = new Date();
+    date.setDate(date.getDate() + selectedDateIndex);
+    const emailData = {
+      sender_email: "softwareengineeringkmitl@gmail.com",
+      sender_id: senderID,
+      receiver_email: `${currentUser}@kmitl.ac.th`,
+      subject: "Co-Working Space Notification",
+      room_id: roomName.match(/\d+/)[0],
+      date: getCustomFormattedDate(date),
+      time: selectedTime
+    };
+    try {
+      const response = await fetch(`${internetIPAddress}send_notification_message`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json"},
+        body: JSON.stringify(emailData)
+      });
+      if(!response.ok) {
+        throw new Error("Error sending email");
+      }
+    } catch (error) {
+      console.error("Error sending email: ", error);
+    }
+  }
+
   const deleteAllInvitations = async () => {
     try {
       const response = await fetch(
@@ -349,6 +377,10 @@ function ReservationBox({
                     color: "black",
                     borderColor: "hsl(35, 100%, 70%)",
                   }}
+                  style={{
+                    width: '110px', 
+                    textAlign: 'center', 
+                  }}
                 >
                   {getFormattedButtonDate(date)}
                 </Button>
@@ -461,6 +493,7 @@ function ReservationBox({
                 onClick={() => {
                   reserveRoom(roomName.match(/\d+/)[0], selectedTime);
                   deleteAllInvitations();
+                  sendNotification();
                 }}
                 isDisabled={
                   selectedTime === null || 

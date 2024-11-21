@@ -4,7 +4,7 @@ from dotenv import load_dotenv
 from datetime import datetime, timedelta, timezone
 from typing import  List
 from ..models import Invitation
-from ..schema import SuccessResponse, InvitationCreated, AcceptInvitationRequest, InvitationResponse
+from ..schema import SuccessResponse, InvitationCreated, AcceptInvitationRequest, InvitationResponse, Notification
 from sqlalchemy.orm import Session
 from ..database import *
 import smtplib
@@ -76,6 +76,45 @@ def send_invitation(invitation: InvitationCreated, background_tasks: BackgroundT
     background_tasks.add_task(send_delayed_email, invitation.sender_email, invitation.receiver_email, invitation.date, invitation.time, invitation.room_id, db)
     
     return {"message": "Invitation sent successfully"}
+
+@router.post('/send_notification_message', response_model=SuccessResponse)
+def send_notification_message(notification: Notification, background_tasks: BackgroundTasks, db: Session = Depends(get_db)):
+    msg = MIMEMultipart()
+    msg['From'] = "SE KMITL"
+    msg['To'] = notification.receiver_email
+    msg['Subject'] = notification.subject
+    html_content = f"""
+    <html>
+        <body style="display: flex; justify-content: center; align-items: center;">
+            <div style="display: flex; justify-content: center; align-items: center; height: 50vh; width: 50vh; background-color: #F94C46; padding: 20px;">
+                <div style="width: 400px; background-color: white; border-radius: 15px; padding: 40px; box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.1); font-family: Arial, sans-serif;">
+                    <h2 style="text-align: center; font-size: 24px; color: #251B45;">Your Invitation Summary</h2>
+                    <p style="color: #333; font-size: 16px;">Dear Host,</p>
+                    <p style="color: #333; font-size: 16px;">Thank you for hosting an invitation to use the co-working space. Here are the details of the invitation:</p>
+                    <ul style="color: #333; font-size: 16px; margin-top: 10px;">
+                        <li><strong>Invitee Email:</strong> {notification.receiver_email}</li>
+                        <li><strong>Room:</strong> {notification.room_id}</li>
+                        <li><strong>Date:</strong> {notification.date}</li>
+                    </ul>
+                </div>
+            </div>
+        </body>  
+    </html>
+    """
+    msg.attach(MIMEText(html_content, 'html'))
+    
+    try:
+        server = smtplib.SMTP("smtp.gmail.com", 587)
+        server.starttls()
+        server.login(notification.sender_email, os.getenv("APP_PASSWORD"))
+        server.sendmail(notification.sender_email, notification.receiver_email, msg.as_string())
+        server.quit()
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Failed to send email: {str(e)}")
+    background_tasks.add_task(send_delayed_email, notification.sender_email, notification.receiver_email, notification.date, notification.time, notification.room_id, db)
+
+    return {"message": "Notification sent successfully"}
+
 
 @router.put('/accept_invitation', response_model=InvitationResponse)
 def accept_invitation(request: AcceptInvitationRequest, db: Session = Depends(get_db)):
