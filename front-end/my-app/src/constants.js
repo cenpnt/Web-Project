@@ -1,4 +1,4 @@
-const internetIPAddress = "192.168.1.36:8000"
+const internetIPAddress = "10.66.6.48:8000"
 
 export const LANGUAGE_VERSIONS = {
   javascript: "18.15.0",
@@ -238,21 +238,21 @@ export const card4 = {
 
   export const room1 = {
     roomName: "Room 1",
-    roomImage: `${internetIPAddress}uploads/anonymous.png`, 
+    roomImage: `http://${internetIPAddress}/uploads/room1.jpg`, 
     amenities: ['Capacity of 5','Wi-Fi', 'Table', 'Smart-TV (Interactive Display Writing Board)'], 
     members: "2"
   };
 
   export const room2 = {
     roomName: "Room 2",
-    roomImage: "https://media.discordapp.net/attachments/1280538997944225846/1287804527155740767/IMG_1058.png?ex=66f2e0ed&is=66f18f6d&hm=3c1893c8d7086c388e639bfa2c888c0fa6055ce784b7a6a5370d558cac5fc830&=&format=webp&quality=lossless&width=815&height=662",
+    roomImage: `http://${internetIPAddress}/uploads/room2.jpg`,
     amenities: ['Capacity of 5','Wi-Fi', 'Table'],
     members: "2"
   }
 
   export const room3 = {
     roomName: "Room 3",
-    roomImage: `${internetIPAddress}uploads/co-room3.jpg`,
+    roomImage: `http://${internetIPAddress}/uploads/room3.jpg`,
     amenities: ['Capacity of 10','Wi-fi', 'Smart-TV (Interactive Display Writing Board)', 'Meeting desk'],
     members: "4"
   }

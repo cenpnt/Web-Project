@@ -130,3 +130,12 @@ class InvitationResponse(BaseModel):
 class AcceptInvitationRequest(BaseModel):
     token: str
     isAccept: bool
+
+class Notification(BaseModel):
+    sender_email: str
+    sender_id: int
+    receiver_email: str
+    subject: str
+    room_id: int
+    date: str
+    time: str

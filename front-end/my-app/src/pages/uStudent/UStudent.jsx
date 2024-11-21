@@ -20,7 +20,7 @@ function UStudent() {
   const [allEasyProblems, setAllEasyProblems] = useState({all: 0, solved: 0});
   const [allMediumProblems, setAllMediumProblems] = useState({all: 0, solved: 0});
   const [allHardProblems, setAllHardProblems] = useState({all: 0, solved: 0});
-  const pics = `${internetIPAddress}uploads/co-room3.jpg`;
+  const pics = `${internetIPAddress}uploads/co-room.jpg`;
 
   useEffect(() => {
     fetchUser();
@@ -228,7 +228,7 @@ function UStudent() {
           ) : (
             <>
               <h4>Your Reservation</h4>
-              {userReservations.length > 0 ? (
+              {userReservations.filter((reservation) => compareDate(reservation)).length > 0 ? (
                 userReservations
                   .filter((reservation) => compareDate(reservation))
                   .sort((a, b) => getReservationDateTime(a) - getReservationDateTime(b))
